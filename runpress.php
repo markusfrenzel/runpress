@@ -209,7 +209,7 @@ function runpress_register_widget() {
  * @since 1.0.0
  */ 
 function runpress_admin_menu() {
-	$hook_suffix = add_menu_page( 'RunPress', 'RunPress', 'manage_options', 'runpress', 'runpress_options', 'dashicons-universal-access-alt', 76 );
+	$hook_suffix = add_menu_page( 'RunPress', 'RunPress', 'manage_options', 'runpress', 'runpress_options', 'dashicons-chart-line', 76 );
 	add_submenu_page( 'runpress', __( 'RunPress Local DB', 'runpress' ), __( 'Local DB', 'runpress' ), 'manage_options', 'runpress-local-db', 'runpress_local_db' );
 	/* Deactivated the following two lines because this feature are not ready at the moment... Coming soon... */
 	// add_submenu_page( 'runpress', __( 'RunPress Sync', 'runpress' ), __( 'Sync', 'runpress' ), 'manage_options', 'runpress-sync', 'runpress_sync' );
@@ -227,7 +227,7 @@ function runpress_admin_menu() {
  * @since 1.0.0
  */ 
 function runpress_admin_notices() {
-	echo "<div id='notice' class='update-nag'><p>" . _e( 'RunPress is not configured yet. Please do it now.', 'runpress' ) . "</p></div>\n";
+	echo "<div id='notice' class='update-nag'><p>" . __( 'RunPress is not configured yet. Please do it now.', 'runpress' ) . "</p></div>\n";
 }
 
 /*
@@ -291,7 +291,7 @@ function runpress_options() {
 	$opt_val_name = get_option( $opt_name );
 	$opt_val_pass = get_option( $opt_pass );
 	$opt_val_unittype = get_option( $opt_unittype );
-	$opt_val_deleoptions = get_option( $opt_deleteoptions );
+	$opt_val_deleteoptions = get_option( $opt_deleteoptions );
 	$opt_val_runtastic_username = get_option( $opt_runtastic_username );
 	$opt_val_runtastic_uid = get_option( $opt_runtastic_uid );
 	/* Check if the runtastic username is already in the db */
@@ -384,7 +384,7 @@ function runpress_local_db() {
 	global $runpress_db_name;
 	/* enqueue the needed scripts */
 	wp_register_script( 'jquery_datatables_js', plugins_url() . '/runpress/inc/js/jquery.dataTables.min.js', array(), null, true );
-	wp enqueue_script( 'jquery_datatables_js' );
+	wp_enqueue_script( 'jquery_datatables_js' );
 	wp_register_style( 'jquery_datatables_css', plugins_url() . '/runpress/inc/css/jquery.dataTables.css' );
 	wp_enqueue_style( 'jquery_datatables_css' );
 	/* variables for the field and option names */
