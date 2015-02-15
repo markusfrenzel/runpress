@@ -14,6 +14,8 @@ Only running activities can be queried and shown on your wordpress site.
 
 Widget included! DataTables are used to display your data. Charts (Google Charts) ready.
 
+ATTENTION: You MUST have CURL-Support in your PHP.INI active!
+
 === Installation ===
 Just copy the whole runpress folder into your plugins folder and activate it in your admin area. Have a look at the settings page of runpress to configure it.
 
