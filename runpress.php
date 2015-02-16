@@ -212,7 +212,7 @@ function runpress_admin_menu() {
 	$hook_suffix = add_menu_page( 'RunPress', 'RunPress', 'manage_options', 'runpress', 'runpress_options', 'dashicons-chart-line', 76 );
 	add_submenu_page( 'runpress', __( 'RunPress Local DB', 'runpress' ), __( 'Local DB', 'runpress' ), 'manage_options', 'runpress-local-db', 'runpress_local_db' );
 	/* Deactivated the following two lines because this feature are not ready at the moment... Coming soon... */
-	// add_submenu_page( 'runpress', __( 'RunPress Sync', 'runpress' ), __( 'Sync', 'runpress' ), 'manage_options', 'runpress-sync', 'runpress_sync' );
+	add_submenu_page( 'runpress', __( 'RunPress Sync', 'runpress' ), __( 'Sync', 'runpress' ), 'manage_options', 'runpress-sync', 'runpress_sync' );
 	// add_submenu_page( 'runpress', __( 'RunPress Shortcode Generator', 'runpress' ), __( 'Shortcode Generator', 'runpress' ), 'manage_options', 'runpress-shortcode-generator', 'runpress_shortcode_generator' );
 	add_action( 'load-' . $hook_suffix, 'runpress_load_function' );
 	add_action( 'load-' . $hook_suffix, 'runpress_help_tab' );
@@ -288,15 +288,15 @@ function runpress_options() {
 	$data_field_unittype = 'runpress_unittype';
 	$data_field_deleteoptions = 'runpress_delete_options';
 	/* Read the existing option values from the database */
-	$opt_val_name = get_option( $opt_name );
-	$opt_val_pass = get_option( $opt_pass );
-	$opt_val_unittype = get_option( $opt_unittype );
-	$opt_val_deleteoptions = get_option( $opt_deleteoptions );
-	$opt_val_runtastic_username = get_option( $opt_runtastic_username );
-	$opt_val_runtastic_uid = get_option( $opt_runtastic_uid );
+	$opt_val_name = get_option( $opt_name, '' );
+	$opt_val_pass = get_option( $opt_pass, '' );
+	$opt_val_unittype = get_option( $opt_unittype, 'Metric Units' );
+	$opt_val_deleteoptions = get_option( $opt_deleteoptions, '0' );
+	$opt_val_runtastic_username = get_option( $opt_runtastic_username, '' );
+	$opt_val_runtastic_uid = get_option( $opt_runtastic_uid, '' );
 	/* Check if the runtastic username is already in the db */
 	if( get_option( $opt_runtastic_username ) != false ) {
-		echo "<div id='notice' class='updated'><p>" . _e( 'Your Runtastic Username: ', 'runpress' ) . $opt_val_runtastic_username . " / UID: " . $opt_val_runtastic_uid . "</p></div>\n";
+		echo "<div id='notice' class='updated'><p>" . __( 'Your Runtastic Username: ', 'runpress' ) . $opt_val_runtastic_username . " / UID: " . $opt_val_runtastic_uid . "</p></div>\n";
 	}
 	/* Lets see if the user has posted some information. If so, the hidden field will be set to 'Y' */
 	if( isset( $_POST[ $hidden_field_name ] ) && $_POST[ $hidden_field_name ] == 'Y' ) {
@@ -364,7 +364,7 @@ function runpress_options() {
 	</tr>
 	</table>
 	<p class="submit">
-	<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e( 'Save_Changes', 'runpress' ) ?>" />
+	<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e( 'Save Changes', 'runpress' ) ?>" />
 	</p>
 	</form>
 	</div>
@@ -399,28 +399,28 @@ function runpress_local_db() {
 		runpress_delete_database_manually();
 	}
 	/* Now display the local DB screen */
-	echo "<h2>" . _e( 'RunPress Local DB', 'runpress' ) . "</h2>";
+	echo "<h2>" . __( 'RunPress Local DB', 'runpress' ) . "</h2>";
 	$entry_count = $wpdb->get_var( "SELECT COUNT(*) FROM $runpress_db_name" );
-	echo "<h3>" . _e( 'Entries in local database:', 'runpress' ) . " {$entry_count}</h3>";
-	$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name", OBJECT );
-	echo "<table id='backend_results' class='display' cellspacing='0' width='100%'>
+	echo "<h3>" . __( 'Entries in local database:', 'runpress' ) . " {$entry_count}</h3>";
+	$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name ORDER BY id desc", OBJECT );
+	echo "<table id='backend_results' class='cell-border' cellspacing='0' width='100%'>
 		  <thead>
 		  <tr>
-		  <th align='left'>" . _e( 'Date', 'runpress' ) . "</th>
-		  <th align='left'>" . _e( 'Start', 'runpress' ) . "</th>
-		  <th align='left'>" . _e( 'Duration', 'runpress' ) . "</th>
-		  <th align='left'>" . _e( 'Distance', 'runpress' ) . "</th>
-		  <th align='left'>" . _e( 'Pace', 'runpress' ) . "</th>
-		  <th align='left'>" . _e( 'Speed', 'runpress' ) . "</th>
+		  <th align='left'>" . __( 'Date', 'runpress' ) . "</th>
+		  <th align='left'>" . __( 'Start', 'runpress' ) . "</th>
+		  <th align='left'>" . __( 'Duration', 'runpress' ) . "</th>
+		  <th align='left'>" . __( 'Distance', 'runpress' ) . "</th>
+		  <th align='left'>" . __( 'Pace', 'runpress' ) . "</th>
+		  <th align='left'>" . __( 'Speed', 'runpress' ) . "</th>
 		  </tr></thead>
 		  <tfoot>
 		  <tr>
-		  <th align='left'>" . _e( 'Date', 'runpress' ) . "</th>
-		  <th align='left'>" . _e( 'Start', 'runpress' ) . "</th>
-		  <th align='left'>" . _e( 'Duration', 'runpress' ) . "</th>
-		  <th align='left'>" . _e( 'Distance', 'runpress' ) . "</th>
-		  <th align='left'>" . _e( 'Pace', 'runpress' ) . "</th>
-		  <th align='left'>" . _e( 'Speed', 'runpress' ) . "</th>
+		  <th align='left'>" . __( 'Date', 'runpress' ) . "</th>
+		  <th align='left'>" . __( 'Start', 'runpress' ) . "</th>
+		  <th align='left'>" . __( 'Duration', 'runpress' ) . "</th>
+		  <th align='left'>" . __( 'Distance', 'runpress' ) . "</th>
+		  <th align='left'>" . __( 'Pace', 'runpress' ) . "</th>
+		  <th align='left'>" . __( 'Speed', 'runpress' ) . "</th>
 		  </tr>
 		  </tfoot>
 		  <tbody>";
@@ -429,6 +429,8 @@ function runpress_local_db() {
 		$time = sprintf( "%02s", $row->date_hour ) . ":" . sprintf( "%02s", $row->date_minutes ) . ":" . sprintf( "%02s", $row->date_seconds );
 		$duration = date( 'H:i:s', ( $row->duration/1000 ) );
 		$distance = round( $row->distance/1000, 2 );
+		$pace = date( 'i:s', ( $row->pace*60 ) );
+		$speed = round( $row->speed, 2 );
 		echo "<tr>
 		      <td>" . $date . "</td>
 		      <td>" . $time . "</td>
@@ -442,9 +444,10 @@ function runpress_local_db() {
 	</tbody>
 	</table>
 	<script type="text/javascript">
-		jQuery(document.ready(function() {
+		jQuery(document).ready(function() {
 			/* Init dataTable */
 			jQuery('#backend_results').dataTable( {
+				"ordering": false,
 				"language" : {
 					"lengthMenu": "Display _MENU_ records per page",
 					"zeroRecords": "Nothing found - sorry",
@@ -467,7 +470,7 @@ function runpress_local_db() {
 	<div class="wrap">
 	<form name="form2" method="post" action ="">
 	<input type="hidden" name="<?php echo $hidden_field_name2; ?>" value="Y">
-	<?php echo _e( 'Please click the following button once to synchronize your local wordpress database with the entries in Runtastic.', 'runpress' ); ?>
+	<?php _e( 'Please click the following button once to synchronize your local wordpress database with the entries in Runtastic.', 'runpress' ); ?>
 	<p class="submit">
 	<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e( 'Read Entries from Runtastic', 'runpress' ) ?>" />
 	</p>
@@ -476,7 +479,7 @@ function runpress_local_db() {
 	<div class="wrap">
 	<form name="form3" method="post" action="">
 	<input type="hidden" name="<?php echo $hidden_field_name3; ?>" value="Y">
-	<?php echo _e( 'If you want to delete the entries in your local db, click the following button. Only the entries in your local db will be deleted. It does not affect the entries in the runtastic db!', 'runpress' ); ?>
+	<?php _e( 'If you want to delete the entries in your local db, click the following button. Only the entries in your local db will be deleted. It does not affect the entries in the runtastic db!', 'runpress' ); ?>
 	<p class="submit">
 	<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e( 'Delete all entries in local DB', 'runpress' ) ?>" />
 	</p>
@@ -514,7 +517,7 @@ function runpress_sync_database_manually() {
 				'type' => $activity->type,
 				'type_id' => $activity->type_id,
 				'duration' => $activity->duration,
-				'distance' => $activitiy->distance,
+				'distance' => $activity->distance,
 				'pace' => $activity->pace,
 				'speed' => $activity->speed,
 				'kcal' => $activity->kcal,
@@ -857,7 +860,7 @@ function runpress_sync() {
 	$hidden_field_name4 = 'runpress_cronjob_add';
 	$hidden_field_name5 = 'runpress_cronjob_delete';
 	$data_field_cronjobtime = 'runpress_option_cronjobtime';
-	$opt_val_cronjobtime = get_option( $data_field_cronjobtime );
+	$opt_val_cronjobtime = get_option( $data_field_cronjobtime, 'daily' );
 	/* see if the user has clicked the button to sync the local database with the runtastic database */
 	if( isset( $_POST[ $hidden_field_name2 ] ) && $_POST[ $hidden_field_name2 ] == 'Y' ) {
 		runpress_sync_database_manually();
@@ -886,9 +889,9 @@ function runpress_sync() {
 		$opt_val_cronjobtime = '';
 	}
 	/* now display the local db entry count */
-	echo "<h2>" . _e( 'Runpress Sync Settings', 'runpress' ) . "</h2>";
+	echo "<h2>" . __( 'Runpress Sync Settings', 'runpress' ) . "</h2>";
 	$entry_count = $wpdb->get_var( "SELECT COUNT(*) FROM $runpress_db_name" );
-	echo "<h3>" . _e( 'Entries in local database: ', 'runpress' ) . "{$entry_count}</h3>";
+	echo "<h3>" . __( 'Entries in local database: ', 'runpress' ) . "{$entry_count}</h3>";
 	?>
 	<div class="wrap">
 	<h3><?php _e( 'Manual sync of the local DB', 'runpress' ) ?></h3>
