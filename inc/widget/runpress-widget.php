@@ -1,12 +1,46 @@
 <?php
-/**
- * Adds Runpress widget.
+/*
+ * File Name:		runpress-widget.php
+ * 
+ * Plugin Name: 	RunPress
+ * Plugin URI: 		http://markusfrenzel.de/wordpress/?page_id=2247
+ * 
+ * Description: 	A plugin to query the Runtastic website. Returns 
+ * 					the data of your running activities.
+ * 
+ * Version: 		same as runpress.php
+ * 
+ * Author: 			Markus Frenzel
+ * Author URI: 		http://www.markusfrenzel.de
+ * E-Mail:			wordpressplugins@markusfrenzel.de
+ * 
+ * License: 		GPLv3
+ * 
+ * Donate link: 	http://markusfrenzel.de/wordpress/?page_id=2336
+ * 
  */
+
+/*
+ * Copyright (C) 2014, 2015 Markus Frenzel
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License as 
+ * published by the Free Software Foundation; either version 3 of 
+ * the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses/>. 
+ */
+
+/* Adds Runpress widget */
 class runpress_widget extends WP_Widget {
 
-	/**
-	 * Register widget with WordPress.
-	 */
+	/* Register widget with WordPress */
 	function __construct() {
 		parent::__construct(
 			'runpress_widget', // Base ID
