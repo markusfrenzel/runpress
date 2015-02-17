@@ -3,7 +3,7 @@
  * Plugin Name: RunPress
  * Plugin URI: http://markusfrenzel.de/wordpress/?page_id=2247
  * Description: A plugin to query the Runtastic website. Returns the data of your running activities.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Markus Frenzel
  * Author URI: http://www.markusfrenzel.de
  * License: GPL2
@@ -32,7 +32,7 @@ global $wpdb;
 global $runpress_db_version;
 global $runpress_db_name;
 
-$runpress_db_version = "1.0.0";
+$runpress_db_version = "1.1.0";
 $runpress_db_name = $wpdb->prefix . "runpress_db";
 
 /* Definitions */
@@ -124,11 +124,11 @@ function runpress_activate() {
 	
 	add_option( "runpress_option_db_version", $runpress_db_version );
 	
-	$installed_ver = get_option( "runpress_db_version" );
+	$installed_ver = get_option( "runpress_option_db_version" );
 	
 	if( $installed_ver != $runpress_db_version ) {
 		/* If there will be database changes in the future... */
-		
+				
 		/* $sql = "";
 		 * require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		 * dbDelta( $sql );
@@ -170,9 +170,16 @@ function runpress_deactivate() {
  * @since 1.0.0
  */ 
 function runpress_autoupdate_db_check() {
+	global $wpdb;
 	global $runpress_db_version;
+	global $runpress_db_name;
+	
 	if( get_site_option( 'runpress_option_db_version' ) != $runpress_db_version ) {
-		runpress_install();
+		if( get_option( 'runpress_option_db_version' ) < '1.1.0' ) {
+			$wpdb->query("ALTER TABLE `$runpress_db_name` MODIFY COLUMN map_url TEXT NOT NULL");
+			update_option( 'runpress_option_db_version', $runpress_db_version );
+		}
+		
 	}
 }
 
@@ -296,7 +303,7 @@ function runpress_options() {
 	$opt_val_runtastic_uid = get_option( $opt_runtastic_uid, '' );
 	/* Check if the runtastic username is already in the db */
 	if( get_option( $opt_runtastic_username ) != false ) {
-		echo "<div id='notice' class='updated'><p>" . __( 'Your Runtastic Username: ', 'runpress' ) . $opt_val_runtastic_username . " / UID: " . $opt_val_runtastic_uid . "</p></div>\n";
+		echo "<div id='notice' class='updated'><p>" . __( 'Your Runtastic Username: ', 'runpress' ) . get_option( $opt_runtastic_username) . " / UID: " . get_option( $opt_runtastic_uid ) . "</p></div>\n";
 	}
 	/* Lets see if the user has posted some information. If so, the hidden field will be set to 'Y' */
 	if( isset( $_POST[ $hidden_field_name ] ) && $_POST[ $hidden_field_name ] == 'Y' ) {
@@ -328,7 +335,7 @@ function runpress_options() {
 			update_option( $opt_runtastic_uid, NULL);
 		}
 		/* Show an 'settings updated' mesage on the screen */
-		echo "<div id='notice' class='updated' onclick='remove(this)'><p><strong>" . _e( 'Settings saved.', 'runpress' ) . "</strong></p></div>";
+		echo "<div id='notice' class='updated' onclick='remove(this)'><p><strong>" . __( 'Settings saved.', 'runpress' ) . "</strong></p></div>";
 	}
 	/* Now show the settings editing screen */
 	?>
@@ -382,11 +389,13 @@ function runpress_options() {
 function runpress_local_db() {
 	global $wpdb;
 	global $runpress_db_name;
-	/* enqueue the needed scripts */
+	/* new way of enqueuing scripts... use a function ;-) */
+	runpress_enqueue_scripts();
+	/* enqueue the needed scripts
 	wp_register_script( 'jquery_datatables_js', plugins_url() . '/runpress/inc/js/jquery.dataTables.min.js', array(), null, true );
 	wp_enqueue_script( 'jquery_datatables_js' );
 	wp_register_style( 'jquery_datatables_css', plugins_url() . '/runpress/inc/css/jquery.dataTables.css' );
-	wp_enqueue_style( 'jquery_datatables_css' );
+	wp_enqueue_style( 'jquery_datatables_css' ); */
 	/* variables for the field and option names */
 	$hidden_field_name2 = 'runpress_db_sync';
 	$hidden_field_name3 = 'runpress_db_delete';
@@ -637,11 +646,11 @@ function runpress_shortcode( $atts ) {
 		), $atts );
 	
 	if( ( $a[ 'year' ] > 999 ) and $a[ 'year' ] < 10000 ) {
-		$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name WHERE date_year=" . $a[ 'year' ] . "ORDER BY date_year " . $a[ 'sortorder' ], OBJECT );
+		$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name WHERE date_year=" . $a[ 'year' ] . " ORDER BY id " . $a[ 'sortorder' ], OBJECT );
 	}
 	else
 	{
-		$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name ORDER BY date_year " . $a[ 'sortorder' ], OBJECT );
+		$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name ORDER BY id " . $a[ 'sortorder' ], OBJECT );
 	}
 	/* The core table which is used to display the data native and through JQuery Datatables */
 	if( $a[ 'display' ] == "table" || $a[ 'display' ] == "datatable" ) {
@@ -649,26 +658,26 @@ function runpress_shortcode( $atts ) {
 		$body = "";
 		$footer = "";
 		/* Define the header of the table */
-		$header .= "<table id='{$a['display']}_results' class='display' cellspacing='0' width='100%'>";
+		$header .= "<table id='{$a['display']}_results' class='cell-border' cellspacing='0' width='100%'>";
 		$header .= "<thead>";
 		$header .= "<tr>";
-		$header .= "<th align='left'>" . _e( 'Date', 'runpress' ) . "</th>";
-		$header .= "<th align='left'>" . _e( 'Start', 'runpress' ) . "</th>";
-		$header .= "<th align='left'>" . _e( 'Duration', 'runpress' ) . "</th>";
-		$header .= "<th align='left'>" . _e( 'Distance', 'runpress' ) . "</th>";
-		$header .= "<th align='left'>" . _e( 'Pace', 'runpress' ) . "</th>";
-		$header .= "<th align='left'>" . _e( 'Speed', 'runpress' ) . "</th>";
+		$header .= "<th align='left'>" . __( 'Date', 'runpress' ) . "</th>";
+		$header .= "<th align='left'>" . __( 'Start', 'runpress' ) . "</th>";
+		$header .= "<th align='left'>" . __( 'Duration', 'runpress' ) . "</th>";
+		$header .= "<th align='left'>" . __( 'Distance', 'runpress' ) . "</th>";
+		$header .= "<th align='left'>" . __( 'Pace', 'runpress' ) . "</th>";
+		$header .= "<th align='left'>" . __( 'Speed', 'runpress' ) . "</th>";
 		$header .= "</tr>";
 		$header .= "</thead>";
 		/* Define the footer of the table */
 		$footer .= "<tfoot>";
 		$footer .= "<tr>";
-		$footer .= "<th align='left'>" . _e( 'Date', 'runpress' ) . "</th>";
-		$footer .= "<th align='left'>" . _e( 'Start', 'runpress' ) . "</th>";
-		$footer .= "<th align='left'>" . _e( 'Duration', 'runpress' ) . "</th>";
-		$footer .= "<th align='left'>" . _e( 'Distance', 'runpress' ) . "</th>";
-		$footer .= "<th align='left'>" . _e( 'Pace', 'runpress' ) . "</th>";
-		$footer .= "<th align='left'>" . _e( 'Speed', 'runpress' ) . "</th>";
+		$footer .= "<th align='left'>" . __( 'Date', 'runpress' ) . "</th>";
+		$footer .= "<th align='left'>" . __( 'Start', 'runpress' ) . "</th>";
+		$footer .= "<th align='left'>" . __( 'Duration', 'runpress' ) . "</th>";
+		$footer .= "<th align='left'>" . __( 'Distance', 'runpress' ) . "</th>";
+		$footer .= "<th align='left'>" . __( 'Pace', 'runpress' ) . "</th>";
+		$footer .= "<th align='left'>" . __( 'Speed', 'runpress' ) . "</th>";
 		$footer .= "</tr>";
 		$footer .= "</tfoot>";
 		/* Define the body of the table */
@@ -695,11 +704,13 @@ function runpress_shortcode( $atts ) {
 	}
 	/* Display the data with the use of JQuery Datatables */
 	if( $a[ 'display' ] == "datatable" ) {
-		/* enqueue the needed scripts */
+		/* new way of enqueuing scripts... use a function ;-) */
+		runpress_enqueue_scripts();
+		/* enqueue the needed scripts
 		wp_register_script( 'jquery_datatables_js', plugins_url() . '/runpress/inc/js/jquery.dataTables.min.js', array(), null, true );
 		wp_enqueue_script( 'jquery_datatables_js' );
-		wp_register_style( 'jquery_datatables.css', plugins.url() . '/runpress/inc/css/jquery.dataTables.css' );
-		wp_enqueue_style( 'jquery_datatables_css' );
+		wp_register_style( 'jquery_datatables_css', plugins_url() . '/runpress/inc/css/jquery.dataTables.css' );
+		wp_enqueue_style( 'jquery_datatables_css' ); */
 		?>
 		<script type="text/javascript">
 		jQuery(document).ready(function(){
@@ -790,8 +801,9 @@ function runpress_shortcode( $atts ) {
 			google.load("visualization", "1", {packages:["corechart"]});
 			google.setOnLoadCallback(drawChart);
 			function drawChart() {
-				var data = google.visualization.arrayToDataTAble([
+				var data = google.visualization.arrayToDataTable([
 					['<?php _e( 'Month', 'runpress' ) ?>', '<?php _e( 'Distance', 'runpress' ) ?>'],
+					[0, 0],
 					['01', <?php echo ($sumkm_jan == 0) ? 'null' : $sumkm_jan; ?>],
 					['02', <?php echo ($sumkm_feb == 0) ? 'null' : $sumkm_feb; ?>],
 					['03', <?php echo ($sumkm_mar == 0) ? 'null' : $sumkm_mar; ?>],
@@ -806,7 +818,7 @@ function runpress_shortcode( $atts ) {
 					['12', <?php echo ($sumkm_dec == 0) ? 'null' : $sumkm_dec; ?>],
 				]);
 				
-				var option = {
+				var options = {
 					title: '<?php _e( 'Results', 'runpress' ) . " {$a [ 'year'] }"; ?>',
 					titlePosition: 'out',
 					legend: { Position: 'bottom' },
@@ -814,7 +826,7 @@ function runpress_shortcode( $atts ) {
 					height: 500,
 					curveType: 'none',
 					chartArea: { left:50, top:20 },
-					hAxis: { title: '<?php _e( 'Month', 'runpress' ) ?>' },
+					hAxis: { title: '<?php _e( 'Month', 'runpress' ) ?>', ticks: [1,2,3,4,5,6,7,8,9,10,11,12] },
 					vAxis: { title: '<?php _e( 'Distance', 'runpress' ) ?>', minValue: '0', maxValue: '100' },
 				};
 				
@@ -823,9 +835,9 @@ function runpress_shortcode( $atts ) {
 			}
 		</script>
 		<?php
-		$returncontent = "<div id=\"charf_div_{$a[ 'year' ] }\"></div>";
+		$returncontent = "<div id=\"chart_div_{$a[ 'year' ] }\"></div>";
 	}
-	return returncontent;
+	return $returncontent;
 }
 	
 /*
@@ -837,9 +849,9 @@ function runpress_shortcode( $atts ) {
  * @since 1.0.0
  */
 function runpress_enqueue_scripts() {
-	wp_register_script( 'jquery_datatables_js', plugins_url() . 'runpress/inc/js/jquery.dataTables.js', array(), null, false );
+	wp_register_script( 'jquery_datatables_js', plugins_url() . '/runpress/inc/js/jquery.dataTables.js', array(), null, false );
 	wp_enqueue_script( 'jquery_datatables_js' );
-	wp_register_style( 'jquery_datatables_css', plugins_url() . 'runpress/inc/css/jquery.dataTables.css' );
+	wp_register_style( 'jquery_datatables_css', plugins_url() . '/runpress/inc/css/jquery.dataTables.css' );
 	wp_enqueue_style( 'jquery_datatables_css' );
 }
 

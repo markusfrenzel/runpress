@@ -30,9 +30,18 @@ class runpress_widget extends WP_Widget {
 		echo $args['before_widget'];
 		if ( ! empty( $title ) )
 			echo $args['before_title'] . $title . $args['after_title'];
-		echo __( 'Hello, World!', 'runpress' );
-		if( get_option( 'runpress_option_username' ) == true ) {
-		    echo "My Username <b>" . get_option( 'runpress_runtastic_username' ) . "</b> and UID <b>" . get_option( 'runpress_runtastic_uid' ) . "</b>!";
+
+			/* Select the last activity from the db and post its data into the widget */
+			/* this is only a test to implement my ideas into the widget area */
+			global $wpdb;
+			global $runpress_db_name;
+
+		$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name ORDER BY id desc LIMIT 1", OBJECT );
+		
+		foreach( $query as $row ) {
+			echo "My latest running activity was " . $row->feeling;
+			echo "<br><img src='http:" . str_replace( 'width=50&height=70', 'width=200&height=280', $row->map_url ) . "'>";
+			echo "<br>ID: ". $row->id;
 		}
 		echo $args['after_widget'];
 	}
