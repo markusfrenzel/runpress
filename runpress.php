@@ -928,7 +928,7 @@ function runpress_sync() {
 	<h3><?php _e( 'Delete all entries from the local DB', 'runpress' ) ?></h3>
 	<form name="form3" method="post" action="">
 	<input type="hidden" name="<?php echo $hidden_field_name3; ?>" value="Y">
-	<?php _e( 'If your want tot delete the entries in your local db, click the following button. Only the entries in your local db will be deleted. It does not affect the entries in the runtastic db!', 'runpress' ); ?>
+	<?php _e( 'If you want to delete the entries in your local db, click the following button. Only the entries in your local db will be deleted. It does not affect the entries in the runtastic db!', 'runpress' ); ?>
 	<p class="submit">
 	<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e( 'Delete all entries in local db' ) ?>" />
 	</p>
