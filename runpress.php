@@ -398,6 +398,7 @@ function runpress_options() {
 function runpress_local_db() {
 	global $wpdb;
 	global $runpress_db_name;
+	$language = get_locale();
 	/* new way of enqueuing scripts... use a function ;-) */
 	runpress_enqueue_scripts();
 	/* enqueue the needed scripts
@@ -467,19 +468,7 @@ function runpress_local_db() {
 			jQuery('#backend_results').dataTable( {
 				"ordering": false,
 				"language" : {
-					"lengthMenu": "Display _MENU_ records per page",
-					"zeroRecords": "Nothing found - sorry",
-					"info": "Showing page _PAGE_ of _PAGES_",
-					"infoEmpty": "No records available",
-					"infoFiltered": "(filtered from _MAX_ total records)",
-					"decimal": ",",
-					"thousands": ".",
-					"paginate": {
-						"first":		"First",
-						"last":		"Last",
-						"next":		"Next",
-						"previous":	"Previous"
-					}
+					"url": "//www.testumgebung.de/wp-content/plugins/runpress/languages/<?php echo $language; ?>.txt"
 				},
 				"order": []
 			} );

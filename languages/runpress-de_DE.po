@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: RunPress v1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Wed Feb 18 2015 13:48:19 GMT+0100\n"
-"PO-Revision-Date: 2015-02-19 10:59:36+0000\n"
+"PO-Revision-Date: 2015-02-19 14:56:15+0000\n"
 "Last-Translator: root <testumgebung@markusfrenzel.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -391,4 +391,9 @@ msgstr "RunPress Abgleich Einstellungen"
 #@ runpress
 msgid "RunPress Shortcode Generator"
 msgstr "RunPress Shortcode Generator"
+
+#: runpress.php:729
+#@ runpress
+msgid "Display _MENU_ records per page"
+msgstr "Zeige _MENU_ Einträge pro Seite"
 
