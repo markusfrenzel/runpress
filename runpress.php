@@ -201,7 +201,7 @@ function runpress_autoupdate_db_check() {
  * @since 1.0.0
  */ 
 function runpress_load_textdomain() {
-	load_plugin_textdomain( 'runpress', false, RUNPRESS_PLUGIN_PATH . 'languages/' );
+	load_plugin_textdomain( 'runpress', false, dirname(plugin_basename(__FILE__)). '/languages/' );
 }
 
 /*
@@ -629,7 +629,7 @@ function runpress_delete_database_manually() {
 	else
 	{
 		?>
-		<div id="notice" class="error" onclick="remove(this)"><p><?php _e( 'DB was not successfully truncated. Please try again.' ); ?> <?php _e( '| <strong>Dismiss</strong>', 'runpress' ); ?></p></div>
+		<div id="notice" class="error" onclick="remove(this)"><p><?php _e( 'DB was not successfully truncated. Please try again.', 'runpress' ); ?> <?php _e( '| <strong>Dismiss</strong>', 'runpress' ); ?></p></div>
 		<?php
 	}
 }
@@ -910,7 +910,7 @@ function runpress_sync() {
 		$opt_val_cronjobtime = '';
 	}
 	/* now display the local db entry count */
-	echo "<h2>" . __( 'Runpress Sync Settings', 'runpress' ) . "</h2>";
+	echo "<h2>" . __( 'RunPress Sync Settings', 'runpress' ) . "</h2>";
 	$entry_count = $wpdb->get_var( "SELECT COUNT(*) FROM $runpress_db_name" );
 	echo "<h3>" . __( 'Entries in local database: ', 'runpress' ) . "{$entry_count}</h3>";
 	?>
@@ -930,7 +930,7 @@ function runpress_sync() {
 	<input type="hidden" name="<?php echo $hidden_field_name3; ?>" value="Y">
 	<?php _e( 'If you want to delete the entries in your local db, click the following button. Only the entries in your local db will be deleted. It does not affect the entries in the runtastic db!', 'runpress' ); ?>
 	<p class="submit">
-	<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e( 'Delete all entries in local db' ) ?>" />
+	<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e( 'Delete all entries in local db', 'runpress' ) ?>" />
 	</p>
 	</form>
 	</div>
@@ -944,7 +944,7 @@ function runpress_sync() {
 	}
 	else
 	{
-		_e( 'Define a WP Cron job to start the sync of your local db automatically.' );
+		_e( 'Define a WP Cron job to start the sync of your local db automatically.', 'runpress' );
 	}
 	?>
 	<table>
@@ -990,7 +990,7 @@ function runpress_sync() {
  * @since 1.0.0
  */
 function runpress_shortcode_generator() {
-	echo "<h2>" . _e( 'Runpress Shortcode Generator', 'runpress' ) . "</h2>";
+	echo "<h2>" . _e( 'RunPress Shortcode Generator', 'runpress' ) . "</h2>";
 }
 
 /*
