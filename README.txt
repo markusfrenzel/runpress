@@ -3,7 +3,7 @@ Contributors: markusfrenzel
 Tags: runpress,runtastic,running,tracking,sport,sport,gps
 Donate link: http://markusfrenzel.de/wordpress/?page_id=2336
 Requires at least: 3.1
-Tested up to: 4.1
+Tested up to: 4.1.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
@@ -27,4 +27,8 @@ Q: I get a fatal error: Call to undefined function curl_init()
 A: This plugin uses the PHP curl library. Ask your provider to install / activate the curl library if it is not available on your system.
 
 == Changelog ==
+1.1.0 - Changes: database field map_url altered to fit for more data
+        Added:   some widget functions
+	Bug-Fix: widget now checks if data exists in the local db prior to display an error on the frontend
+
 1.0.0 - initial version

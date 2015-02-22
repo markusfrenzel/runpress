@@ -75,60 +75,74 @@ class runpress_widget extends WP_Widget {
 		if( $l ) {
 			/* Select the last activity from the db and post its data into the widget */
 			$query = $wpdb->get_row( "SELECT date_day, date_month, date_year, distance, duration, pace, feeling, map_url FROM $runpress_db_name ORDER BY id desc LIMIT 1" );
-		
-			$date = sprintf( "%02s", $query->date_day ) . "." . sprintf( "%02s", $query->date_month ) . "." . sprintf( "%04s", $query->date_year );
-			echo "My latest running activity was " . $query->feeling . "<br />";
-			echo "<img src='http:" . str_replace( 'width=50&height=70', 'width=200&height=280', $query->map_url ) . "'><br />";
-			echo "Date: " . $date . "<br />";
-			echo "Distance: " . round( $query->distance/1000, 2 ) . "<br />";
-			echo "Duration: " . date( 'H:i:s', ($query->duration/1000) ) . "<br />";
-			echo "Pace: " . date( 'i:s', $query->pace*60 ) . "<br />";
-			echo "<br />";
+		    if( $query ) {
+				$date = sprintf( "%02s", $query->date_day ) . "." . sprintf( "%02s", $query->date_month ) . "." . sprintf( "%04s", $query->date_year );
+				echo "My latest running activity was " . $query->feeling . "<br />";
+				echo "<img src='http:" . str_replace( 'width=50&height=70', 'width=200&height=280', $query->map_url ) . "'><br />";
+				echo "Date: " . $date . "<br />";
+				echo "Distance: " . round( $query->distance/1000, 2 ) . "<br />";
+				echo "Duration: " . date( 'H:i:s', ($query->duration/1000) ) . "<br />";
+				echo "Pace: " . date( 'i:s', $query->pace*60 ) . "<br />";
+				echo "<br />";
+			}
+			else
+			{
+				echo "Sorry, no data found!";
+			}
 		}
 		
 		if( $o ) {
 			/* Select only the highscore values */
 			$distance = round( $wpdb->get_var( "SELECT distance FROM $runpress_db_name ORDER BY distance DESC LIMIT 1" )/1000, 2 );
-			$duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) );
-			$pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 ORDER BY pace asc LIMIT 1" )*60 ) );
+			if ( $distance ) {
+				$duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) );
+				$pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 ORDER BY pace asc LIMIT 1" )*60 ) );
 			
-			echo "Longest Distance: " . $distance . "<br />";
-			echo "Longest Duration: " . $duration . "<br />"; 
-			echo "Fastest Pace: " . $pace . "<br />";
-			echo "<br />";
-			
+				echo "Longest Distance: " . $distance . "<br />";
+				echo "Longest Duration: " . $duration . "<br />"; 
+				echo "Fastest Pace: " . $pace . "<br />";
+				echo "<br />";
+			}
+			else
+			{
+				echo "Sorry, no data found!";
+			}
 		}
 		
 		if( $s ) {
 			/* Show a table with the last 5 activities */
 			$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name ORDER BY id DESC LIMIT 5", OBJECT );
-			
-			?>
-			<style type="text/css">
-				table td,table th{
-					text-align:left;
-					border:1px solid #000;
-					padding:.2em .4em;
-				}
-			</style>
-			<?php
+			if( $query ) {
+				?>
+				<style type="text/css">
+					table td,table th{
+						text-align:left;
+						border:1px solid #000;
+						padding:.2em .4em;
+					}
+				</style>
+				<?php
 								
-			echo "<table class='display' width='100%' border='1' rules='all' bordercolor='#FF0000'>
-				  <thead>
-				  <tr>
-				  <th align='left'><strong>" . __( 'Date', 'runpress' ) . "</strong></th>
-				  <th align='left'><strong>" . __( 'Distance', 'runpress' ) . "</strong></th>
-		          <th align='left'><strong>" . __( 'Duration', 'runpress' ) . "</strong></th>
-		          <th align='left'><strong>" . __( 'Pace', 'runpress' ) . "</strong></th>
-		          </tr></thead>";
-		  
+				echo "<table class='display' width='100%' border='1' rules='all' bordercolor='#FF0000'>
+					<thead>
+					<tr>
+					<th align='left'><strong>" . __( 'Date', 'runpress' ) . "</strong></th>
+					<th align='left'><strong>" . __( 'Distance', 'runpress' ) . "</strong></th>
+					<th align='left'><strong>" . __( 'Duration', 'runpress' ) . "</strong></th>
+					<th align='left'><strong>" . __( 'Pace', 'runpress' ) . "</strong></th>
+					</tr></thead>";
 			
-			foreach( $query as $row ) {
-				$date = sprintf( "%02s", $row->date_day ) . "." . sprintf( "%02s", $row->date_month ) . "." . sprintf( "%04s", $row->date_year );
-				echo "<tr><td>" . $date . "</td><td>" . round( $row->distance/1000, 2 ) . "</td><td>" . date( 'H:i:s', $row->duration/1000) . "</td><td>" . date ( 'i:s', $row->pace*60 ) . "</td></tr>";
+				foreach( $query as $row ) {
+					$date = sprintf( "%02s", $row->date_day ) . "." . sprintf( "%02s", $row->date_month ) . "." . sprintf( "%04s", $row->date_year );
+					echo "<tr><td>" . $date . "</td><td>" . round( $row->distance/1000, 2 ) . "</td><td>" . date( 'H:i:s', $row->duration/1000) . "</td><td>" . date ( 'i:s', $row->pace*60 ) . "</td></tr>";
+				}
+				echo "</table>";
+				echo "<br />";
 			}
-			echo "</table>";
-			echo "<br />";
+			else
+			{
+				echo "Sorry, no data found!";
+			}
 		}
 		
 		echo $args['after_widget'];

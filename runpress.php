@@ -365,7 +365,7 @@ function runpress_options() {
 	<td colspan="2"><hr /></td></tr>
 	<tr>
 	<td><?php _e( 'Activitytype:', 'runpress' ); ?></td>
-	<td>Running only</td>
+	<td><?php _e( 'Running only', 'runpress' ); ?></td>
 	</tr>
 	<tr>
 	<td><?php _e( 'Unit Type:', 'runpress' ); ?></td>
