@@ -310,7 +310,7 @@ function runpress_options() {
 	$opt_val_name = get_option( $opt_name, '' );
 	$opt_val_pass = get_option( $opt_pass, '' );
 	$opt_val_unittype = get_option( $opt_unittype, 'Metric Units' );
-	$opt_val_deleteoptions = get_option( $opt_deleteoptions, '0' );
+	$opt_val_deleteoptions = get_option( $opt_deleteoptions, 0 );
 	$opt_val_runtastic_username = get_option( $opt_runtastic_username, '' );
 	$opt_val_runtastic_uid = get_option( $opt_runtastic_uid, '' );
 	/* Check if the runtastic username is already in the db */
@@ -379,7 +379,7 @@ function runpress_options() {
 	</tr>
 	<tr>
 	<td><?php _e( 'Delete Options:', 'runpress' ); ?></td>
-	<td><input type="checkbox" name="<?php echo $data_field_deleteoptions; ?>" value="1" <?php if ( $opt_val_deleteoptions == 1 ) { echo 'checked="checked"'; } ?>><?php _e( 'Deletes all options on deactivation of the plugin.', 'runpress' ); ?></td>
+	<td><input type="hidden" name="<?php echo $data_field_deleteoptions; ?>" value="0"><input type="checkbox" name="<?php echo $data_field_deleteoptions; ?>" value="1" <?php if ( $opt_val_deleteoptions == 1 ) { echo 'checked="checked"'; } ?>><?php _e( 'Deletes all options on deactivation of the plugin.', 'runpress' ); ?></td>
 	</tr>
 	</table>
 	<p class="submit">
