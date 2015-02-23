@@ -187,7 +187,10 @@ function runpress_autoupdate_db_check() {
 		if( get_option( 'runpress_option_db_version' ) < '1.1.0' ) {
 			$wpdb->query("ALTER TABLE `$runpress_db_name` MODIFY COLUMN map_url TEXT NOT NULL");
 			update_option( 'runpress_option_db_version', $runpress_db_version );
-		}
+			/* Check if there are entries in the db... update the existing entries */
+			$empty_check = $wpdb->get_var( "SELECT COUNT(*) FROM $runpress_db_name" );
+			if( $empty_check > 0 ) { runpress_sync_database_manually(); }
+		} /* Update V1.1.0 */
 		
 	}
 }
@@ -272,12 +275,12 @@ function runpress_help_tab() {
 	$screen->add_help_tab( array( 
 		'id' => '1',															
 		'title' => __( 'Settings', 'runpress' ),													
-		'content' => __( 'This is only a placeholder for my upcoming help text.', 'runpress' )
+		'content' => __( '<br />Add your Runtastic Username and Password here. The Plugin will store your password crypted into the database.<br /><br />Only running activities are displayable via RunPress. Maybe other activities will get available in future updates.<br /><br />Select the unit types to show. You can choose beween Metric (European) and Imperial (UK and US) unit types.<br /><br />If you select the last option, all options and the local database will be deleted in case of deactivation of the plugin.<br /><br />This does not change anything in your Runtastic database.', 'runpress' )
 	) );
 	$screen->add_help_tab( array( 
 		'id' => '2',
 		'title' => __( 'Info', 'runpress' ),
-		'content' => __( 'This is the place where the information about the plugin should be placed.', 'runpress' ) . '\n\n&copy 2014 - ' . date("Y") . ' Markus Frenzel'
+		'content' => __( '<br /><h2>RunPress - A Wordpress Plugin to display your Runtastic Activities.</h2>Author: Markus Frenzel<br />URL: http://www.markusfrenzel.de<br /><br />If you like RunPress you might donate to its future development. <a href="http://markusfrenzel.de/wordpress/?page_id=2336">Donate here</a>', 'runpress' ) . '<br /><br />&copy 2014 - ' . date("Y") . ' Markus Frenzel.'
 	) );
 }
 
@@ -369,7 +372,7 @@ function runpress_options() {
 	</tr>
 	<tr>
 	<td><?php _e( 'Unit Type:', 'runpress' ); ?></td>
-	<td><select name="<?php echo $data_field_unittype; ?>" size="1"><option <?php if( $opt_val_unittype=="Metric Units") { echo "selected"; } ?>><?php echo __( 'Metric Units', 'runpress' ); ?></option><option <?php if( $opt_val_unittype=="Imperial Units") { echo "selected"; } ?>><?php echo __( 'Imperial Units', 'runpress' ); ?></option></select></td>
+	<td><select name="<?php echo $data_field_unittype; ?>" size="1"><option value="Metric Units" <?php if( $opt_val_unittype=="Metric Units") { echo "selected"; } ?>><?php echo __( 'Metric Units', 'runpress' ); ?></option><option value="Imperial Units" <?php if( $opt_val_unittype=="Imperial Units") { echo "selected"; } ?>><?php echo __( 'Imperial Units', 'runpress' ); ?></option></select></td>
 	</tr>
 	<tr>
 	<td colspan="2"><hr /></td>

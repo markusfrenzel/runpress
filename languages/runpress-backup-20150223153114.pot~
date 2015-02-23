@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: RunPress\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Sun Feb 22 2015 21:07:24 GMT+0100\n"
-"POT-Revision-Date: Mon Feb 23 2015 16:31:17 GMT+0100\n"
+"POT-Revision-Date: Mon Feb 23 2015 16:30:43 GMT+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -314,7 +314,7 @@ msgid "Feeling"
 msgstr ""
 
 #: ../inc/widget/runpress-widget.php:102 ../inc/widget/runpress-widget.php:122 ..
-#: inc/widget/runpress-widget.php:158
+#: /inc/widget/runpress-widget.php:158
 msgid "Sorry, no data found!"
 msgstr ""
 
@@ -348,7 +348,4 @@ msgstr ""
 
 #: ../inc/widget/runpress-widget.php:194
 msgid "Show last 5 entries"
-msgstr ""
-
-msgid "good"
 msgstr ""

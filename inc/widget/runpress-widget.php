@@ -62,6 +62,8 @@ class runpress_widget extends WP_Widget {
 		global $wpdb;
 		global $runpress_db_name;
 		
+		$opt_val_unittype = get_option( 'runpress_option_unittype', 'Metric Units' );
+		
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
 		$l = !empty( $instance['lasttrack'] ) ? '1' : '0';
@@ -72,40 +74,52 @@ class runpress_widget extends WP_Widget {
 		if( ! empty( $title ) )
 			echo $args['before_title'] . $title . $args['after_title'];
 
+		if(( !$l ) && ( !$o ) && ( !$s )) {
+			_e( 'No data selected!', 'runpress' );
+		}
+		
 		if( $l ) {
 			/* Select the last activity from the db and post its data into the widget */
 			$query = $wpdb->get_row( "SELECT date_day, date_month, date_year, distance, duration, pace, feeling, map_url FROM $runpress_db_name ORDER BY id desc LIMIT 1" );
 		    if( $query ) {
-				$date = sprintf( "%02s", $query->date_day ) . "." . sprintf( "%02s", $query->date_month ) . "." . sprintf( "%04s", $query->date_year );
-				echo "My latest running activity was " . $query->feeling . "<br />";
+
+				( $opt_val_unittype == "Metric Units" ? $date = sprintf( "%02s", $query->date_day ) . "." . sprintf( "%02s", $query->date_month ) . "." . sprintf( "%04s", $query->date_year ) : $date = sprintf( "%04s", $query->date_year ) . "/" . sprintf( "%02s", $query->date_month ) . "/" . sprintf( "%02s", $query->date_day ) );
+				( $opt_val_unittype == "Metric Units" ? $distance = round( $query->distance/1000, 2 ) . " km" : $distance = round( ( $query->distance/1000)/1.609344, 2 ) . " mi." );
+				( $opt_val_unittype == "Metric Units" ? $pace = date( 'i:s', $query->pace*60 ) . " min./km" : $pace = date( 'i:s', ( $query->pace*1.609344 )*60 ) . " min/mi." );
+				( $opt_val_unittype == "Metric Units" ? $duration = date( 'H:i:s', ( $query->duration/1000 ) ) . " (Std.:Min.:Sek.)" : $duration = date( 'H:i:s', ( $query->duration/1000 ) ) . " (H:M:s)" );
 				echo "<img src='http:" . str_replace( 'width=50&height=70', 'width=200&height=280', $query->map_url ) . "'><br />";
-				echo "Date: " . $date . "<br />";
-				echo "Distance: " . round( $query->distance/1000, 2 ) . "<br />";
-				echo "Duration: " . date( 'H:i:s', ($query->duration/1000) ) . "<br />";
-				echo "Pace: " . date( 'i:s', $query->pace*60 ) . "<br />";
+				echo "<table border='0' width='100%'>";
+				echo "<tr><td>" . __( 'Date', 'runpress' ) . ": </td><td>" . $date . "</td></tr>";
+				echo "<tr><td>" . __( 'Distance', 'runpress' ) . ": </td><td>" . $distance . "</td></tr>";
+				echo "<tr><td>" . __( 'Duration', 'runpress' ) . ": </td><td>" . $duration . "</td></tr>";
+				echo "<tr><td>" . __( 'Pace', 'runpress' ) . ": </td><td>" . $pace . "</td></tr>";
+				echo "<tr><td>" . __( 'Feeling', 'runpress' ) . ": </td><td>" . __( $query->feeling, 'runpress' ) . "</td></tr>";
+				echo "</table>";
 				echo "<br />";
 			}
 			else
 			{
-				echo "Sorry, no data found!";
+				_e( 'Sorry, no data found!', 'runpress' );
 			}
 		}
 		
 		if( $o ) {
 			/* Select only the highscore values */
-			$distance = round( $wpdb->get_var( "SELECT distance FROM $runpress_db_name ORDER BY distance DESC LIMIT 1" )/1000, 2 );
+			( $opt_val_unittype == "Metric Units" ? $distance = round( $wpdb->get_var( "SELECT distance FROM $runpress_db_name ORDER BY distance DESC LIMIT 1" )/1000, 2 ) . " km" : $distance = round( ( $wpdb->get_var( "SELECT distance FROM $runpress_db_name ORDER BY distance DESC LIMIT 1" )/1000 )/1.609344, 2 ) . " mi." );
 			if ( $distance ) {
-				$duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) );
-				$pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 ORDER BY pace asc LIMIT 1" )*60 ) );
-			
-				echo "Longest Distance: " . $distance . "<br />";
-				echo "Longest Duration: " . $duration . "<br />"; 
-				echo "Fastest Pace: " . $pace . "<br />";
+				( $opt_val_unittype == "Metric Units" ? $duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) ) . " (Std.:Min.:Sek.)" : $duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) ) . " (H:M:s)" ); 
+				( $opt_val_unittype == "Metric Units" ? $pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 ORDER BY pace asc LIMIT 1" )*60 ) ) . " min./km" : $pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 ORDER BY pace asc LIMIT 1" )*1.609344 )*60 ) . " min./mi." );
+				
+				echo "<table border='0' width='100%'>";
+				echo "<tr><td>" . __( 'Longest Distance', 'runpress' ) . ": </td><td>" . $distance . "</td></tr>";
+				echo "<tr><td>" . __( 'Longest Duration', 'runpress' ) . ": </td><td>" . $duration . "</td></tr>"; 
+				echo "<tr><td>" . __( 'Fastest Pace', 'runpress' ) . ": </td><td>" . $pace . "</td></tr>";
+				echo "</table>"; 
 				echo "<br />";
 			}
 			else
 			{
-				echo "Sorry, no data found!";
+				_e( 'Sorry, no data found!', 'runpress' );
 			}
 		}
 		
@@ -115,7 +129,7 @@ class runpress_widget extends WP_Widget {
 			if( $query ) {
 				?>
 				<style type="text/css">
-					table td,table th{
+					table.mf_tablewithborders td,table th{
 						text-align:left;
 						border:1px solid #000;
 						padding:.2em .4em;
@@ -123,7 +137,7 @@ class runpress_widget extends WP_Widget {
 				</style>
 				<?php
 								
-				echo "<table class='display' width='100%' border='1' rules='all' bordercolor='#FF0000'>
+				echo "<table class='mf_tablewithborders' width='100%' border='1' rules='all' bordercolor='#FF0000'>
 					<thead>
 					<tr>
 					<th align='left'><strong>" . __( 'Date', 'runpress' ) . "</strong></th>
@@ -141,7 +155,7 @@ class runpress_widget extends WP_Widget {
 			}
 			else
 			{
-				echo "Sorry, no data found!";
+				_e( 'Sorry, no data found!', 'runpress' );
 			}
 		}
 		

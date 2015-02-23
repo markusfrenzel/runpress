@@ -29,6 +29,6 @@ A: This plugin uses the PHP curl library. Ask your provider to install / activat
 == Changelog ==
 1.1.0 - Changes: database field map_url altered to fit for more data
         Added:   some widget functions
-	Bug-Fix: widget now checks if data exists in the local db prior to display an error on the frontend
+		Bug-Fix: widget now checks if data exists in the local db prior to display an error on the frontend
 
 1.0.0 - initial version
