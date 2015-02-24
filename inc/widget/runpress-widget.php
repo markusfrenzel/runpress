@@ -127,17 +127,8 @@ class runpress_widget extends WP_Widget {
 			/* Show a table with the last 5 activities */
 			$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name ORDER BY id DESC LIMIT 5", OBJECT );
 			if( $query ) {
-				?>
-				<style type="text/css">
-					table.mf_tablewithborders td,table th{
-						text-align:left;
-						border:1px solid #000;
-						padding:.2em .4em;
-					}
-				</style>
-				<?php
-								
-				echo "<table class='mf_tablewithborders' width='100%' border='1' rules='all' bordercolor='#FF0000'>
+											
+				echo "<table width='100%'>
 					<thead>
 					<tr>
 					<th align='left'><strong>" . __( 'Date', 'runpress' ) . "</strong></th>

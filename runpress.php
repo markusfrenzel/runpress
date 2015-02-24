@@ -95,41 +95,44 @@ function runpress_activate() {
 	global $runpress_db_version; 	// Version number of the runpress DB for further DB changes needed
 	global $runpress_db_name;		// Name of the local DB
 	
-	$sql = "CREATE TABLE $runpress_db_name (
-			id INT (10) NOT NULL AUTO_INCREMENT,
-			type VARCHAR(20) NOT NULL,
-			type_id INT(3) NOT NULL,
-			duration INT(10) NOT NULL,
-			distance INT(10) NOT NULL,
-			pace FLOAT(10,2) NOT NULL,
-			speed VARCHAR(20) NOT NULL,
-			kcal INT(10) NOT NULL,
-			heartrate_avg INT(10) NOT NULL,
-			heartrate_max INT(10) NOT NULL,
-			elevation_gain INT(10) NOT NULL,
-			elevation_loss INT(10) NOT NULL,
-			surface VARCHAR(20) NOT NULL,
-			weather VARCHAR(20) NOT NULL,
-			feeling VARCHAR(20) NOT NULL,
-			weather_id INT(10) NOT NULL,
-			feeling_id INT(10) NOT NULL,
-			surface_id INT(10) NOT NULL,
-			notes TEXT NOT NULL,
-			page_url VARCHAR(200) NOT NULL,
-			create_route_url_class VARCHAR(200) NOT NULL,
-			create_route_url VARCHAR(200) NOT NULL,
-			map_url VARCHAR(200) NOT NULL,
-			date_year INT(4) NOT NULL,
-			date_month INT(2) NOT NULL,
-			date_day INT(2) NOT NULL,
-			date_hour INT(2) NOT NULL,
-			date_minutes INT(2) NOT NULL,
-			date_seconds INT(2) NOT NULL,
-			UNIQUE KEY id(id)
-			);";
+	if($wpdb->get_var( "SHOW TABLES LIKE '$runpress_db_name'" ) != $runpress_db_name ) {
+		
+		$sql = "CREATE TABLE $runpress_db_name (
+				id INT (10) NOT NULL AUTO_INCREMENT,
+				type VARCHAR(20) NOT NULL,
+				type_id INT(3) NOT NULL,
+				duration INT(10) NOT NULL,
+				distance INT(10) NOT NULL,
+				pace FLOAT(10,2) NOT NULL,
+				speed VARCHAR(20) NOT NULL,
+				kcal INT(10) NOT NULL,
+				heartrate_avg INT(10) NOT NULL,
+				heartrate_max INT(10) NOT NULL,
+				elevation_gain INT(10) NOT NULL,
+				elevation_loss INT(10) NOT NULL,
+				surface VARCHAR(20) NOT NULL,
+				weather VARCHAR(20) NOT NULL,
+				feeling VARCHAR(20) NOT NULL,
+				weather_id INT(10) NOT NULL,
+				feeling_id INT(10) NOT NULL,
+				surface_id INT(10) NOT NULL,
+				notes TEXT NOT NULL,
+				page_url VARCHAR(200) NOT NULL,
+				create_route_url_class VARCHAR(200) NOT NULL,
+				create_route_url VARCHAR(200) NOT NULL,
+				map_url TEXT NOT NULL,
+				date_year INT(4) NOT NULL,
+				date_month INT(2) NOT NULL,
+				date_day INT(2) NOT NULL,
+				date_hour INT(2) NOT NULL,
+				date_minutes INT(2) NOT NULL,
+				date_seconds INT(2) NOT NULL,
+				UNIQUE KEY id(id)
+				);";
 			
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	dbDelta( $sql );
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbDelta( $sql );
+	}
 	
 	add_option( "runpress_option_db_version", $runpress_db_version );
 	
@@ -155,6 +158,8 @@ function runpress_activate() {
  * @since 1.0.0
  */ 
 function runpress_deactivate() {
+	global $wpdb;
+	global $runpress_db_name;
 	/* Check if the user wants to delete all options... if so.. do it! */
 	if( get_option( 'runpress_option_delete_options' ) == 1 ) {
 		delete_option( 'runpress_option_db_version' );
@@ -165,6 +170,10 @@ function runpress_deactivate() {
 		delete_option( 'runpress_option_cronjobtime' );
 		delete_option( 'runpress_runtastic_username' );
 		delete_option( 'runpress_runtastic_uid' );
+		/* Truncate the database */
+		$delete = $wpdb->query( "TRUNCATE TABLE $runpress_db_name" );
+		/* Drop the table */
+		$drop = $wpdb->query( "DROP TABLE IF EXISTS $runpress_db_name" );
 	}
 	/* Delete the scheduled WP-Cron if it is there */
 	wp_clear_scheduled_hook( 'runpress_event_hook' );
@@ -465,14 +474,19 @@ function runpress_local_db() {
 	?>
 	</tbody>
 	</table>
+	<?php
+	$dt_translation = runpress_get_dt_translation();
+	?>
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
 			/* Init dataTable */
 			jQuery('#backend_results').dataTable( {
 				"ordering": false,
-				"language" : {
-					"url": "//www.testumgebung.de/wp-content/plugins/runpress/languages/<?php echo $language; ?>.txt"
-				},
+				<?php
+				if( $dt_translation ) {
+					echo "\"language\": { \"url\":  \"$dt_translation\" },";
+				}
+				?>
 				"order": []
 			} );
 		} );
@@ -707,31 +721,20 @@ function runpress_shortcode( $atts ) {
 	if( $a[ 'display' ] == "datatable" ) {
 		/* new way of enqueuing scripts... use a function ;-) */
 		runpress_enqueue_scripts();
-		/* enqueue the needed scripts
-		wp_register_script( 'jquery_datatables_js', plugins_url() . '/runpress/inc/js/jquery.dataTables.min.js', array(), null, true );
-		wp_enqueue_script( 'jquery_datatables_js' );
-		wp_register_style( 'jquery_datatables_css', plugins_url() . '/runpress/inc/css/jquery.dataTables.css' );
-		wp_enqueue_style( 'jquery_datatables_css' ); */
+		
+		$dt_translation = runpress_get_dt_translation();
+	
 		?>
 		<script type="text/javascript">
 		jQuery(document).ready(function(){
 			/* Init dataTable */
 			jQuery('#datatable_results').dataTable( {
-				"language": {
-					"lengthMenu": "Display _MENU_ records per page",
-					"zeroRecords": "Nothing found - sorry",
-					"info": "Showing page _PAGE_ of _PAGES_",
-					"infoEmpty": "No records available",
-					"infoFiltered": "filtered from _MAX_ total records)",
-					"decimal": ",",
-					"thousands": ".",
-					"paginate": {
-						"first":	"First",
-						"last":		"Last",
-						"next":		"Next",
-						"previous":	"Previous"
-					}
-				},
+				"ordering": false,
+				<?php
+				if( $dt_translation ) {
+					echo "\"language\": { \"url\":  \"$dt_translation\" },";
+				}
+				?>
 				"order": []
 			} );
 		} );
@@ -1018,5 +1021,44 @@ function runpress_add_cronjob_definitions( $schedules ) {
 function runpress_cronjob_event() {
 	/* do something at the given time */
 	runpress_sync_database_manually();
+}
+
+/*
+ * Function:   runpress_get_dt_translation
+ * Attributes: none
+ *  
+ * Function to get the url of the correct translation file for datatables.
+ * 
+ * Getting inspired by the function getDataTableTranslationUrl in the CF7DBPlugin by Michael Simpson
+ * 
+ * @since 1.1.0
+ */
+function runpress_get_dt_translation() {
+	$url = null;
+	$locale = get_locale();
+	$dt_lang_files = dirname( __FILE__ ) . '/languages/dt_lang_files/';
+
+	/* check if there is already a file with the correct locale code */
+	if( is_readable( $dt_lang_files . $locale . '.json' ) ) {
+		$url = plugin_dir_url( __FILE__ ) . "languages/dt_lang_files/$locale.json";
+	}
+	else
+	{
+		/* check if the language code of the file starts with 2 or 3 letter */
+		$lang = null;
+		if( substr( $locale, 2, 1 ) == '_' ) {
+			/* 2-letter language code */
+			$lang = substr( $locale, 0, 2 );
+		}
+		else if( substr( $locale, 3, 1 ) == '_' ) {
+			/* 3-letter language code */
+			$lang = substr( $locale, 0, 3 );
+		}
+
+		if( $lang && is_readable( $dt_lang_files . $lang . '.json' ) ) {
+			$url = plugin_dir_url( __FILE__ ) . "languages/dt_lang_files/$lang.json";
+		}
+	}
+	return $url;
 }
 ?>
