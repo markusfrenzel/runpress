@@ -239,9 +239,8 @@ function runpress_register_widget() {
 function runpress_admin_menu() {
 	$hook_suffix = add_menu_page( 'RunPress', 'RunPress', 'manage_options', 'runpress', 'runpress_options', 'dashicons-chart-line', 76 );
 	add_submenu_page( 'runpress', __( 'RunPress Local DB', 'runpress' ), __( 'Local DB', 'runpress' ), 'manage_options', 'runpress-local-db', 'runpress_local_db' );
-	/* Deactivated the following two lines because this feature are not ready at the moment... Coming soon... */
 	add_submenu_page( 'runpress', __( 'RunPress Sync', 'runpress' ), __( 'Sync', 'runpress' ), 'manage_options', 'runpress-sync', 'runpress_sync' );
-	// add_submenu_page( 'runpress', __( 'RunPress Shortcode Generator', 'runpress' ), __( 'Shortcode Generator', 'runpress' ), 'manage_options', 'runpress-shortcode-generator', 'runpress_shortcode_generator' );
+	add_submenu_page( 'runpress', __( 'RunPress Shortcode Generator', 'runpress' ), __( 'Shortcode Generator', 'runpress' ), 'manage_options', 'runpress-shortcode-generator', 'runpress_shortcode_generator' );
 	add_action( 'load-' . $hook_suffix, 'runpress_load_function' );
 	add_action( 'load-' . $hook_suffix, 'runpress_help_tab' );
 }
@@ -985,7 +984,8 @@ function runpress_sync() {
  * @since 1.0.0
  */
 function runpress_shortcode_generator() {
-	echo "<h2>" . _e( 'RunPress Shortcode Generator', 'runpress' ) . "</h2>";
+	echo "<h2>" . __( 'RunPress Shortcode Generator', 'runpress' ) . "</h2>";
+	/* the shortcode should be as easy as an order at starbucks */
 }
 
 /*
