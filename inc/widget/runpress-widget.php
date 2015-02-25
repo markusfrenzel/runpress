@@ -106,7 +106,7 @@ class runpress_widget extends WP_Widget {
 		if( $o ) {
 			/* Select only the highscore values */
 			( $opt_val_unittype == "Metric Units" ? $distance = round( $wpdb->get_var( "SELECT distance FROM $runpress_db_name ORDER BY distance DESC LIMIT 1" )/1000, 2 ) . " km" : $distance = round( ( $wpdb->get_var( "SELECT distance FROM $runpress_db_name ORDER BY distance DESC LIMIT 1" )/1000 )/1.609344, 2 ) . " mi." );
-			if ( $distance ) {
+			if ( $distance && $distance>0 ) {
 				( $opt_val_unittype == "Metric Units" ? $duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) ) . " (Std.:Min.:Sek.)" : $duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) ) . " (H:M:s)" ); 
 				( $opt_val_unittype == "Metric Units" ? $pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 ORDER BY pace asc LIMIT 1" )*60 ) ) . " min./km" : $pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 ORDER BY pace asc LIMIT 1" )*1.609344 )*60 ) . " min./mi." );
 				

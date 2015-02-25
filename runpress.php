@@ -677,6 +677,7 @@ function runpress_shortcode( $atts ) {
 		'year' => date( "Y" ),
 		'sortorder' => 'desc',
 		'display' => 'table',
+		'title' => '',
 		), $atts );
 	
 	if( ( $a[ 'year' ] > 999 ) and $a[ 'year' ] < 10000 ) {
@@ -691,6 +692,8 @@ function runpress_shortcode( $atts ) {
 		$header = "";
 		$body = "";
 		$footer = "";
+		/* Define the title of the shortcode */
+		$header .= "<p><h2>" . $a[ 'title' ] . "</h2>";
 		/* Define the header of the table */
 		$header .= "<table id='{$a['display']}_results' class='cell-border' cellspacing='0' width='100%'>";
 		$header .= "<thead>";
@@ -733,7 +736,7 @@ function runpress_shortcode( $atts ) {
 			$body .= "</tr>";
 		}
 		$body .= "</tbody>";
-		$footer .= "</table>";
+		$footer .= "</table></p>";
 		$returncontent = $header . $body . $footer;
 	}
 	/* Display the data with the use of JQuery Datatables */
@@ -858,7 +861,9 @@ function runpress_shortcode( $atts ) {
 			}
 		</script>
 		<?php
-		$returncontent = "<div id=\"chart_div_{$a[ 'year' ] }\"></div>";
+		$returncontent = "";
+		$returncontent .= "<p><h2>" . $a[ 'title' ] . "</h2>";
+		$returncontent .= "<div id=\"chart_div_{$a[ 'year' ] }\"></div></p>";
 	}
 	return $returncontent;
 }
@@ -996,7 +1001,7 @@ function runpress_sync() {
 }
 
 /*
- * Function:   runpress_schortcode_generator
+ * Function:   runpress_shortcode_generator
  * Attributes: none
  *  
  * The shortcode might not be easy to understand. So I offer some kind of generator for that.
@@ -1019,7 +1024,13 @@ function runpress_shortcode_generator() {
 	
 	<script type="text/javascript">
 		function transferFields() {
-			generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ']';
+			if( !document.getElementById( "title").value ) {
+				generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ']';
+			}
+			else
+			{
+				generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ' title="' + document.getElementById( "title" ).value + ']';
+			}
 			document.runpressgenerator.shortcode.value = generatedshortcode.replace( "  "," " );
 		}
 	</script>
@@ -1060,6 +1071,10 @@ function runpress_shortcode_generator() {
 			<option value="">empty</option>
 			</select>
 		</td>
+	</tr>
+	<tr>
+		<td><?php _e(' Title:', 'runpress' ) . ' '; ?></td>
+		<td><input type="text" id="title" value="RunPress" size=30></td>
 	</tr>
     </table>
 	</form>
