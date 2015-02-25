@@ -23,12 +23,22 @@ ATTENTION: You MUST have CURL-Support in your PHP.INI active!
 Just copy the whole RunPress folder into your plugins folder and activate it in your admin area. Have a look at the settings page of RunPress to configure it.
 
 == Frequently Asked Questions ==
-Q: I get a fatal error: Call to undefined function curl_init() 
-A: This plugin uses the PHP curl library. Ask your provider to install / activate the curl library if it is not available on your system.
+
+= I get a fatal error: Call to undefined function curl_init() =
+
+This plugin uses the PHP curl library. Ask your provider to install / activate the curl library if it is not available on your system.
 
 == Changelog ==
-1.1.0 - Changes: database field map_url altered to fit for more data
-        Added:   some widget functions
-		Bug-Fix: widget now checks if data exists in the local db prior to display an error on the frontend
 
-1.0.0 - initial version
+= 1.1.0 =
+* Changes: database field map_url altered to fit for more data
+* Added:   some widget functions
+* Bug-Fix: widget now checks if data exists in the local db prior to display an error on the frontend
+
+= 1.0.0 =
+* initial version
+
+== Upgrade Notice ==
+
+= 1.1.0 =
+This version fixes a database field which was to short. Upgrade is recommended.
