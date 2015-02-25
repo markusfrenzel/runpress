@@ -75,6 +75,26 @@ if( get_option( 'runpress_option_username' ) == false ) {
 	add_action( 'admin_notices', 'runpress_admin_notices' );	// Checks if RunPress is configured yet. If not - display a message.
 }
 
+/* Special words which need to be translated */
+/* feelings */
+$awesome = __( 'awesome', 'runpress' );
+$good = __( 'good', 'runpress' );
+$so_so = __( 'so-so', 'runpress' );
+$sluggish = __( 'sluggish', 'runpress' );
+$injured = __( 'injured', 'runpress' );
+/* weather conditions */
+$sunny = __( 'sunny', 'runpress' );
+$cloudy = __( 'cloudy', 'runpress' );
+$rainy = __( 'rainy', 'runpress' );
+$snowy = __( 'snowy', 'runpress' );
+$night = __( 'night', 'runpress' );
+/* surfaces */
+$road = __( 'road', 'runpress' );
+$trail = __( 'trail', 'runpress' );
+$offroad = __( 'offroad', 'runpress' );
+$mixed = __( 'mixed', 'runpress' );
+$beach = __( 'beach', 'runpress' );
+
 /*********************
  ***               ***
  ***   FUNCTIONS   ***
@@ -655,7 +675,7 @@ function runpress_shortcode( $atts ) {
 	/* read the attributes (if given) otherwise it will use its pregiven defaults */
 	$a = shortcode_atts( array(
 		'year' => date( "Y" ),
-		'sortorder' => 'asc',
+		'sortorder' => 'desc',
 		'display' => 'table',
 		), $atts );
 	
@@ -984,8 +1004,71 @@ function runpress_sync() {
  * @since 1.0.0
  */
 function runpress_shortcode_generator() {
+	global $wpdb;
+	global $runpress_db_name;
+	
 	echo "<h2>" . __( 'RunPress Shortcode Generator', 'runpress' ) . "</h2>";
+	echo "<h3>" . __( 'General Shortcode usage', 'runpress' ) . "</h3>";
 	/* the shortcode should be as easy as an order at starbucks */
+	echo __( 'You can choose between 3 possibilities to display your runtastic running activities: <b>table</b>, <b>datatable</b> and <b>chart</b>.<br /><br />You might limit the data to display by declaring a specific <b>year</b>. <i>If you do not declare a year the actual year will be used!</i><br /><br />The data <b>sortorder</b> can be changed by declaring the specific variable.<br /><h4>Examples:</h4>[runpress year="2014" display="table" sortorder="desc"]<br /><i>This shortcode will show your data from 2014, sorted descending by the runtastic id within a normal table</i><br /><br />[runpress display="datatable"]<br /><i>This shortcode will show your data from the actual year, sorted descending by the runtastic id within a special table called "DataTable".</i><br /><br />[runpress year="2015" display="chart" sortorder="desc"]<br /><i>This shortcode will show your data from 2015, ignoring the sortorder because it will only show the monthly sums of your running activities within a chart powered by Google Charts.</i><br /><br /><h3>How to use this shortcode?</h3>Just copy the example shortcode (including the square brackets at the beginning and the end) or use the Generator to build a new one and paste it into the page where the data should be displayed. It runs also in posts... not only in pages!<br /><br />If you want to use the data in a widget area: please use the RunPress Widget which has been installed with the activation of this plugin.', 'runpress' );
+	/* show the generator */
+	echo "<h3>" . __( 'Runpress Shortcode Generator', 'runpress' ). "</h3>";
+	/* check the possible years to display */
+	$available_years = $wpdb->get_results( "SELECT DISTINCT( date_year ) FROM $runpress_db_name ORDER BY date_year DESC;" );
+	?>
+	
+	<script type="text/javascript">
+		function transferFields() {
+			generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ']';
+			document.runpressgenerator.shortcode.value = generatedshortcode.replace( "  "," " );
+		}
+	</script>
+	
+	<form name="runpressgenerator">
+	<input type="text" id="shortcode" value="" size=50 onclick="this.select();">
+	<input type="reset" value="<?php _e( 'Reset', 'runpress' ); ?>">
+    <br />
+    <br />
+    <table>
+		<tr>
+			<td><?php _e( 'Year:', 'runpress' ) . ' '; ?></td>
+			<td><select id="year" name="year" size="1">
+				<?php
+				foreach( $available_years as $years ) {
+					echo "<option value=\"year=$years->date_year\">$years->date_year</option>";
+				}
+				?>
+				<option value="">empty</option>
+			</select>
+			</td>
+		</tr>
+    <tr>
+		<td><?php _e( 'Display:', 'runpress' ) . ' '; ?></td>
+		<td><select id="display" name="display" size="1">
+			<option value=" display=table"><?php _e( 'Table', 'runpress' ); ?></option>
+			<option value=" display=datatable">DataTable</option>
+			<option value=" display=chart"><?php _e( 'Chart', 'runpress' ); ?></option>
+			<option value="">empty</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td><?php _e( 'Sortorder:', 'runpress' ) . ' '; ?></td>
+		<td><select id="sortorder" name="sortorder" size="1">
+			<option value=" sortorder=desc"><?php _e( 'Descending', 'runpress' ); ?></option>
+			<option value=" sortorder=asc"><?php _e( 'Ascending', 'runpress' ); ?></option>
+			<option value="">empty</option>
+			</select>
+		</td>
+	</tr>
+    </table>
+	</form>
+	<br />
+	<br />
+	<input type="button" class="button-primary" onclick="transferFields()" value="<?php _e( 'Generate Shortcode', 'runpress' ); ?>">
+	<br />
+	<?php
+	_e( '<i>After clicking this button the shortcode will be generated and displayed above. Just click into the field which holds the shortcode an use the keyboard shortcut CTRL + C to copy it to your clipboard. Then edit or create a post or a page which should contain the shortcode, click into the editor and paste the copied shortcode by using the keyboard shortcut CTRL + V.</i>', 'runpress' );
 }
 
 /*
