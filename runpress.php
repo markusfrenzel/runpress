@@ -78,7 +78,7 @@ if( get_option( 'runpress_option_username' ) == false ) {
 	add_action( 'admin_notices', 'runpress_admin_notices' );	// Checks if RunPress is configured yet. If not - display a message.
 }
 
-/* Special words which need to be translated */
+/* Special words which need to be translated and which always get lost in my translation tool if i do not save them the way i do now */
 /* feelings */
 $awesome = __( 'awesome', 'runpress' );
 $good = __( 'good', 'runpress' );
@@ -97,6 +97,8 @@ $trail = __( 'trail', 'runpress' );
 $offroad = __( 'offroad', 'runpress' );
 $mixed = __( 'mixed', 'runpress' );
 $beach = __( 'beach', 'runpress' );
+/* plugin description */
+$plugin_description = __( 'A plugin to query the Runtastic website. Returns the data of your running activities.', 'runpress' );
 
 /*********************
  ***               ***
@@ -690,185 +692,188 @@ function runpress_shortcode( $atts ) {
 	{
 		$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name ORDER BY id " . $a[ 'sortorder' ], OBJECT );
 	}
-	/* The core table which is used to display the data native and through JQuery Datatables */
-	if( $a[ 'display' ] == "table" || $a[ 'display' ] == "datatable" ) {
-		$header = "";
-		$body = "";
-		$footer = "";
-		/* Define the title of the shortcode */
-		$header .= "<p><h2>" . $a[ 'title' ] . "</h2>";
-		/* Define the header of the table */
-		$header .= "<table id='{$a['display']}_results' class='cell-border' cellspacing='0' width='100%'>";
-		$header .= "<thead>";
-		$header .= "<tr>";
-		$header .= "<th align='left'>" . __( 'Date', 'runpress' ) . "</th>";
-		$header .= "<th align='left'>" . __( 'Start', 'runpress' ) . "</th>";
-		$header .= "<th align='left'>" . __( 'Duration', 'runpress' ) . "</th>";
-		$header .= "<th align='left'>" . __( 'Distance', 'runpress' ) . "</th>";
-		$header .= "<th align='left'>" . __( 'Pace', 'runpress' ) . "</th>";
-		$header .= "<th align='left'>" . __( 'Speed', 'runpress' ) . "</th>";
-		$header .= "</tr>";
-		$header .= "</thead>";
-		/* Define the footer of the table */
-		$footer .= "<tfoot>";
-		$footer .= "<tr>";
-		$footer .= "<th align='left'>" . __( 'Date', 'runpress' ) . "</th>";
-		$footer .= "<th align='left'>" . __( 'Start', 'runpress' ) . "</th>";
-		$footer .= "<th align='left'>" . __( 'Duration', 'runpress' ) . "</th>";
-		$footer .= "<th align='left'>" . __( 'Distance', 'runpress' ) . "</th>";
-		$footer .= "<th align='left'>" . __( 'Pace', 'runpress' ) . "</th>";
-		$footer .= "<th align='left'>" . __( 'Speed', 'runpress' ) . "</th>";
-		$footer .= "</tr>";
-		$footer .= "</tfoot>";
-		/* Define the body of the table */
-		$body .= "<tbody>";
-		foreach( $query as $row ) {
-			$date = sprintf( "%02s", $row->date_day ) . "." . sprintf( "%02s", $row->date_month ) . "." . sprintf( "%04s", $row->date_year );
-			$time = sprintf( "%02s", $row->date_hour ) . ":" . sprintf( "%02s", $row->date_minutes ) . ":" . sprintf( "%02s", $row->date_seconds );
-			$duration = date( 'H:i:s', ( $row->duration/1000 ) );
-			$distance = round( $row->distance/1000, 2 );
-			$pace = date( 'i:s', ( $row->pace*60 ) );
-			$speed = round( $row->speed, 2 );
-			$body .= "<tr>";
-			$body .= "<td>" . $date . "</td>";
-			$body .= "<td>" . $time . "</td>";
-			$body .= "<td>" . $duration . "</td>";
-			$body .= "<td>" . $distance . "</td>";
-			$body .= "<td>" . $pace . "</td>";
-			$body .= "<td>" . $speed . "</td>";
-			$body .= "</tr>";
+	if( $query ) {
+		/* The core table which is used to display the data native and through JQuery Datatables */
+		if( $a[ 'display' ] == "table" || $a[ 'display' ] == "datatable" ) {
+			$header = "";
+			$body = "";
+			$footer = "";
+			/* Define the title of the shortcode */
+			$header .= "<p><h2>" . $a[ 'title' ] . "</h2>";
+			/* Define the header of the table */
+			$header .= "<table id='{$a['display']}_results' class='cell-border' cellspacing='0' width='100%'>";
+			$header .= "<thead>";
+			$header .= "<tr>";
+			$header .= "<th align='left'>" . __( 'Date', 'runpress' ) . "</th>";
+			$header .= "<th align='left'>" . __( 'Start', 'runpress' ) . "</th>";
+			$header .= "<th align='left'>" . __( 'Duration', 'runpress' ) . "</th>";
+			$header .= "<th align='left'>" . __( 'Distance', 'runpress' ) . "</th>";
+			$header .= "<th align='left'>" . __( 'Pace', 'runpress' ) . "</th>";
+			$header .= "<th align='left'>" . __( 'Speed', 'runpress' ) . "</th>";
+			$header .= "</tr>";
+			$header .= "</thead>";
+			/* Define the footer of the table */
+			$footer .= "<tfoot>";
+			$footer .= "<tr>";
+			$footer .= "<th align='left'>" . __( 'Date', 'runpress' ) . "</th>";
+			$footer .= "<th align='left'>" . __( 'Start', 'runpress' ) . "</th>";
+			$footer .= "<th align='left'>" . __( 'Duration', 'runpress' ) . "</th>";
+			$footer .= "<th align='left'>" . __( 'Distance', 'runpress' ) . "</th>";
+			$footer .= "<th align='left'>" . __( 'Pace', 'runpress' ) . "</th>";
+			$footer .= "<th align='left'>" . __( 'Speed', 'runpress' ) . "</th>";
+			$footer .= "</tr>";
+			$footer .= "</tfoot>";
+			/* Define the body of the table */
+			$body .= "<tbody>";
+				foreach( $query as $row ) {
+				$date = sprintf( "%02s", $row->date_day ) . "." . sprintf( "%02s", $row->date_month ) . "." . sprintf( "%04s", $row->date_year );
+				$time = sprintf( "%02s", $row->date_hour ) . ":" . sprintf( "%02s", $row->date_minutes ) . ":" . sprintf( "%02s", $row->date_seconds );
+				$duration = date( 'H:i:s', ( $row->duration/1000 ) );
+				$distance = round( $row->distance/1000, 2 );
+				$pace = date( 'i:s', ( $row->pace*60 ) );
+				$speed = round( $row->speed, 2 );
+				$body .= "<tr>";
+				$body .= "<td>" . $date . "</td>";
+				$body .= "<td>" . $time . "</td>";
+				$body .= "<td>" . $duration . "</td>";
+				$body .= "<td>" . $distance . "</td>";
+				$body .= "<td>" . $pace . "</td>";
+				$body .= "<td>" . $speed . "</td>";
+				$body .= "</tr>";
+			}
+			$body .= "</tbody>";
+			$footer .= "</table></p>";
+			$returncontent = $header . $body . $footer;
 		}
-		$body .= "</tbody>";
-		$footer .= "</table></p>";
-		$returncontent = $header . $body . $footer;
-	}
-	/* Display the data with the use of JQuery Datatables */
-	if( $a[ 'display' ] == "datatable" ) {
-		/* new way of enqueuing scripts... use a function ;-) */
-		runpress_enqueue_scripts();
+		/* Display the data with the use of JQuery Datatables */
+		if( $a[ 'display' ] == "datatable" ) {
+			/* new way of enqueuing scripts... use a function ;-) */
+			runpress_enqueue_scripts();
 		
-		$dt_translation = runpress_get_dt_translation();
+			$dt_translation = runpress_get_dt_translation();
 	
-		?>
-		<script type="text/javascript">
-		jQuery(document).ready(function(){
-			/* Init dataTable */
-			jQuery('#datatable_results').dataTable( {
-				"ordering": false,
-				<?php
-				if( $dt_translation ) {
-					echo "\"language\": { \"url\":  \"$dt_translation\" },";
-				}
-				?>
-				"order": []
+			?>
+			<script type="text/javascript">
+			jQuery(document).ready(function(){
+				/* Init dataTable */
+				jQuery('#datatable_results').dataTable( {
+					"ordering": false,
+					<?php
+					if( $dt_translation ) {
+						echo "\"language\": { \"url\":  \"$dt_translation\" },";
+					}
+					?>
+					"order": []
+				} );
 			} );
-		} );
-		</script>
-		<?php
-	}
-	/* Display the data with Google Charts */
-	if( $a[ 'display' ] == "chart" ) {
-		$month = '';
-		$sumkm_jan = 0;
-		$sumkm_feb = 0;
-		$sumkm_mar = 0;
-		$sumkm_apr = 0;
-		$sumkm_may = 0;
-		$sumkm_jun = 0;
-		$sumkm_jul = 0;
-		$sumkm_aug = 0;
-		$sumkm_sep = 0;
-		$sumkm_oct = 0;
-		$sumkm_nov = 0;
-		$sumkm_dec = 0;
-		$distance = 0;
-		foreach( $query as $row ) {
-			$month = $row->date_month;
-			$distance = round( $row->distance/1000, 2 );
-			switch( $month ) {
-				case '01':
-					$sumkm_jan += $distance;
-					break;
-				case '02':
-					$sumkm_feb += $distance;
-					break;
-				case '03':
-					$sumkm_mar += $distance;
-					break;
-				case '04':
-					$sumkm_apr += $distance;
-					break;
-				case '05':
-					$sumkm_may += $distance;
-					break;
-				case '06':
-					$sumkm_jun += $distance;
-					break;
-				case '07':
-					$sumkm_jul += $distance;
-					break;
-				case '08':
-					$sumkm_aug += $distance;
-					break;
-				case '09':
-					$sumkm_sep += $distance;
-					break;
-				case '10':
-					$sumkm_oct += $distance;
-					break;
-				case '11':
-					$sumkm_nov += $distance;
-					break;
-				case '12':
-					$sumkm_dec += $distance;
-					break;
-			}
+			</script>
+			<?php
 		}
-		?>
-		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-		<script type="text/javascript">
-			google.load("visualization", "1", {packages:["corechart"]});
-			google.setOnLoadCallback(drawChart);
-			function drawChart() {
-				var data = google.visualization.arrayToDataTable([
-					['<?php _e( 'Month', 'runpress' ) ?>', '<?php _e( 'Distance', 'runpress' ) ?>'],
-					[0, 0],
-					['01', <?php echo ($sumkm_jan == 0) ? 0 : $sumkm_jan; ?>],
-					['02', <?php echo ($sumkm_feb == 0) ? 0 : $sumkm_feb; ?>],
-					['03', <?php echo ($sumkm_mar == 0) ? 0 : $sumkm_mar; ?>],
-					['04', <?php echo ($sumkm_apr == 0) ? 0 : $sumkm_apr; ?>],
-					['05', <?php echo ($sumkm_may == 0) ? 0 : $sumkm_may; ?>],
-					['06', <?php echo ($sumkm_jun == 0) ? 0 : $sumkm_jun; ?>],
-					['07', <?php echo ($sumkm_jul == 0) ? 0 : $sumkm_jul; ?>],
-					['08', <?php echo ($sumkm_aug == 0) ? 0 : $sumkm_aug; ?>],
-					['09', <?php echo ($sumkm_sep == 0) ? 0 : $sumkm_sep; ?>],
-					['10', <?php echo ($sumkm_oct == 0) ? 0 : $sumkm_oct; ?>],
-					['11', <?php echo ($sumkm_nov == 0) ? 0 : $sumkm_nov; ?>],
-					['12', <?php echo ($sumkm_dec == 0) ? 0 : $sumkm_dec; ?>],
-				]);
-				
-				var options = {
-					title: '<?php _e( 'Results', 'runpress' ) . " {$a [ 'year'] }"; ?>',
-					titlePosition: 'out',
-					legend: { Position: 'bottom' },
-					width: '100%',
-					height: 500,
-					curveType: 'function',
-					chartArea: { left:50, top:20 },
-					hAxis: { title: '<?php _e( 'Month', 'runpress' ) ?>', ticks: [1,2,3,4,5,6,7,8,9,10,11,12] },
-					vAxis: { title: '<?php _e( 'Distance', 'runpress' ) ?>', minValue: '0', maxValue: '100' },
-				};
-				
-				var chart = new google.visualization.LineChart(document.getElementById('chart_div<?php echo "_{$a[ 'year' ] }" ?>') );
-				chart.draw(data, options);
+		/* Display the data with Google Charts */
+		if( $a[ 'display' ] == "chart" ) {
+			$month = '';
+			$sumkm_jan = 0;
+			$sumkm_feb = 0;
+			$sumkm_mar = 0;
+			$sumkm_apr = 0;
+			$sumkm_may = 0;
+			$sumkm_jun = 0;
+			$sumkm_jul = 0;
+			$sumkm_aug = 0;
+			$sumkm_sep = 0;
+			$sumkm_oct = 0;
+			$sumkm_nov = 0;
+			$sumkm_dec = 0;
+			$distance = 0;
+			foreach( $query as $row ) {
+				$month = $row->date_month;
+				$distance = round( $row->distance/1000, 2 );
+				switch( $month ) {
+					case '01':
+						$sumkm_jan += $distance;
+						break;
+					case '02':
+						$sumkm_feb += $distance;
+						break;
+					case '03':
+						$sumkm_mar += $distance;
+						break;
+					case '04':
+						$sumkm_apr += $distance;
+						break;
+					case '05':
+						$sumkm_may += $distance;
+						break;
+					case '06':
+						$sumkm_jun += $distance;
+						break;
+					case '07':
+						$sumkm_jul += $distance;
+						break;
+					case '08':
+						$sumkm_aug += $distance;
+						break;
+					case '09':
+						$sumkm_sep += $distance;
+						break;
+					case '10':
+						$sumkm_oct += $distance;
+						break;
+					case '11':
+						$sumkm_nov += $distance;
+						break;
+					case '12':
+						$sumkm_dec += $distance;
+						break;
+				}
 			}
-		</script>
-		<?php
-		$returncontent = "";
-		$returncontent .= "<p><h2>" . $a[ 'title' ] . "</h2>";
-		$returncontent .= "<div id=\"chart_div_{$a[ 'year' ] }\"></div></p>";
+			?>
+			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+			<script type="text/javascript">
+				google.load("visualization", "1", {packages:["corechart"]});
+				google.setOnLoadCallback(drawChart);
+				function drawChart() {
+					var data = google.visualization.arrayToDataTable([
+						['<?php _e( 'Month', 'runpress' ) ?>', '<?php _e( 'Distance', 'runpress' ) ?>'],
+						[0, 0],
+						['01', <?php echo ($sumkm_jan == 0) ? 0 : $sumkm_jan; ?>],
+						['02', <?php echo ($sumkm_feb == 0) ? 0 : $sumkm_feb; ?>],
+						['03', <?php echo ($sumkm_mar == 0) ? 0 : $sumkm_mar; ?>],
+						['04', <?php echo ($sumkm_apr == 0) ? 0 : $sumkm_apr; ?>],
+						['05', <?php echo ($sumkm_may == 0) ? 0 : $sumkm_may; ?>],
+						['06', <?php echo ($sumkm_jun == 0) ? 0 : $sumkm_jun; ?>],
+						['07', <?php echo ($sumkm_jul == 0) ? 0 : $sumkm_jul; ?>],
+						['08', <?php echo ($sumkm_aug == 0) ? 0 : $sumkm_aug; ?>],
+						['09', <?php echo ($sumkm_sep == 0) ? 0 : $sumkm_sep; ?>],
+						['10', <?php echo ($sumkm_oct == 0) ? 0 : $sumkm_oct; ?>],
+						['11', <?php echo ($sumkm_nov == 0) ? 0 : $sumkm_nov; ?>],
+						['12', <?php echo ($sumkm_dec == 0) ? 0 : $sumkm_dec; ?>],
+					]);
+					
+					var options = {
+						title: '<?php _e( 'Results', 'runpress' ) . " {$a [ 'year'] }"; ?>',
+						titlePosition: 'out',
+						legend: { Position: 'bottom' },
+						width: '100%',
+						height: 500,
+						curveType: 'function',
+						chartArea: { left:50, top:20 },
+						hAxis: { title: '<?php _e( 'Month', 'runpress' ) ?>', ticks: [1,2,3,4,5,6,7,8,9,10,11,12] },
+						vAxis: { title: '<?php _e( 'Distance', 'runpress' ) ?>', minValue: '0', maxValue: '100' },
+					};
+					
+					var chart = new google.visualization.LineChart(document.getElementById('chart_div<?php echo "_{$a[ 'year' ] }" ?>') );
+					chart.draw(data, options);
+				}
+			</script>
+			<?php
+			$returncontent = "";
+			$returncontent .= "<p><h2>" . $a[ 'title' ] . "</h2>";
+			$returncontent .= "<div id=\"chart_div_{$a[ 'year' ] }\"></div></p>";
+		}
+		return $returncontent;
 	}
-	return $returncontent;
+	return __( 'Sorry, no data found!', 'runpress' );
 }
 	
 /*
@@ -917,19 +922,25 @@ function runpress_sync() {
 		$opt_val_cronjobtime = $_POST[ $data_field_cronjobtime ];
 		update_option( $data_field_cronjobtime, $opt_val_cronjobtime );
 		if( !wp_next_scheduled( 'runpress_event_hook' ) ) {
-			wp_schedule_event( time(), $opt_val_cronjobtime, 'runpress_event_hook' );
+			wp_schedule_event( (current_time('timestamp')), $opt_val_cronjobtime, 'runpress_event_hook' );
 		}
 		else
 		{
 			wp_clear_scheduled_hook( 'runpress_event_hook' );
-			wp_schedule_event( time(), $opt_val_cronjobtime, 'runpress_event_hook' );
+			wp_schedule_event( (current_time('timestamp')), $opt_val_cronjobtime, 'runpress_event_hook' );
 		}
+		?>
+		<div id="notice" class="updated" onclick="remove(this)"><p><?php _e( 'Cronjob scheduled.', 'runpress' ); ?> <?php _e( '| <strong>Dismiss</strong>', 'runpress' ) ; ?></p></div>
+		<?php
 	}
 	/* see if the user wants to delete the cron job */
 	if( isset( $_POST[ $hidden_field_name5 ] ) && $_POST[ $hidden_field_name5 ] == 'Y' ) {
 		wp_clear_scheduled_hook( 'runpress_event_hook' );
 		delete_option( 'runpress_option_cronjobtime' );
 		$opt_val_cronjobtime = '';
+		?>
+		<div id="notice" class="updated" onclick="remove(this)"><p><?php _e( 'Cronjob deleted.', 'runpress' ); ?> <?php _e( '| <strong>Dismiss</strong>', 'runpress' ) ; ?></p></div>
+		<?php
 	}
 	/* now display the local db entry count */
 	echo "<h2>" . __( 'RunPress Sync Settings', 'runpress' ) . "</h2>";
@@ -961,7 +972,7 @@ function runpress_sync() {
 	<form name="form4" method="post" action="">
 	<input type="hidden" name="<?php echo $hidden_field_name4; ?>" value="Y">
 	<?php
-	if( wp_next_scheduled( 'runpress_even_hook' ) ) {
+	if( wp_next_scheduled( 'runpress_event_hook' ) ) {
 		_e( 'Your have scheduled a WP Cron job to run at the following basis ', 'runpress' );
 	}
 	else
@@ -981,9 +992,23 @@ function runpress_sync() {
 	</select></td>
 	</tr>
 	</table>
-	<p class="submit">
-	<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e( 'Schedule Cron job', 'runpress' ); ?>" />
-	</p>
+	<?php
+	if( wp_next_scheduled( 'runpress_event_hook' ) ) {
+		?>
+		<p class="submit">
+			<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e( 'Change scheduled Cron job', 'runpress' ); ?>" />
+		</p>
+		<?php
+	}
+	else
+	{
+		?>
+		<p class="submit">
+			<input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e( 'Schedule Cron job', 'runpress' ); ?>" />
+		</p>
+	<?php
+	}
+	?>
 	</form>
 	</div>
 	<?php

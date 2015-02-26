@@ -93,9 +93,23 @@ $this->runtasticRawData = $scriptTag->nodeValue;
 }
 }
 preg_match("/uid: (.*)\,/", $this->runtasticRawData, $matches);
-$this->runtasticUid = $matches[1];
-$this->loggedIn = true;
-return true;
+/* 
+ * Modified by Markus Frenzel to prevent error messages 
+ * 
+ * */
+if( empty( $matches[1] ) ) {
+	return false;
+}
+else
+{
+	$this->runtasticUid = $matches[1];
+	$this->loggedIn = true;
+	return true;
+}
+/* 
+ * End of modification by Markus Frenzel 
+ * 
+ * */
 } else {
 $this->loggedIn = false;
 return false;
