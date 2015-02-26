@@ -13,6 +13,9 @@
  * Author URI: 		http://www.markusfrenzel.de
  * E-Mail:			wordpressplugins@markusfrenzel.de
  * 
+ * Text Domain:		runpress
+ * Domain Path:		/languages
+ * 
  * License: 		GPLv3
  * 
  * Donate link: 	http://markusfrenzel.de/wordpress/?page_id=2336
@@ -1015,7 +1018,7 @@ function runpress_shortcode_generator() {
 	echo "<h2>" . __( 'RunPress Shortcode Generator', 'runpress' ) . "</h2>";
 	echo "<h3>" . __( 'General Shortcode usage', 'runpress' ) . "</h3>";
 	/* the shortcode should be as easy as an order at starbucks */
-	echo __( 'You can choose between 3 possibilities to display your runtastic running activities: <b>table</b>, <b>datatable</b> and <b>chart</b>.<br /><br />You might limit the data to display by declaring a specific <b>year</b>. <i>If you do not declare a year the actual year will be used!</i><br /><br />The data <b>sortorder</b> can be changed by declaring the specific variable.<br /><h4>Examples:</h4>[runpress year="2014" display="table" sortorder="desc"]<br /><i>This shortcode will show your data from 2014, sorted descending by the runtastic id within a normal table</i><br /><br />[runpress display="datatable"]<br /><i>This shortcode will show your data from the actual year, sorted descending by the runtastic id within a special table called "DataTable".</i><br /><br />[runpress year="2015" display="chart" sortorder="desc"]<br /><i>This shortcode will show your data from 2015, ignoring the sortorder because it will only show the monthly sums of your running activities within a chart powered by Google Charts.</i><br /><br /><h3>How to use this shortcode?</h3>Just copy the example shortcode (including the square brackets at the beginning and the end) or use the Generator to build a new one and paste it into the page where the data should be displayed. It runs also in posts... not only in pages!<br /><br />If you want to use the data in a widget area: please use the RunPress Widget which has been installed with the activation of this plugin.', 'runpress' );
+	echo __( 'You can choose between 3 possibilities to display your runtastic running activities: <b>table</b>, <b>datatable</b> and <b>chart</b>.<br /><br />You might limit the data to display by declaring a specific <b>year</b>. <i>If you do not declare a year the actual year will be used!</i><br /><br />The data <b>sortorder</b> can be changed by declaring the specific variable.<br /><br />Use the <b>title</b> variable to label your data with a heading.<br /><h4>Examples:</h4>[runpress year="2014" display="table" sortorder="desc"]<br /><i>This shortcode will show your data from 2014, sorted descending by the runtastic id within a normal table</i><br /><br />[runpress display="datatable"]<br /><i>This shortcode will show your data from the actual year, sorted descending by the runtastic id within a special table called "DataTable".</i><br /><br />[runpress year="2015" display="chart" sortorder="desc"]<br /><i>This shortcode will show your data from 2015, ignoring the sortorder because it will only show the monthly sums of your running activities within a chart powered by Google Charts.</i><br /><br /><h3>How to use this shortcode?</h3>Just copy the example shortcode (including the square brackets at the beginning and the end) or use the Generator to build a new one and paste it into the page where the data should be displayed. It runs also in posts... not only in pages!<br /><br />If you want to use the data in a widget area: please use the RunPress Widget which has been installed with the activation of this plugin.', 'runpress' );
 	/* show the generator */
 	echo "<h3>" . __( 'Runpress Shortcode Generator', 'runpress' ). "</h3>";
 	/* check the possible years to display */
@@ -1029,14 +1032,14 @@ function runpress_shortcode_generator() {
 			}
 			else
 			{
-				generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ' title="' + document.getElementById( "title" ).value + ']';
+				generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ' title="' + document.getElementById( "title" ).value + '"]';
 			}
 			document.runpressgenerator.shortcode.value = generatedshortcode.replace( "  "," " );
 		}
 	</script>
 	
 	<form name="runpressgenerator">
-	<input type="text" id="shortcode" value="" size=50 onclick="this.select();">
+	<input type="text" id="shortcode" value="" size=80 onclick="this.select();">
 	<input type="reset" value="<?php _e( 'Reset', 'runpress' ); ?>">
     <br />
     <br />
@@ -1049,8 +1052,11 @@ function runpress_shortcode_generator() {
 					echo "<option value=\"year=$years->date_year\">$years->date_year</option>";
 				}
 				?>
-				<option value="">empty</option>
+				<option value=""><?php _e( 'empty', 'runpress' ); ?></option>
 			</select>
+			</td>
+			<td>
+				<?php _e( '<i>If "empty" the default value (the actual year) will be used.</i>', 'runpress' ); ?>
 			</td>
 		</tr>
     <tr>
@@ -1059,8 +1065,11 @@ function runpress_shortcode_generator() {
 			<option value=" display=table"><?php _e( 'Table', 'runpress' ); ?></option>
 			<option value=" display=datatable">DataTable</option>
 			<option value=" display=chart"><?php _e( 'Chart', 'runpress' ); ?></option>
-			<option value="">empty</option>
+			<option value=""><?php _e( 'empty', 'runpress' ); ?></option>
 			</select>
+		</td>
+		<td>
+			<?php _e( '<i>If "empty" the default value (table) will be used.</i>', 'runpress' ); ?>
 		</td>
 	</tr>
 	<tr>
@@ -1068,13 +1077,17 @@ function runpress_shortcode_generator() {
 		<td><select id="sortorder" name="sortorder" size="1">
 			<option value=" sortorder=desc"><?php _e( 'Descending', 'runpress' ); ?></option>
 			<option value=" sortorder=asc"><?php _e( 'Ascending', 'runpress' ); ?></option>
-			<option value="">empty</option>
+			<option value=""><?php _e( 'empty', 'runpress' ); ?></option>
 			</select>
+		</td>
+		<td>
+			<?php _e( '<i>If "empty" the default value (descending) will be used.</i>', 'runpress' ); ?>
 		</td>
 	</tr>
 	<tr>
-		<td><?php _e(' Title:', 'runpress' ) . ' '; ?></td>
+		<td><?php _e( ' Title:', 'runpress' ) . ' '; ?></td>
 		<td><input type="text" id="title" value="RunPress" size=30></td>
+		<td><?php _e( '<i>Leave the text field blank to show no title.</i>', 'runpress' ); ?></td>
 	</tr>
     </table>
 	</form>

@@ -14,6 +14,9 @@
  * Author URI: 		http://www.markusfrenzel.de
  * E-Mail:			wordpressplugins@markusfrenzel.de
  * 
+ * Text Domain:		runpress
+ * Domain Path:		/languages
+ * 
  * License: 		GPLv3
  * 
  * Donate link: 	http://markusfrenzel.de/wordpress/?page_id=2336
