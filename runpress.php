@@ -725,20 +725,26 @@ function runpress_shortcode( $atts ) {
 			$footer .= "</tfoot>";
 			/* Define the body of the table */
 			$body .= "<tbody>";
+			$opt_val_unittype = get_option( 'runpress_option_unittype', 'Metric Units' );
 				foreach( $query as $row ) {
-				$date = sprintf( "%02s", $row->date_day ) . "." . sprintf( "%02s", $row->date_month ) . "." . sprintf( "%04s", $row->date_year );
+					( $opt_val_unittype == "Metric Units" ? $date = sprintf( "%02s", $row->date_day ) . "." . sprintf( "%02s", $row->date_month ) . "." . sprintf( "%04s", $row->date_year ) : $date = sprintf( "%04s", $row->date_year ) . "/" . sprintf( "%02s", $row->date_month ) . "/" . sprintf( "%02s", $row->date_day ) );
+					( $opt_val_unittype == "Metric Units" ? $distance = round( $row->distance/1000, 2 ) : $distance = round( ( $row->distance/1000)/1.609344, 2 ) );
+					( $opt_val_unittype == "Metric Units" ? $pace = date( 'i:s', $row->pace*60 ) : $pace = date( 'i:s', ( $row->pace*1.609344 )*60 ) );
+					( $opt_val_unittype == "Metric Units" ? $duration = date( 'H:i:s', ( $row->duration/1000 ) ) : $duration = date( 'H:i:s', ( $row->duration/1000 ) ) );
+				
+				// $date = sprintf( "%02s", $row->date_day ) . "." . sprintf( "%02s", $row->date_month ) . "." . sprintf( "%04s", $row->date_year );
 				$time = sprintf( "%02s", $row->date_hour ) . ":" . sprintf( "%02s", $row->date_minutes ) . ":" . sprintf( "%02s", $row->date_seconds );
-				$duration = date( 'H:i:s', ( $row->duration/1000 ) );
-				$distance = round( $row->distance/1000, 2 );
-				$pace = date( 'i:s', ( $row->pace*60 ) );
+				// $duration = date( 'H:i:s', ( $row->duration/1000 ) );
+				// $distance = round( $row->distance/1000, 2 );
+				// $pace = date( 'i:s', ( $row->pace*60 ) );
 				$speed = round( $row->speed, 2 );
 				$body .= "<tr>";
-				$body .= "<td>" . $date . "</td>";
-				$body .= "<td>" . $time . "</td>";
-				$body .= "<td>" . $duration . "</td>";
-				$body .= "<td>" . $distance . "</td>";
-				$body .= "<td>" . $pace . "</td>";
-				$body .= "<td>" . $speed . "</td>";
+				$body .= "<td title='" . $date . " (" . __( 'Format: DD.MM.YYYY', 'runpress' ) . ")'>" . $date . "</td>";
+				$body .= "<td title='" . $time . " (" . __( 'Format: h:m:s', 'runpress' ) . ")'>" . $time . "</td>";
+				$body .= "<td title='" . $duration . " (" . __( 'Format: h:m:s', 'runpress' ) . ")'>" . $duration . "</td>";
+				$body .= "<td title='" . $distance . " km'>" . $distance . "</td>";
+				$body .= "<td title='" . $pace . " min./km'>" . $pace . "</td>";
+				$body .= "<td title='" . $speed . " km/h'>" . $speed . "</td>";
 				$body .= "</tr>";
 			}
 			$body .= "</tbody>";
