@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: RunPress\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Sun Feb 22 2015 21:07:24 GMT+0100\n"
-"POT-Revision-Date: Thu Feb 26 2015 15:43:47 GMT+0100\n"
+"POT-Revision-Date: Fri Feb 27 2015 13:48:50 GMT+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -207,7 +207,7 @@ msgid "Entries in local database:"
 msgstr ""
 
 #: ../runpress.php:464 ../runpress.php:473 ../runpress.php:707 ../runpress.php:
-#: 718 ../inc/widget/runpress-widget.php:95 ../inc/widget/runpress-widget.php:137
+#: 718 ../inc/widget/runpress-widget.php:102 ../inc/widget/runpress-widget.php:144
 msgid "Date"
 msgstr ""
 
@@ -216,18 +216,18 @@ msgid "Start"
 msgstr ""
 
 #: ../runpress.php:466 ../runpress.php:475 ../runpress.php:709 ../runpress.php:
-#: 720 ../inc/widget/runpress-widget.php:97 ../inc/widget/runpress-widget.php:139
+#: 720 ../inc/widget/runpress-widget.php:104 ../inc/widget/runpress-widget.php:146
 msgid "Duration"
 msgstr ""
 
 #: ../runpress.php:467 ../runpress.php:476 ../runpress.php:710 ../runpress.php:
 #: 721 ../runpress.php:837 ../runpress.php:862 ../inc/widget/runpress-widget.php:
-#: 96 ../inc/widget/runpress-widget.php:138
+#: 103 ../inc/widget/runpress-widget.php:145
 msgid "Distance"
 msgstr ""
 
 #: ../runpress.php:468 ../runpress.php:477 ../runpress.php:711 ../runpress.php:
-#: 722 ../inc/widget/runpress-widget.php:98 ../inc/widget/runpress-widget.php:140
+#: 722 ../inc/widget/runpress-widget.php:105 ../inc/widget/runpress-widget.php:147
 msgid "Pace"
 msgstr ""
 
@@ -285,8 +285,8 @@ msgstr ""
 msgid "Results"
 msgstr ""
 
-#: ../runpress.php:876 ../inc/widget/runpress-widget.php:105 ..
-#: /inc/widget/runpress-widget.php:125 ../inc/widget/runpress-widget.php:152
+#: ../runpress.php:876 ../inc/widget/runpress-widget.php:112 ..
+#: /inc/widget/runpress-widget.php:132 ../inc/widget/runpress-widget.php:159
 msgid "Sorry, no data found!"
 msgstr ""
 
@@ -499,38 +499,42 @@ msgstr ""
 msgid "No data selected!"
 msgstr ""
 
-#: ../inc/widget/runpress-widget.php:99
+#: ../inc/widget/runpress-widget.php:95
+msgid "No map found!"
+msgstr ""
+
+#: ../inc/widget/runpress-widget.php:106
 msgid "Feeling"
 msgstr ""
 
-#: ../inc/widget/runpress-widget.php:117
+#: ../inc/widget/runpress-widget.php:124
 msgid "Longest Distance"
 msgstr ""
 
-#: ../inc/widget/runpress-widget.php:118
+#: ../inc/widget/runpress-widget.php:125
 msgid "Longest Duration"
 msgstr ""
 
-#: ../inc/widget/runpress-widget.php:119
+#: ../inc/widget/runpress-widget.php:126
 msgid "Fastest Pace"
 msgstr ""
 
-#: ../inc/widget/runpress-widget.php:172
+#: ../inc/widget/runpress-widget.php:179
 msgid "RunPress Widget"
 msgstr ""
 
-#: ../inc/widget/runpress-widget.php:178
+#: ../inc/widget/runpress-widget.php:185
 msgid "Title:"
 msgstr ""
 
-#: ../inc/widget/runpress-widget.php:182
+#: ../inc/widget/runpress-widget.php:189
 msgid "Show last activity"
 msgstr ""
 
-#: ../inc/widget/runpress-widget.php:185
+#: ../inc/widget/runpress-widget.php:192
 msgid "Show highscores"
 msgstr ""
 
-#: ../inc/widget/runpress-widget.php:188
+#: ../inc/widget/runpress-widget.php:195
 msgid "Show last 5 entries"
 msgstr ""

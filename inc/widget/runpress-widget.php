@@ -90,7 +90,14 @@ class runpress_widget extends WP_Widget {
 				( $opt_val_unittype == "Metric Units" ? $distance = round( $query->distance/1000, 2 ) . " km" : $distance = round( ( $query->distance/1000)/1.609344, 2 ) . " mi." );
 				( $opt_val_unittype == "Metric Units" ? $pace = date( 'i:s', $query->pace*60 ) . " min./km" : $pace = date( 'i:s', ( $query->pace*1.609344 )*60 ) . " min/mi." );
 				( $opt_val_unittype == "Metric Units" ? $duration = date( 'H:i:s', ( $query->duration/1000 ) ) . " (Std.:Min.:Sek.)" : $duration = date( 'H:i:s', ( $query->duration/1000 ) ) . " (H:M:s)" );
-				echo "<img src='http:" . str_replace( 'width=50&height=70', 'width=200&height=280', $query->map_url ) . "'><br />";
+				if( !$query->map_url ) {
+					/* load the image with a translated string in it */
+					echo "<img src='" . plugins_url() . "/runpress/inc/img/showjpg.php?image=nomapfound.jpg&text=" . __( 'No map found!', 'runpress' ) . "' /><br />";
+				}
+				else
+				{
+					echo "<img src='http:" . str_replace( 'width=50&height=70', 'width=200&height=280', $query->map_url ) . "'><br />";
+				}
 				echo "<table border='0' width='100%'>";
 				echo "<tr><td>" . __( 'Date', 'runpress' ) . ": </td><td>" . $date . "</td></tr>";
 				echo "<tr><td>" . __( 'Distance', 'runpress' ) . ": </td><td>" . $distance . "</td></tr>";
