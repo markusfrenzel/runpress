@@ -922,12 +922,12 @@ function runpress_sync() {
 		$opt_val_cronjobtime = $_POST[ $data_field_cronjobtime ];
 		update_option( $data_field_cronjobtime, $opt_val_cronjobtime );
 		if( !wp_next_scheduled( 'runpress_event_hook' ) ) {
-			wp_schedule_event( (current_time('timestamp')), $opt_val_cronjobtime, 'runpress_event_hook' );
+			wp_schedule_event( time(), $opt_val_cronjobtime, 'runpress_event_hook' );
 		}
 		else
 		{
 			wp_clear_scheduled_hook( 'runpress_event_hook' );
-			wp_schedule_event( (current_time('timestamp')), $opt_val_cronjobtime, 'runpress_event_hook' );
+			wp_schedule_event( time(), $opt_val_cronjobtime, 'runpress_event_hook' );
 		}
 		?>
 		<div id="notice" class="updated" onclick="remove(this)"><p><?php _e( 'Cronjob scheduled.', 'runpress' ); ?> <?php _e( '| <strong>Dismiss</strong>', 'runpress' ) ; ?></p></div>
