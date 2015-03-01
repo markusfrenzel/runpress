@@ -89,7 +89,7 @@ class runpress_widget extends WP_Widget {
 				( $opt_val_unittype == "Metric Units" ? $date = sprintf( "%02s", $query->date_day ) . "." . sprintf( "%02s", $query->date_month ) . "." . sprintf( "%04s", $query->date_year ) : $date = sprintf( "%04s", $query->date_year ) . "/" . sprintf( "%02s", $query->date_month ) . "/" . sprintf( "%02s", $query->date_day ) );
 				( $opt_val_unittype == "Metric Units" ? $distance = round( $query->distance/1000, 2 ) . " km" : $distance = round( ( $query->distance/1000)/1.609344, 2 ) . " mi." );
 				( $opt_val_unittype == "Metric Units" ? $pace = date( 'i:s', $query->pace*60 ) . " min./km" : $pace = date( 'i:s', ( $query->pace*1.609344 )*60 ) . " min/mi." );
-				( $opt_val_unittype == "Metric Units" ? $duration = date( 'H:i:s', ( $query->duration/1000 ) ) . " (Std.:Min.:Sek.)" : $duration = date( 'H:i:s', ( $query->duration/1000 ) ) . " (H:M:s)" );
+				$duration = date( 'H:i:s', ( $query->duration/1000 ) ) . " (h:m:s)";
 				if( !$query->map_url ) {
 					/* load the image with a translated string in it */
 					echo "<img src='" . plugins_url() . "/runpress/inc/img/showjpg.php?image=nomapfound.jpg&text=" . __( 'No map found!', 'runpress' ) . "' /><br />";
@@ -98,7 +98,7 @@ class runpress_widget extends WP_Widget {
 				{
 					echo "<img src='http:" . str_replace( 'width=50&height=70', 'width=200&height=280', $query->map_url ) . "'><br />";
 				}
-				echo "<table border='0' width='100%'>";
+				echo "<table>";
 				echo "<tr><td>" . __( 'Date', 'runpress' ) . ": </td><td>" . $date . "</td></tr>";
 				echo "<tr><td>" . __( 'Distance', 'runpress' ) . ": </td><td>" . $distance . "</td></tr>";
 				echo "<tr><td>" . __( 'Duration', 'runpress' ) . ": </td><td>" . $duration . "</td></tr>";
@@ -117,10 +117,10 @@ class runpress_widget extends WP_Widget {
 			/* Select only the highscore values */
 			( $opt_val_unittype == "Metric Units" ? $distance = round( $wpdb->get_var( "SELECT distance FROM $runpress_db_name ORDER BY distance DESC LIMIT 1" )/1000, 2 ) . " km" : $distance = round( ( $wpdb->get_var( "SELECT distance FROM $runpress_db_name ORDER BY distance DESC LIMIT 1" )/1000 )/1.609344, 2 ) . " mi." );
 			if ( $distance && $distance>0 ) {
-				( $opt_val_unittype == "Metric Units" ? $duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) ) . " (Std.:Min.:Sek.)" : $duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) ) . " (H:M:s)" ); 
+				( $opt_val_unittype == "Metric Units" ? $duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) ) . " (h:m:s)" : $duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) ) . " (h:m:s)" ); 
 				( $opt_val_unittype == "Metric Units" ? $pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 ORDER BY pace asc LIMIT 1" )*60 ) ) . " min./km" : $pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 ORDER BY pace asc LIMIT 1" )*1.609344 )*60 ) . " min./mi." );
 				
-				echo "<table border='0' width='100%'>";
+				echo "<table>";
 				echo "<tr><td>" . __( 'Longest Distance', 'runpress' ) . ": </td><td>" . $distance . "</td></tr>";
 				echo "<tr><td>" . __( 'Longest Duration', 'runpress' ) . ": </td><td>" . $duration . "</td></tr>"; 
 				echo "<tr><td>" . __( 'Fastest Pace', 'runpress' ) . ": </td><td>" . $pace . "</td></tr>";
@@ -134,11 +134,14 @@ class runpress_widget extends WP_Widget {
 		}
 		
 		if( $s ) {
+			/* Enqueue the needed CSS parameter */
+			wp_register_style( 'runpress_tables_css', plugins_url() . '/runpress/inc/css/runpress.tables.css' );
+			wp_enqueue_style( 'runpress_tables_css' );
 			/* Show a table with the last 5 activities */
 			$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name ORDER BY id DESC LIMIT 5", OBJECT );
 			if( $query ) {
 											
-				echo "<table width='100%'>
+				echo "<table class='tableclass'>
 					<thead>
 					<tr>
 					<th align='left'><strong>" . __( 'Date', 'runpress' ) . "</strong></th>
@@ -148,8 +151,20 @@ class runpress_widget extends WP_Widget {
 					</tr></thead>";
 			
 				foreach( $query as $row ) {
-					$date = sprintf( "%02s", $row->date_day ) . "." . sprintf( "%02s", $row->date_month ) . "." . sprintf( "%04s", $row->date_year );
-					echo "<tr><td>" . $date . "</td><td>" . round( $row->distance/1000, 2 ) . "</td><td>" . date( 'H:i:s', $row->duration/1000) . "</td><td>" . date ( 'i:s', $row->pace*60 ) . "</td></tr>";
+					/* Needed vars */
+					$tablecontent = "";
+					( $opt_val_unittype == "Metric Units" ? $date = sprintf( "%02s", $row->date_day ) . "." . sprintf( "%02s", $row->date_month ) . "." : $date = sprintf( "%02s", $row->date_month ) . "/" . sprintf( "%02s", $row->date_day ) );
+					( $opt_val_unittype == "Metric Units" ? $distance = round( $row->distance/1000, 2 ) : $distance = round( ( $row->distance/1000)/1.609344, 2 ) );
+					( $opt_val_unittype == "Metric Units" ? $pace = date( 'i:s', $row->pace*60 ) : $pace = date( 'i:s', ( $row->pace*1.609344 )*60 ) );
+					( $opt_val_unittype == "Metric Units" ? $duration = date( 'H:i:s', ( $row->duration/1000 ) ) : $duration = date( 'H:i:s', ( $row->duration/1000 ) ) );
+					
+					echo "<tr>";
+					( $opt_val_unittype == "Metric Units" ? $tablecontent .= "<td title='" . $date . " (" . __('Format: DD.MM.', 'runpress' ) . ")'>" . $date . "</td>" : $tablecontent .= "<td title='" . $date . " (" . __('Format: MM/DD', 'runpress' ) . ")'>" . $date . "</td>" );
+					( $opt_val_unittype == "Metric Units" ? $tablecontent .= "<td title='" . $distance . " km'>" . $distance . "</td>" : $tablecontent .= "<td title='" . $distance . " mi.'>" . $distance . "</td>" );
+					( $opt_val_unittype == "Metric Units" ? $tablecontent .= "<td title='" . $duration . " (" . __('Format: hh:mm:ss', 'runpress') . ")'>" . $duration . "</td>" : $tablecontent .= "<td title='" . $duration . " (" . __('Format: hh:mm:ss', 'runpress') . ")'>" . $duration . "</td>" );
+					( $opt_val_unittype == "Metric Units" ? $tablecontent .= "<td title='" . $pace . " min./km'>" . $pace . "</td>" : $tablecontent .= "<td title='" . $pace . " min./mi.'>" . $pace . "</td>" );
+					$tablecontent .= "</tr>";
+					echo $tablecontent;
 				}
 				echo "</table>";
 				echo "<br />";

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: RunPress\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Sun Feb 22 2015 21:07:24 GMT+0100\n"
-"PO-Revision-Date: Thu Feb 26 2015 15:44:18 GMT+0100\n"
+"PO-Revision-Date: Sun Mar 01 2015 18:41:50 GMT+0100\n"
 "Last-Translator: root <testumgebung@markusfrenzel.de>\n"
 "Language-Team: \n"
 "Language: German\n"
@@ -94,7 +94,7 @@ msgstr ""
 "Ein Plugin um die Runtastic Webseite abzufragen. Gibt die Daten der Lauf "
 "Aktivitäten zurück."
 
-#: ../runpress.php:266 ../runpress.php:457
+#: ../runpress.php:266 ../runpress.php:453
 msgid "RunPress Local DB"
 msgstr "RunPress Lokale DB"
 
@@ -224,40 +224,53 @@ msgstr "Löscht alle Optionen bei Deaktivierung des Plugins"
 msgid "Save Changes"
 msgstr "Speichere Änderungen"
 
-#: ../runpress.php:459
+#: ../runpress.php:455
 msgid "Entries in local database:"
 msgstr "Einträge in lokaler Datenbank:"
 
-#: ../runpress.php:464 ../runpress.php:473 ../runpress.php:707 ../runpress.php:
-#: 718 ../inc/widget/runpress-widget.php:95 ../inc/widget/runpress-widget.php:137
+#: ../runpress.php:460 ../runpress.php:469 ../runpress.php:705 ../runpress.php:
+#: 716 ../inc/widget/runpress-widget.php:102 ../inc/widget/runpress-widget.php:147
 msgid "Date"
 msgstr "Datum"
 
-#: ../runpress.php:465 ../runpress.php:474 ../runpress.php:708 ../runpress.php:719
+#: ../runpress.php:461 ../runpress.php:470 ../runpress.php:706 ../runpress.php:717
 msgid "Start"
 msgstr "Start"
 
-#: ../runpress.php:466 ../runpress.php:475 ../runpress.php:709 ../runpress.php:
-#: 720 ../inc/widget/runpress-widget.php:97 ../inc/widget/runpress-widget.php:139
+#: ../runpress.php:462 ../runpress.php:471 ../runpress.php:707 ../runpress.php:
+#: 718 ../inc/widget/runpress-widget.php:104 ../inc/widget/runpress-widget.php:149
 msgid "Duration"
 msgstr "Dauer"
 
-#: ../runpress.php:467 ../runpress.php:476 ../runpress.php:710 ../runpress.php:
-#: 721 ../runpress.php:837 ../runpress.php:862 ../inc/widget/runpress-widget.php:
-#: 96 ../inc/widget/runpress-widget.php:138
+#: ../runpress.php:463 ../runpress.php:472 ../runpress.php:708 ../runpress.php:
+#: 719 ../runpress.php:837 ../runpress.php:862 ../inc/widget/runpress-widget.php:
+#: 103 ../inc/widget/runpress-widget.php:148
 msgid "Distance"
 msgstr "Distanz"
 
-#: ../runpress.php:468 ../runpress.php:477 ../runpress.php:711 ../runpress.php:
-#: 722 ../inc/widget/runpress-widget.php:98 ../inc/widget/runpress-widget.php:140
+#: ../runpress.php:464 ../runpress.php:473 ../runpress.php:709 ../runpress.php:
+#: 720 ../inc/widget/runpress-widget.php:105 ../inc/widget/runpress-widget.php:150
 msgid "Pace"
 msgstr "Tempo"
 
-#: ../runpress.php:469 ../runpress.php:478 ../runpress.php:712 ../runpress.php:723
+#: ../runpress.php:465 ../runpress.php:474 ../runpress.php:710 ../runpress.php:721
 msgid "Speed"
 msgstr "Geschwindigkeit"
 
-#: ../runpress.php:521 ../runpress.php:954
+#: ../runpress.php:487 ../runpress.php:736
+msgid "Format: DD.MM.YYYY"
+msgstr "Format: TT.MM.JJJJ"
+
+#: ../runpress.php:487 ../runpress.php:736
+msgid "Format: YYYY/MM/DD"
+msgstr "Format: JJJJ/MM/TT"
+
+#: ../runpress.php:488 ../runpress.php:489 ../inc/widget/runpress-widget.php:164 .
+#: ./inc/widget/runpress-widget.php:164
+msgid "Format: hh:mm:ss"
+msgstr "Format: hh:mm:ss"
+
+#: ../runpress.php:519 ../runpress.php:954
 msgid ""
 "Please click the following button once to synchronize your local wordpress "
 "database with the entries in Runtastic."
@@ -265,11 +278,11 @@ msgstr ""
 "Bitte klicken die folgende Schaltfläche einmal an um Deine lokale Wordpress "
 "Datenbank mit den Einträgen bei Runtastic zu füllen."
 
-#: ../runpress.php:523 ../runpress.php:956
+#: ../runpress.php:521 ../runpress.php:956
 msgid "Read Entries from Runtastic"
 msgstr "Lese Einträge von Runtastic"
 
-#: ../runpress.php:530 ../runpress.php:964
+#: ../runpress.php:528 ../runpress.php:964
 msgid ""
 "If you want to delete the entries in your local db, click the following "
 "button. Only the entries in your local db will be deleted. It does not "
@@ -279,32 +292,36 @@ msgstr ""
 "folgende Schaltfläche. Nur die Einträge in der lokalen DB werden gelöscht. "
 "Die Einträge in der Runtastic DB sind davon nicht betroffen!"
 
-#: ../runpress.php:532
+#: ../runpress.php:530
 msgid "Delete all entries in local DB"
 msgstr "Lösche alle Einträge in der lokalen DB"
 
-#: ../runpress.php:630
+#: ../runpress.php:628
 msgid "DB sync successful."
 msgstr "DB Abgleich erfolgreich."
 
-#: ../runpress.php:630 ../runpress.php:637 ../runpress.php:656 ../runpress.php:
-#: 662 ../runpress.php:933 ../runpress.php:942
+#: ../runpress.php:628 ../runpress.php:635 ../runpress.php:654 ../runpress.php:
+#: 660 ../runpress.php:933 ../runpress.php:942
 msgid "| <strong>Dismiss</strong>"
 msgstr "| <strong>Ausblenden</strong>"
 
-#: ../runpress.php:637
+#: ../runpress.php:635
 msgid "DB sync failed! Please check the error message (if any) or try again."
 msgstr ""
 "DB Abgleich fehlgeschlagen! Bitte prüfe die Fehlermeldung (falls angezeigt) "
 "oder versuch es erneut."
 
-#: ../runpress.php:656
+#: ../runpress.php:654
 msgid "DB successfully truncated."
 msgstr "DB erfolgreich geleert."
 
-#: ../runpress.php:662
+#: ../runpress.php:660
 msgid "DB was not successfully truncated. Please try again."
 msgstr "DB wurde nicht erfolgreich geleert. Bitte erneut versuchen."
+
+#: ../runpress.php:737 ../runpress.php:738
+msgid "Format: h:m:s"
+msgstr "Format: h:m:s"
 
 #: ../runpress.php:837 ../runpress.php:861
 msgid "Month"
@@ -314,8 +331,8 @@ msgstr "Monat"
 msgid "Results"
 msgstr "Ergebnisse"
 
-#: ../runpress.php:876 ../inc/widget/runpress-widget.php:105 ..
-#: inc/widget/runpress-widget.php:125 ../inc/widget/runpress-widget.php:152
+#: ../runpress.php:876 ../inc/widget/runpress-widget.php:112 ..
+#: inc/widget/runpress-widget.php:132 ../inc/widget/runpress-widget.php:174
 msgid "Sorry, no data found!"
 msgstr "Entschuldigung, keine Daten gefunden!"
 
@@ -562,38 +579,50 @@ msgstr ""
 msgid "No data selected!"
 msgstr "Keine Daten ausgewählt!"
 
-#: ../inc/widget/runpress-widget.php:99
+#: ../inc/widget/runpress-widget.php:95
+msgid "No map found!"
+msgstr "Keine Karte gefunden!"
+
+#: ../inc/widget/runpress-widget.php:106
 msgid "Feeling"
 msgstr "Empfinden"
 
-#: ../inc/widget/runpress-widget.php:117
+#: ../inc/widget/runpress-widget.php:124
 msgid "Longest Distance"
 msgstr "Längste Distanz"
 
-#: ../inc/widget/runpress-widget.php:118
+#: ../inc/widget/runpress-widget.php:125
 msgid "Longest Duration"
 msgstr "Längste Dauer"
 
-#: ../inc/widget/runpress-widget.php:119
+#: ../inc/widget/runpress-widget.php:126
 msgid "Fastest Pace"
 msgstr "Schnellstes Tempo"
 
-#: ../inc/widget/runpress-widget.php:172
+#: ../inc/widget/runpress-widget.php:162
+msgid "Format: DD.MM."
+msgstr "Format: TT.MM."
+
+#: ../inc/widget/runpress-widget.php:162
+msgid "Format: MM/DD"
+msgstr "Format: MM/DD"
+
+#: ../inc/widget/runpress-widget.php:194
 msgid "RunPress Widget"
 msgstr "RunPress Widget"
 
-#: ../inc/widget/runpress-widget.php:178
+#: ../inc/widget/runpress-widget.php:200
 msgid "Title:"
 msgstr "Titel:"
 
-#: ../inc/widget/runpress-widget.php:182
+#: ../inc/widget/runpress-widget.php:204
 msgid "Show last activity"
 msgstr "Zeige letzte Aktivität"
 
-#: ../inc/widget/runpress-widget.php:185
+#: ../inc/widget/runpress-widget.php:207
 msgid "Show highscores"
 msgstr "Zeige Bestwerte"
 
-#: ../inc/widget/runpress-widget.php:188
+#: ../inc/widget/runpress-widget.php:210
 msgid "Show last 5 entries"
 msgstr "Zeige letzte 5 Einträge"

@@ -7,7 +7,7 @@
  * 
  * Description: 	A plugin to query the Runtastic website. Returns the data of your running activities.
  * 
- * Version: 		1.1.0
+ * Version: 		1.0.0
  * 
  * Author: 			Markus Frenzel
  * Author URI: 		http://www.markusfrenzel.de
@@ -39,12 +39,18 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>. 
  */
 
+/* Prevent direct access to the plugin */
+if ( !function_exists( 'add_action' ) ) {
+	echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
+	exit;
+}
+
 /* Globals and needed vars */
 global $wpdb;
 global $runpress_db_version;
 global $runpress_db_name;
 
-$runpress_db_version = "1.1.0";
+$runpress_db_version = "1.0.0";
 $runpress_db_name = $wpdb->prefix . "runpress_db";
 
 /* Definitions */
@@ -66,6 +72,7 @@ add_action( 'plugins_loaded', 'runpress_load_textdomain' );		// Load the transla
 add_action( 'widgets_init', 'runpress_register_widget' );		// Register the runpress widget
 add_action( 'admin_menu', 'runpress_admin_menu' );				// Add the admin menu structure
 add_action( 'runpress_event_hook', 'runpress_cronjob_event' );	// The scheduled WP-Cron Job (if any)
+add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'runpress_action_links' );
 
 /* Filters */
 add_filter( 'cron_schedules', 'runpress_add_cronjob_definitions' );
@@ -216,15 +223,15 @@ function runpress_autoupdate_db_check() {
 	global $wpdb;
 	global $runpress_db_version;
 	global $runpress_db_name;
-	
 	if( get_site_option( 'runpress_option_db_version' ) != $runpress_db_version ) {
-		if( get_option( 'runpress_option_db_version' ) < '1.1.0' ) {
-			$wpdb->query("ALTER TABLE `$runpress_db_name` MODIFY COLUMN map_url TEXT NOT NULL");
-			update_option( 'runpress_option_db_version', $runpress_db_version );
-			/* Check if there are entries in the db... update the existing entries */
-			$empty_check = $wpdb->get_var( "SELECT COUNT(*) FROM $runpress_db_name" );
-			if( $empty_check > 0 ) { runpress_sync_database_manually(); }
-		} /* Update V1.1.0 */
+		
+//		if( get_option( 'runpress_option_db_version' ) < '1.1.0' ) {
+//			$wpdb->query("ALTER TABLE `$runpress_db_name` MODIFY COLUMN map_url TEXT NOT NULL");
+//			update_option( 'runpress_option_db_version', $runpress_db_version );
+//			/* Check if there are entries in the db... update the existing entries */
+//			$empty_check = $wpdb->get_var( "SELECT COUNT(*) FROM $runpress_db_name" );
+//			if( $empty_check > 0 ) { runpress_sync_database_manually(); }
+//		} /* Update V1.1.0 */
 		
 	}
 }
@@ -435,13 +442,9 @@ function runpress_local_db() {
 	global $wpdb;
 	global $runpress_db_name;
 	$language = get_locale();
+	$opt_val_unittype = get_option( 'runpress_option_unittype', 'Metric Units' );
 	/* new way of enqueuing scripts... use a function ;-) */
 	runpress_enqueue_scripts();
-	/* enqueue the needed scripts
-	wp_register_script( 'jquery_datatables_js', plugins_url() . '/runpress/inc/js/jquery.dataTables.min.js', array(), null, true );
-	wp_enqueue_script( 'jquery_datatables_js' );
-	wp_register_style( 'jquery_datatables_css', plugins_url() . '/runpress/inc/css/jquery.dataTables.css' );
-	wp_enqueue_style( 'jquery_datatables_css' ); */
 	/* variables for the field and option names */
 	$hidden_field_name2 = 'runpress_db_sync';
 	$hidden_field_name3 = 'runpress_db_delete';
@@ -480,20 +483,22 @@ function runpress_local_db() {
 		  </tfoot>
 		  <tbody>";
 	foreach( $query as $row) {
-		$date = sprintf( "%02s", $row->date_day ) . "." . sprintf( "%02s", $row->date_month ) . "." . sprintf( "%04s", $row->date_year );
+		$backendresult = "";
+		( $opt_val_unittype == "Metric Units" ? $date = sprintf( "%02s", $row->date_day ) . "." . sprintf( "%02s", $row->date_month ) . "." . sprintf( "%04s", $row->date_year ) : $date = sprintf( "%04s", $row->date_year ) . "/" . sprintf( "%02s", $row->date_month ) . "/" . sprintf( "%02s", $row->date_day ) );
+		( $opt_val_unittype == "Metric Units" ? $distance = round( $row->distance/1000, 2 ) : $distance = round( ( $row->distance/1000)/1.609344, 2 ) );
+		( $opt_val_unittype == "Metric Units" ? $pace = date( 'i:s', $row->pace*60 ) : $pace = date( 'i:s', ( $row->pace*1.609344 )*60 ) );
 		$time = sprintf( "%02s", $row->date_hour ) . ":" . sprintf( "%02s", $row->date_minutes ) . ":" . sprintf( "%02s", $row->date_seconds );
 		$duration = date( 'H:i:s', ( $row->duration/1000 ) );
-		$distance = round( $row->distance/1000, 2 );
-		$pace = date( 'i:s', ( $row->pace*60 ) );
-		$speed = round( $row->speed, 2 );
-		echo "<tr>
-		      <td>" . $date . "</td>
-		      <td>" . $time . "</td>
-		      <td>" . $duration . "</td>
-		      <td>" . $distance . "</td>
-		      <td>" . $pace . "</td>
-		      <td>" . $speed . " km/h</td>
-		      </tr>";
+		( $opt_val_unittype == "Metric Units" ? $speed = round( $row->speed, 2 ) : $speed = round( $row->speed/1.609344, 2 ) );
+		$backendresult .= "<tr>";
+		( $opt_val_unittype == "Metric Units" ? $backendresult .= "<td title='" . $date . " (" . __( 'Format: DD.MM.YYYY', 'runpress' ) . ")'>" . $date . "</td>" : $backendresult .= "<td title='" . $date . " (" . __( 'Format: YYYY/MM/DD', 'runpress' ) . ")'>" . $date . "</td>" );
+		$backendresult .= "<td title='" . $time . "(" . __( 'Format: hh:mm:ss', 'runpress' ) . ")'>" . $time . "</td>";
+		$backendresult .= "<td title='" . $duration . "(" . __( 'Format: hh:mm:ss', 'runpress' ) . ")'>" . $duration . "</td>";
+		( $opt_val_unittype == "Metric Units" ? $backendresult .= "<td title='" . $distance . " km'>" . $distance . "</td>" : $backendresult .= "<td title='" . $distance . " mi.'>" . $distance . "</td>" );
+		( $opt_val_unittype == "Metric Units" ? $backendresult .= "<td title='" . $pace . " min./km'>" . $pace . "</td>" : $backendresult .= "<td title='" . $pace . " min./mi.'>" . $pace . "</td>" );
+		( $opt_val_unittype == "Metric Units" ? $backendresult .= "<td title='" . $speed . " km/h'>" . $speed . "</td>" : $backendresult .= "<td title='" . $speed . " mi./h'>" . $speed . "</td>" );
+		$backendresult .= "</tr>";
+		echo $backendresult;
 	}
 	?>
 	</tbody>
@@ -732,19 +737,15 @@ function runpress_shortcode( $atts ) {
 					( $opt_val_unittype == "Metric Units" ? $pace = date( 'i:s', $row->pace*60 ) : $pace = date( 'i:s', ( $row->pace*1.609344 )*60 ) );
 					( $opt_val_unittype == "Metric Units" ? $duration = date( 'H:i:s', ( $row->duration/1000 ) ) : $duration = date( 'H:i:s', ( $row->duration/1000 ) ) );
 				
-				// $date = sprintf( "%02s", $row->date_day ) . "." . sprintf( "%02s", $row->date_month ) . "." . sprintf( "%04s", $row->date_year );
 				$time = sprintf( "%02s", $row->date_hour ) . ":" . sprintf( "%02s", $row->date_minutes ) . ":" . sprintf( "%02s", $row->date_seconds );
-				// $duration = date( 'H:i:s', ( $row->duration/1000 ) );
-				// $distance = round( $row->distance/1000, 2 );
-				// $pace = date( 'i:s', ( $row->pace*60 ) );
-				$speed = round( $row->speed, 2 );
+				( $opt_val_unittype == "Metric Units" ? $speed = round( $row->speed, 2 ) : $speed = round( $row->speed/1.609344, 2 ) );
 				$body .= "<tr>";
-				$body .= "<td title='" . $date . " (" . __( 'Format: DD.MM.YYYY', 'runpress' ) . ")'>" . $date . "</td>";
-				$body .= "<td title='" . $time . " (" . __( 'Format: h:m:s', 'runpress' ) . ")'>" . $time . "</td>";
-				$body .= "<td title='" . $duration . " (" . __( 'Format: h:m:s', 'runpress' ) . ")'>" . $duration . "</td>";
-				$body .= "<td title='" . $distance . " km'>" . $distance . "</td>";
-				$body .= "<td title='" . $pace . " min./km'>" . $pace . "</td>";
-				$body .= "<td title='" . $speed . " km/h'>" . $speed . "</td>";
+				( $opt_val_unittype == "Metric Units" ? $body .= "<td title='" . $date . " (" . __( 'Format: DD.MM.YYYY', 'runpress' ) . ")'>" . $date . "</td>" : $body .= "<td title='" . $date . " (" . __( 'Format: YYYY/MM/DD', 'runpress' ) . ")'>" . $date . "</td>" );
+				$body .= "<td title='" . $time . " (" . __( 'Format: hh:mm:ss', 'runpress' ) . ")'>" . $time . "</td>";
+				$body .= "<td title='" . $duration . " (" . __( 'Format: hh:mm:ss', 'runpress' ) . ")'>" . $duration . "</td>";
+				( $opt_val_unittype == "Metric Units" ? $body .= "<td title='" . $distance . " km'>" . $distance . "</td>" : $body .= "<td title='" . $distance . " mi.'>" . $distance . "</td>" );
+				( $opt_val_unittype == "Metric Units" ? $body .= "<td title='" . $pace . " min./km'>" . $pace . "</td>" : $body .= "<td title='" . $pace . " min./mi.'>" . $pace . "</td>" );
+				( $opt_val_unittype == "Metric Units" ? $body .= "<td title='" . $speed . " km/h'>" . $speed . "</td>" : $body .= "<td title='" . $speed . " mi./h'>" . $speed . "</td>" );
 				$body .= "</tr>";
 			}
 			$body .= "</tbody>";
@@ -1173,7 +1174,7 @@ function runpress_cronjob_event() {
  * 
  * Getting inspired by the function getDataTableTranslationUrl in the CF7DBPlugin by Michael Simpson
  * 
- * @since 1.1.0
+ * @since 1.0.0
  */
 function runpress_get_dt_translation() {
 	$url = null;
@@ -1202,5 +1203,10 @@ function runpress_get_dt_translation() {
 		}
 	}
 	return $url;
+}
+
+function runpress_action_links( $links ) { 
+	$links[] = '<a href="'. get_admin_url(null, 'admin.php?page=runpress') .'">' . __( 'Settings', 'runpress' ) . '</a>';
+	return $links;
 }
 ?>
