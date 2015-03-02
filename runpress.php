@@ -706,7 +706,7 @@ function runpress_shortcode( $atts ) {
 			/* Define the title of the shortcode */
 			$header .= "<p><h2>" . $a[ 'title' ] . "</h2>";
 			/* Define the header of the table */
-			$header .= "<table id='{$a['display']}_results' class='cell-border' cellspacing='0' width='100%'>";
+			$header .= "<table id='{$a['display']}_results_{$a['year']}' class='cell-border' cellspacing='0' width='100%'>";
 			$header .= "<thead>";
 			$header .= "<tr>";
 			$header .= "<th align='left'>" . __( 'Date', 'runpress' ) . "</th>";
@@ -763,7 +763,9 @@ function runpress_shortcode( $atts ) {
 			<script type="text/javascript">
 			jQuery(document).ready(function(){
 				/* Init dataTable */
-				jQuery('#datatable_results').dataTable( {
+				<?php
+				echo "jQuery('#datatable_results_{$a['year']}').dataTable( {";
+				?>
 					"ordering": false,
 					<?php
 					if( $dt_translation ) {
