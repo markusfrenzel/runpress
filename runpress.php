@@ -55,7 +55,7 @@ $runpress_db_name = $wpdb->prefix . "runpress_db";
 
 /* Definitions */
 define( 'RUNPRESS_PLUGIN_PATH', plugin_dir_path(__FILE__) );	// Used to find the plugin dir fast
-define( 'ENCRYPTION_KEY', 'd0a7e7997b6d5fcd55f4b5c32611b87cd923e88837b63bf2941ef819dc8ca282' ); 	// Needed key for the crypt script to securely store data in the wordpress database
+define( 'RUNPRESS_ENCRYPTION_KEY', runpress_generate_key() ); 	// Needed key for the crypt script to securely store data in the wordpress database 
 
 /* Required scripts */
 require_once( RUNPRESS_PLUGIN_PATH . 'inc/widget/runpress-widget.php' );	// Load the code for the runpress widget
@@ -333,7 +333,7 @@ function runpress_help_tab() {
  * @since 1.0.0
  */
 function runpress_options() {
-	$crypt = new Crypt( ENCRYPTION_KEY );
+	$crypt = new Crypt( RUNPRESS_ENCRYPTION_KEY );
 	/* Variables for the field and option names */
 	$opt_name = 'runpress_option_username';
 	$opt_pass = 'runpress_option_userpass';
@@ -552,7 +552,7 @@ function runpress_local_db() {
 function runpress_sync_database_manually() {
 	global $wpdb;
 	global $runpress_db_name;
-	$crypt = new Crypt( ENCRYPTION_KEY );
+	$crypt = new Crypt( RUNPRESS_ENCRYPTION_KEY );
 	/* query the runtastic website */
 	$runtastic = new Runtastic();
 	$runtastic->setUsername( get_option( 'runpress_option_username' ) );
@@ -886,7 +886,7 @@ function runpress_shortcode( $atts ) {
 }
 	
 /*
- * Function:   runpress_enqueu_scripts
+ * Function:   runpress_enqueue_scripts
  * Attributes: none
  *  
  * Enqueues needed scripts
@@ -1207,8 +1207,39 @@ function runpress_get_dt_translation() {
 	return $url;
 }
 
+/*
+ * Function:   runpress_action_links
+ * Attributes: none
+ *  
+ * Function to add the link to the settings to the plugin admin menu.
+ * 
+ * @since 1.0.0
+ */
 function runpress_action_links( $links ) { 
 	$links[] = '<a href="'. get_admin_url(null, 'admin.php?page=runpress') .'">' . __( 'Settings', 'runpress' ) . '</a>';
 	return $links;
+}
+
+/*
+ * Function:   runpress_generate_key
+ * Attributes: none
+ *  
+ * Function to generate a secure key to store the users password in the db.
+ * 
+ * @since 1.0.0
+ */
+function runpress_generate_key() {
+	if( !get_option( 'runpress_option_salt' ) ) {
+		/* Generate a key of 32-byte (64-character long) hexadecimal string */
+		$salt = openssl_random_pseudo_bytes(32, $secure);
+		/* The variable $secure is given by openssl_random_pseudo_bytes... and it will give a true or false. if its true it means that the salt is secure for cryptologic. */
+		while(!$secure){
+			$salt = openssl_random_pseudo_bytes(32, $secure);
+		}
+
+		$hex = bin2hex( $salt );
+		update_option( 'runpress_option_salt', $hex );
+	}
+	return get_option( 'runpress_option_salt' );
 }
 ?>
