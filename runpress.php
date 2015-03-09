@@ -87,25 +87,25 @@ if( get_option( 'runpress_option_username' ) == false ) {
 
 /* Special words which need to be translated and which always get lost in my translation tool if i do not save them the way i do now */
 /* feelings */
-$awesome = __( 'awesome', 'runpress' );
-$good = __( 'good', 'runpress' );
-$so_so = __( 'so-so', 'runpress' );
-$sluggish = __( 'sluggish', 'runpress' );
-$injured = __( 'injured', 'runpress' );
+$runpress_awesome = __( 'awesome', 'runpress' );
+$runpress_good = __( 'good', 'runpress' );
+$runpress_so_so = __( 'so-so', 'runpress' );
+$runpress_sluggish = __( 'sluggish', 'runpress' );
+$runpress_injured = __( 'injured', 'runpress' );
 /* weather conditions */
-$sunny = __( 'sunny', 'runpress' );
-$cloudy = __( 'cloudy', 'runpress' );
-$rainy = __( 'rainy', 'runpress' );
-$snowy = __( 'snowy', 'runpress' );
-$night = __( 'night', 'runpress' );
+$runpress_sunny = __( 'sunny', 'runpress' );
+$runpress_cloudy = __( 'cloudy', 'runpress' );
+$runpress_rainy = __( 'rainy', 'runpress' );
+$runpress_snowy = __( 'snowy', 'runpress' );
+$runpress_night = __( 'night', 'runpress' );
 /* surfaces */
-$road = __( 'road', 'runpress' );
-$trail = __( 'trail', 'runpress' );
-$offroad = __( 'offroad', 'runpress' );
-$mixed = __( 'mixed', 'runpress' );
-$beach = __( 'beach', 'runpress' );
+$runpress_road = __( 'road', 'runpress' );
+$runpress_trail = __( 'trail', 'runpress' );
+$runpress_offroad = __( 'offroad', 'runpress' );
+$runpress_mixed = __( 'mixed', 'runpress' );
+$runpress_beach = __( 'beach', 'runpress' );
 /* plugin description */
-$plugin_description = __( 'A plugin to query the Runtastic website. Returns the data of your running activities.', 'runpress' );
+$runpress_plugin_description = __( 'A plugin to query the Runtastic website. Returns the data of your running activities.', 'runpress' );
 
 /*********************
  ***               ***
@@ -334,6 +334,10 @@ function runpress_help_tab() {
  */
 function runpress_options() {
 	$crypt = new Crypt( RUNPRESS_ENCRYPTION_KEY );
+	$error_name = '';
+	$error_pass = '';
+	$error_unittype = '';
+	$error_deleteoptions = '';
 	/* Variables for the field and option names */
 	$opt_name = 'runpress_option_username';
 	$opt_pass = 'runpress_option_userpass';
@@ -359,32 +363,78 @@ function runpress_options() {
 	}
 	/* Lets see if the user has posted some information. If so, the hidden field will be set to 'Y' */
 	if( isset( $_POST[ $hidden_field_name ] ) && $_POST[ $hidden_field_name ] == 'Y' ) {
-		/* Read the posted values */
-		$opt_val_name = $_POST[ $data_field_name ];
-		/* Encrypt the password so that it is safe in the wordpress database */
-		$opt_val_pass = $crypt->encrypt( $_POST[ $data_field_pass ] );
-		$opt_val_unittype = $_POST[ $data_field_unittype ];
-		$opt_val_deleteoptions = $_POST[ $data_field_deleteoptions ];
-		/* Save the posted values in the database */
-		update_option( $opt_name, $opt_val_name );
-		update_option( $opt_pass, $opt_val_pass );
-		update_option( $opt_unittype, $opt_val_unittype );
-		update_option( $opt_deleteoptions, $opt_val_deleteoptions );
-		/* Query the runtastic website to get the runtastic username and uid */
-		$runtastic = new Runtastic();
-		$runtastic->setUsername( $opt_val_name );
-		/* Decrypt the password on the fly */
-		$runtastic->setPassword( $crypt->decrypt( $opt_val_pass ) );
-		$runtastic->setTimeout( 20 );
-		if( $runtastic->login() ) {
-			update_option( $opt_runtastic_username, $runtastic->getUsername() );
-			update_option( $opt_runtastic_uid, $runtastic->getUid() );
+		/* Validate the data */
+		if( is_email( $_POST[ $data_field_name ] ) ) {
+			/* Read the posted value and save it into the option */
+			$opt_val_name = sanitize_email( $_POST[ $data_field_name ] );
+			update_option( $opt_name, $opt_val_name );
 		}
 		else
 		{
-			echo "<div id='notice' class='error' onclick='remove(this)'><p><strong>" . _e( 'An error occured. Please check your user credentials and try again!', 'runpress' ) . "</strong></p></div>";
-			update_option( $opt_runtastic_username, NULL );
-			update_option( $opt_runtastic_uid, NULL);
+			/* Throw an error message */
+			$error_name = __( 'This is not a correct email address!', 'runpress' );
+		}
+		
+		if( isset( $_POST[ $data_field_pass ] ) && strlen( $_POST[ $data_field_pass ] ) <= 50 ) {
+			/* Encrypt the password so that it is safe in the wordpress database */
+			$opt_val_pass = $crypt->encrypt( sanitize_text_field( $_POST[ $data_field_pass ] ) );
+			update_option( $opt_pass, $opt_val_pass );
+		}
+		else
+		{
+			if( !isset( $_POST[ $data_field_pass ] ) ) {
+				$error_pass = __( 'Password must be set!', 'runpress' );
+			}
+			if( strlen( $_POST[ $data_field_pass ] > 50 ) ) {
+				$error_pass = __( 'Password must be shorter than 50 character!', 'runpress' );
+			}
+		}
+			
+					
+		$save_values_unittype = array( "Metric Units", "Imperial Units" );
+		if( in_array( $_POST[ $data_field_unittype ], $save_values_unittype, true ) ) {
+			/* Read the posted value and save it into the option */
+			$opt_val_unittype = $_POST[ $data_field_unittype ];
+			update_option( $opt_unittype, $opt_val_unittype );
+		}
+		else
+		{
+			/* Save the default value */
+			update_option( $opt_unittype, "Metric Units" );
+			/* Throw a note to the user */
+			$error_unittype = __( 'Value was set to the default value!', 'runpress' );
+		}
+		
+		$save_values_deleteoptions = array( "0","1" );
+		if( in_array( $_POST[ $data_field_deleteoptions ], $save_values_deleteoptions, true ) ) {
+			$opt_val_deleteoptions = $_POST[ $data_field_deleteoptions ];
+			update_option( $opt_deleteoptions, $opt_val_deleteoptions );
+		}
+		else
+		{
+			/* Save the default value */
+			update_option( $opt_deleteoptions, 0 );
+			/* Throw a note to the user */
+			$error_deleteoptions = __( 'Value was set to the default value!', 'runpress' );
+		}
+
+		if( isset( $opt_val_name ) && isset( $opt_val_pass ) ) {
+			/* Query the runtastic website to get the runtastic username and uid */
+			$runtastic = new Runtastic();
+			$runtastic->setUsername( $opt_val_name );
+			/* Decrypt the password on the fly */
+			$runtastic->setPassword( $crypt->decrypt( $opt_val_pass ) );
+			$runtastic->setTimeout( 20 );
+			if( $runtastic->login() ) {
+				update_option( $opt_runtastic_username, $runtastic->getUsername() );
+				update_option( $opt_runtastic_uid, $runtastic->getUid() );
+			}
+			else
+			{
+				echo "<div id='notice' class='error' onclick='remove(this)'><p><strong>" . _e( 'An error occured. Please check your user credentials and try again!', 'runpress' ) . "</strong></p></div>";
+				update_option( $opt_runtastic_username, NULL );
+				update_option( $opt_runtastic_uid, NULL);
+			}
 		}
 		/* Show an 'settings updated' mesage on the screen */
 		echo "<div id='notice' class='updated' onclick='remove(this)'><p><strong>" . __( 'Settings saved.', 'runpress' ) . "</strong></p></div>";
@@ -397,22 +447,26 @@ function runpress_options() {
 	<input type="hidden" name="<?php echo $hidden_field_name; ?>" value="Y">
 	<table border="0">
 	<tr>
-	<td><?php _e( 'Runtastic Username:', 'runpress' ); ?></td>
+	<td><?php _e( 'Runtastic E-Mail Address:', 'runpress' ); ?></td>
 	<td><input type="text" name="<?php echo $data_field_name; ?>" value="<?php echo $opt_val_name; ?>" size="20"></td>
+	<td><font color="red"><?php echo $error_name; ?></font></td>
 	</tr>
 	<tr>
 	<td><?php _e( 'Runtastic Password:', 'runpress' ); ?></td>
 	<td><input type="password" name="<?php echo $data_field_pass; ?>" value="<?php echo $crypt->decrypt( $opt_val_pass ); ?>" size="20"></td>
+	<td><font color="red"><?php echo $error_pass; ?></font></td>
 	</tr>
 	<tr>
 	<td colspan="2"><hr /></td></tr>
 	<tr>
 	<td><?php _e( 'Activitytype:', 'runpress' ); ?></td>
 	<td><?php _e( 'Running only', 'runpress' ); ?></td>
+	<td></td>
 	</tr>
 	<tr>
 	<td><?php _e( 'Unit Type:', 'runpress' ); ?></td>
 	<td><select name="<?php echo $data_field_unittype; ?>" size="1"><option value="Metric Units" <?php if( $opt_val_unittype=="Metric Units") { echo "selected"; } ?>><?php echo __( 'Metric Units', 'runpress' ); ?></option><option value="Imperial Units" <?php if( $opt_val_unittype=="Imperial Units") { echo "selected"; } ?>><?php echo __( 'Imperial Units', 'runpress' ); ?></option></select></td>
+	<td><font color="red"><?php echo $error_unittype; ?></font></td>
 	</tr>
 	<tr>
 	<td colspan="2"><hr /></td>
@@ -420,6 +474,7 @@ function runpress_options() {
 	<tr>
 	<td><?php _e( 'Delete Options:', 'runpress' ); ?></td>
 	<td><input type="hidden" name="<?php echo $data_field_deleteoptions; ?>" value="0"><input type="checkbox" name="<?php echo $data_field_deleteoptions; ?>" value="1" <?php if ( $opt_val_deleteoptions == 1 ) { echo 'checked="checked"'; } ?>><?php _e( 'Deletes all options on deactivation of the plugin.', 'runpress' ); ?></td>
+	<td><font color="red"><?php echo $error_deleteoptions; ?></font></td>
 	</tr>
 	</table>
 	<p class="submit">
@@ -835,7 +890,7 @@ function runpress_shortcode( $atts ) {
 						$sumkm_dec += $distance;
 						break;
 				}
-			}
+			}			
 			?>
 			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 			<script type="text/javascript">
@@ -894,7 +949,7 @@ function runpress_shortcode( $atts ) {
  * @since 1.0.0
  */
 function runpress_enqueue_scripts() {
-	wp_register_script( 'jquery_datatables_js', plugins_url() . '/runpress/inc/js/jquery.dataTables.js', array(), null, false );
+	wp_register_script( 'jquery_datatables_js', plugins_url() . '/runpress/inc/js/jquery.dataTables.js', array('jquery'), false, false );
 	wp_enqueue_script( 'jquery_datatables_js' );
 	wp_register_style( 'jquery_datatables_css', plugins_url() . '/runpress/inc/css/jquery.dataTables.css' );
 	wp_enqueue_style( 'jquery_datatables_css' );
