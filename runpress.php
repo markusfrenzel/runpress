@@ -334,7 +334,7 @@ function runpress_help_tab() {
  * @since 1.0.0
  */
 function runpress_options() {
-	$crypt = new Crypt( RUNPRESS_ENCRYPTION_KEY );
+	$crypt = new RunPress_Crypt( RUNPRESS_ENCRYPTION_KEY );
 	$error_name = '';
 	$error_pass = '';
 	$error_unittype = '';
@@ -421,7 +421,7 @@ function runpress_options() {
 
 		if( isset( $opt_val_name ) && isset( $opt_val_pass ) ) {
 			/* Query the runtastic website to get the runtastic username and uid */
-			$runtastic = new Runtastic();
+			$runtastic = new RunPress_Runtastic();
 			$runtastic->setUsername( $opt_val_name );
 			/* Decrypt the password on the fly */
 			$runtastic->setPassword( $crypt->decrypt( $opt_val_pass ) );
@@ -608,9 +608,9 @@ function runpress_local_db() {
 function runpress_sync_database_manually() {
 	global $wpdb;
 	global $runpress_db_name;
-	$crypt = new Crypt( RUNPRESS_ENCRYPTION_KEY );
+	$crypt = new RunPress_Crypt( RUNPRESS_ENCRYPTION_KEY );
 	/* query the runtastic website */
-	$runtastic = new Runtastic();
+	$runtastic = new RunPress_Runtastic();
 	$runtastic->setUsername( get_option( 'runpress_option_username' ) );
 	/* decrypt the password on the fly */
 	$runtastic->setPassword( $crypt->decrypt( get_option( 'runpress_option_userpass' ) ) );

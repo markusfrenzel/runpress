@@ -2,7 +2,7 @@
 /** Crypt Class (Original from: https://gist.github.com/joshhartman/10342187#file-crypt-class-php)
  *  Found via: http://www.warpconduit.net/2013/04/14/highly-secure-data-encryption-decryption-made-easy-with-php-mcrypt-rijndael-256-and-cbc/
 */
-class Crypt {
+class RunPress_Crypt {
 	private $key;
 	function __construct($key){
 		$this->setKey($key);
