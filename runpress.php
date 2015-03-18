@@ -72,10 +72,11 @@ add_action( 'plugins_loaded', 'runpress_load_textdomain' );		// Load the transla
 add_action( 'widgets_init', 'runpress_register_widget' );		// Register the runpress widget
 add_action( 'admin_menu', 'runpress_admin_menu' );				// Add the admin menu structure
 add_action( 'runpress_event_hook', 'runpress_cronjob_event' );	// The scheduled WP-Cron Job (if any)
-add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'runpress_action_links' );
+add_action( 'wp_enqueue_scripts', 'runpress_enqueue_google_api' );
 
 /* Filters */
 add_filter( 'cron_schedules', 'runpress_add_cronjob_definitions' );
+add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'runpress_action_links' );
 
 /* Shortcodes */
 add_shortcode( 'runpress', 'runpress_shortcode' );
@@ -891,8 +892,9 @@ function runpress_shortcode( $atts ) {
 						break;
 				}
 			}			
+
 			?>
-			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+			
 			<script type="text/javascript">
 				google.load("visualization", "1", {packages:["corechart"]});
 				google.setOnLoadCallback(drawChart);
@@ -953,6 +955,18 @@ function runpress_enqueue_scripts() {
 	wp_enqueue_script( 'jquery_datatables_js' );
 	wp_register_style( 'jquery_datatables_css', plugins_url() . '/runpress/inc/css/jquery.dataTables.css' );
 	wp_enqueue_style( 'jquery_datatables_css' );
+}
+
+/*
+ * Function:   runpress_enqueue_google_api
+ * Attributes: none
+ *  
+ * Enqueues needed google api
+ * 
+ * @since 1.0.0
+ */
+function runpress_enqueue_google_api() {
+	wp_enqueue_script( 'google-jsapi', 'https://www.google.com/jsapi' );
 }
 
 /*
