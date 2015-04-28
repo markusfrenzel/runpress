@@ -26,7 +26,7 @@
 	
 	*/
 
-	class Runtastic {
+	class RunPress_Runtastic {
 		private $loginUsername;
 		private $loginPassword;
 		private $loginUrl;
