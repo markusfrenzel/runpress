@@ -55,12 +55,10 @@ $runpress_db_name = $wpdb->prefix . "runpress_db";
 
 /* Definitions */
 define( 'RUNPRESS_PLUGIN_PATH', plugin_dir_path(__FILE__) );	// Used to find the plugin dir fast
-define( 'RUNPRESS_ENCRYPTION_KEY', runpress_generate_key() ); 	// Needed key for the crypt script to securely store data in the wordpress database 
 
 /* Required scripts */
 require_once( RUNPRESS_PLUGIN_PATH . 'inc/widget/runpress-widget.php' );	// Load the code for the runpress widget
 require_once( RUNPRESS_PLUGIN_PATH . 'inc/class.runtastic.php' );			// Load the runtastic class by Timo Schlueter (timo.schlueter@me.com / www.timo.in)
-require_once( RUNPRESS_PLUGIN_PATH . 'inc/class.crypt.php' );				// Load the class to crypt the userpassword (Original from: http://gist.github.com/joshhartman/10342187#file-crypt-class-php)
 
 /* Hooks */
 register_activation_hook( __FILE__, 'runpress_activate' );		// Create the local DB and so on
@@ -334,7 +332,6 @@ function runpress_help_tab() {
  * @since 1.0.0
  */
 function runpress_options() {
-	$crypt = new RunPress_Crypt( RUNPRESS_ENCRYPTION_KEY );
 	$error_name = '';
 	$error_pass = '';
 	$error_unittype = '';
@@ -378,7 +375,7 @@ function runpress_options() {
 		
 		if( isset( $_POST[ $data_field_pass ] ) && strlen( $_POST[ $data_field_pass ] ) <= 50 ) {
 			/* Encrypt the password so that it is safe in the wordpress database */
-			$opt_val_pass = $crypt->encrypt( sanitize_text_field( $_POST[ $data_field_pass ] ) );
+			$opt_val_pass = sanitize_text_field( $_POST[ $data_field_pass ] );
 			update_option( $opt_pass, $opt_val_pass );
 		}
 		else
@@ -424,7 +421,7 @@ function runpress_options() {
 			$runtastic = new RunPress_Runtastic();
 			$runtastic->setUsername( $opt_val_name );
 			/* Decrypt the password on the fly */
-			$runtastic->setPassword( $crypt->decrypt( $opt_val_pass ) );
+			$runtastic->setPassword( $opt_val_pass );
 			$runtastic->setTimeout( 20 );
 			if( $runtastic->login() ) {
 				update_option( $opt_runtastic_username, $runtastic->getUsername() );
@@ -454,7 +451,7 @@ function runpress_options() {
 	</tr>
 	<tr>
 	<td><?php _e( 'Runtastic Password:', 'runpress' ); ?></td>
-	<td><input type="password" name="<?php echo $data_field_pass; ?>" value="<?php echo $crypt->decrypt( $opt_val_pass ); ?>" size="20"></td>
+	<td><input type="password" name="<?php echo $data_field_pass; ?>" value="<?php echo $opt_val_pass; ?>" size="20"></td>
 	<td><font color="red"><?php echo $error_pass; ?></font></td>
 	</tr>
 	<tr>
@@ -608,12 +605,11 @@ function runpress_local_db() {
 function runpress_sync_database_manually() {
 	global $wpdb;
 	global $runpress_db_name;
-	$crypt = new RunPress_Crypt( RUNPRESS_ENCRYPTION_KEY );
 	/* query the runtastic website */
 	$runtastic = new RunPress_Runtastic();
 	$runtastic->setUsername( get_option( 'runpress_option_username' ) );
 	/* decrypt the password on the fly */
-	$runtastic->setPassword( $crypt->decrypt( get_option( 'runpress_option_userpass' ) ) );
+	$runtastic->setPassword( get_option( 'runpress_option_userpass' ) );
 	$runtastic->setTimeout( 20 );
 	if( $runtastic->login() ) {
 		$activities = $runtastic->getActivities();
@@ -1289,26 +1285,4 @@ function runpress_action_links( $links ) {
 	return $links;
 }
 
-/*
- * Function:   runpress_generate_key
- * Attributes: none
- *  
- * Function to generate a secure key to store the users password in the db.
- * 
- * @since 1.0.0
- */
-function runpress_generate_key() {
-	if( !get_option( 'runpress_option_salt' ) ) {
-		/* Generate a key of 32-byte (64-character long) hexadecimal string */
-		$salt = openssl_random_pseudo_bytes(32, $secure);
-		/* The variable $secure is given by openssl_random_pseudo_bytes... and it will give a true or false. if its true it means that the salt is secure for cryptologic. */
-		while(!$secure){
-			$salt = openssl_random_pseudo_bytes(32, $secure);
-		}
-
-		$hex = bin2hex( $salt );
-		update_option( 'runpress_option_salt', $hex );
-	}
-	return get_option( 'runpress_option_salt' );
-}
 ?>
