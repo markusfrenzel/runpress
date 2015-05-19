@@ -314,7 +314,7 @@ function runpress_help_tab() {
 	$screen->add_help_tab( array( 
 		'id' => '1',															
 		'title' => __( 'Settings', 'runpress' ),													
-		'content' => __( '<br />Add your Runtastic Username and Password here. The Plugin will store your password crypted into the database.<br /><br />Only running activities are displayable via RunPress. Maybe other activities will get available in future updates.<br /><br />Select the unit types to show. You can choose beween Metric (European) and Imperial (UK and US) unit types.<br /><br />If you select the last option, all options and the local database will be deleted in case of deactivation of the plugin.<br /><br />This does not change anything in your Runtastic database.', 'runpress' )
+		'content' => __( '<br />Add your Runtastic Username and Password here. The Plugin will store your password into the wordpress database. Please make sure that your database is secure!<br /><br />Only running activities are displayable via RunPress. Maybe other activities will get available in future updates.<br /><br />Select the unit types to show. You can choose beween Metric (European) and Imperial (UK and US) unit types.<br /><br />If you select the last option, all options and the local database will be deleted in case of deactivation of the plugin.<br /><br />This does not change anything in your Runtastic database.', 'runpress' )
 	) );
 	$screen->add_help_tab( array( 
 		'id' => '2',
@@ -374,7 +374,6 @@ function runpress_options() {
 		}
 		
 		if( isset( $_POST[ $data_field_pass ] ) && strlen( $_POST[ $data_field_pass ] ) <= 50 ) {
-			/* Encrypt the password so that it is safe in the wordpress database */
 			$opt_val_pass = sanitize_text_field( $_POST[ $data_field_pass ] );
 			update_option( $opt_pass, $opt_val_pass );
 		}
@@ -420,7 +419,6 @@ function runpress_options() {
 			/* Query the runtastic website to get the runtastic username and uid */
 			$runtastic = new RunPress_Runtastic();
 			$runtastic->setUsername( $opt_val_name );
-			/* Decrypt the password on the fly */
 			$runtastic->setPassword( $opt_val_pass );
 			$runtastic->setTimeout( 20 );
 			if( $runtastic->login() ) {
@@ -608,7 +606,6 @@ function runpress_sync_database_manually() {
 	/* query the runtastic website */
 	$runtastic = new RunPress_Runtastic();
 	$runtastic->setUsername( get_option( 'runpress_option_username' ) );
-	/* decrypt the password on the fly */
 	$runtastic->setPassword( get_option( 'runpress_option_userpass' ) );
 	$runtastic->setTimeout( 20 );
 	if( $runtastic->login() ) {

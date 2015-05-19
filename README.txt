@@ -3,7 +3,7 @@ Contributors: markusfrenzel
 Tags: runpress,runtastic,running,tracking,sport,sport,gps
 Donate link: http://markusfrenzel.de/wordpress/?page_id=2336
 Requires at least: 3.3.1
-Tested up to: 4.1.1
+Tested up to: 4.2.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 A plugin to query the Runtastic website. Returns the data of your running activities.
 
 == Description ==
-This plugin gives you the opportunity to query the Runtastic website by using your Runtastic username and password (the password is securely stored in your wordpress database).
+This plugin gives you the opportunity to query the Runtastic website by using your Runtastic username and password.
 
 Only running activities can be queried and shown on your wordpress site.
 

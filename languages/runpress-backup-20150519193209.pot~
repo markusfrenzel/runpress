@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: RunPress\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Sun Feb 22 2015 21:07:24 GMT+0100\n"
-"POT-Revision-Date: Tue May 19 2015 21:32:11 GMT+0200\n"
+"POT-Revision-Date: Mon Mar 09 2015 14:02:42 GMT+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -24,122 +24,121 @@ msgstr ""
 "esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: ../runpress.php:89
+#: ../runpress.php:90
 msgid "awesome"
 msgstr ""
 
-#: ../runpress.php:90
+#: ../runpress.php:91
 msgid "good"
 msgstr ""
 
-#: ../runpress.php:91
+#: ../runpress.php:92
 msgid "so-so"
 msgstr ""
 
-#: ../runpress.php:92
+#: ../runpress.php:93
 msgid "sluggish"
 msgstr ""
 
-#: ../runpress.php:93
+#: ../runpress.php:94
 msgid "injured"
 msgstr ""
 
-#: ../runpress.php:95
+#: ../runpress.php:96
 msgid "sunny"
 msgstr ""
 
-#: ../runpress.php:96
+#: ../runpress.php:97
 msgid "cloudy"
 msgstr ""
 
-#: ../runpress.php:97
+#: ../runpress.php:98
 msgid "rainy"
 msgstr ""
 
-#: ../runpress.php:98
+#: ../runpress.php:99
 msgid "snowy"
 msgstr ""
 
-#: ../runpress.php:99
+#: ../runpress.php:100
 msgid "night"
 msgstr ""
 
-#: ../runpress.php:101
+#: ../runpress.php:102
 msgid "road"
 msgstr ""
 
-#: ../runpress.php:102
+#: ../runpress.php:103
 msgid "trail"
 msgstr ""
 
-#: ../runpress.php:103
+#: ../runpress.php:104
 msgid "offroad"
 msgstr ""
 
-#: ../runpress.php:104
+#: ../runpress.php:105
 msgid "mixed"
 msgstr ""
 
-#: ../runpress.php:105
+#: ../runpress.php:106
 msgid "beach"
 msgstr ""
 
-#: ../runpress.php:107
+#: ../runpress.php:108
 msgid ""
 "A plugin to query the Runtastic website. Returns the data of your running "
 "activities."
 msgstr ""
 
-#: ../runpress.php:272 ../runpress.php:511
+#: ../runpress.php:273 ../runpress.php:515
 msgid "RunPress Local DB"
 msgstr ""
 
-#: ../runpress.php:272
+#: ../runpress.php:273
 msgid "Local DB"
 msgstr ""
 
-#: ../runpress.php:273
+#: ../runpress.php:274
 msgid "RunPress Sync"
 msgstr ""
 
-#: ../runpress.php:273
+#: ../runpress.php:274
 msgid "Sync"
 msgstr ""
 
-#: ../runpress.php:274 ../runpress.php:1114
+#: ../runpress.php:275 ../runpress.php:1107
 msgid "RunPress Shortcode Generator"
 msgstr ""
 
-#: ../runpress.php:274
+#: ../runpress.php:275
 msgid "Shortcode Generator"
 msgstr ""
 
-#: ../runpress.php:288
+#: ../runpress.php:289
 msgid "RunPress is not configured yet. Please do it now."
 msgstr ""
 
-#: ../runpress.php:316 ../runpress.php:1281
+#: ../runpress.php:317 ../runpress.php:1274
 msgid "Settings"
 msgstr ""
 
-#: ../runpress.php:317
+#: ../runpress.php:318
 msgid ""
 "<br />Add your Runtastic Username and Password here. The Plugin will store "
-"your password into the wordpress database. Please make sure that your "
-"database is secure!<br /><br />Only running activities are displayable via "
-"RunPress. Maybe other activities will get available in future updates.<br "
-"/><br />Select the unit types to show. You can choose beween Metric "
-"(European) and Imperial (UK and US) unit types.<br /><br />If you select the "
-"last option, all options and the local database will be deleted in case of "
-"deactivation of the plugin.<br /><br />This does not change anything in your "
-"Runtastic database."
-msgstr ""
-
-#: ../runpress.php:321
-msgid "Info"
+"your password crypted into the database.<br /><br />Only running activities "
+"are displayable via RunPress. Maybe other activities will get available in "
+"future updates.<br /><br />Select the unit types to show. You can choose "
+"beween Metric (European) and Imperial (UK and US) unit types.<br /><br />If "
+"you select the last option, all options and the local database will be "
+"deleted in case of deactivation of the plugin.<br /><br />This does not "
+"change anything in your Runtastic database."
 msgstr ""
 
 #: ../runpress.php:322
+msgid "Info"
+msgstr ""
+
+#: ../runpress.php:323
 msgid ""
 "<br /><h2>RunPress - A Wordpress Plugin to display your Runtastic Activities."
 "</h2>Author: Markus Frenzel<br />URL: http://www.markusfrenzel.de<br /><br "
@@ -147,268 +146,268 @@ msgid ""
 "href=\"http://markusfrenzel.de/wordpress/?page_id=2336\">Donate here</a>"
 msgstr ""
 
-#: ../runpress.php:360
+#: ../runpress.php:362
 msgid "Your Runtastic Username: "
 msgstr ""
 
-#: ../runpress.php:373
+#: ../runpress.php:375
 msgid "This is not a correct email address!"
 msgstr ""
 
-#: ../runpress.php:383
+#: ../runpress.php:386
 msgid "Password must be set!"
 msgstr ""
 
-#: ../runpress.php:386
+#: ../runpress.php:389
 msgid "Password must be shorter than 50 character!"
 msgstr ""
 
-#: ../runpress.php:402 ../runpress.php:415
+#: ../runpress.php:405 ../runpress.php:418
 msgid "Value was set to the default value!"
 msgstr ""
 
-#: ../runpress.php:430
+#: ../runpress.php:434
 msgid "An error occured. Please check your user credentials and try again!"
 msgstr ""
 
-#: ../runpress.php:436
+#: ../runpress.php:440
 msgid "Settings saved."
 msgstr ""
 
-#: ../runpress.php:441
+#: ../runpress.php:445
 msgid "RunPress Plugin Settings"
 msgstr ""
 
-#: ../runpress.php:446
+#: ../runpress.php:450
 msgid "Runtastic E-Mail Address:"
 msgstr ""
 
-#: ../runpress.php:451
+#: ../runpress.php:455
 msgid "Runtastic Password:"
 msgstr ""
 
-#: ../runpress.php:458
+#: ../runpress.php:462
 msgid "Activitytype:"
 msgstr ""
 
-#: ../runpress.php:459
+#: ../runpress.php:463
 msgid "Running only"
 msgstr ""
 
-#: ../runpress.php:463
+#: ../runpress.php:467
 msgid "Unit Type:"
 msgstr ""
 
-#: ../runpress.php:464
+#: ../runpress.php:468
 msgid "Metric Units"
 msgstr ""
 
-#: ../runpress.php:464
+#: ../runpress.php:468
 msgid "Imperial Units"
 msgstr ""
 
-#: ../runpress.php:471
+#: ../runpress.php:475
 msgid "Delete Options:"
 msgstr ""
 
-#: ../runpress.php:472
+#: ../runpress.php:476
 msgid "Deletes all options on deactivation of the plugin."
 msgstr ""
 
-#: ../runpress.php:477
+#: ../runpress.php:481
 msgid "Save Changes"
 msgstr ""
 
-#: ../runpress.php:513
+#: ../runpress.php:517
 msgid "Entries in local database:"
 msgstr ""
 
-#: ../runpress.php:518 ../runpress.php:527 ../runpress.php:761 ../runpress.php:
-#: 772 ../inc/widget/runpress-widget.php:102 ../inc/widget/runpress-widget.php:147
+#: ../runpress.php:522 ../runpress.php:531 ../runpress.php:767 ../runpress.php:
+#: 778 ../inc/widget/runpress-widget.php:102 ../inc/widget/runpress-widget.php:147
 msgid "Date"
 msgstr ""
 
-#: ../runpress.php:519 ../runpress.php:528 ../runpress.php:762 ../runpress.php:773
+#: ../runpress.php:523 ../runpress.php:532 ../runpress.php:768 ../runpress.php:779
 msgid "Start"
 msgstr ""
 
-#: ../runpress.php:520 ../runpress.php:529 ../runpress.php:763 ../runpress.php:
-#: 774 ../inc/widget/runpress-widget.php:104 ../inc/widget/runpress-widget.php:149
+#: ../runpress.php:524 ../runpress.php:533 ../runpress.php:769 ../runpress.php:
+#: 780 ../inc/widget/runpress-widget.php:104 ../inc/widget/runpress-widget.php:149
 msgid "Duration"
 msgstr ""
 
-#: ../runpress.php:521 ../runpress.php:530 ../runpress.php:764 ../runpress.php:
-#: 775 ../runpress.php:896 ../runpress.php:921 ../inc/widget/runpress-widget.php:
+#: ../runpress.php:525 ../runpress.php:534 ../runpress.php:770 ../runpress.php:
+#: 781 ../runpress.php:901 ../runpress.php:926 ../inc/widget/runpress-widget.php:
 #: 103 ../inc/widget/runpress-widget.php:148
 msgid "Distance"
 msgstr ""
 
-#: ../runpress.php:522 ../runpress.php:531 ../runpress.php:765 ../runpress.php:
-#: 776 ../inc/widget/runpress-widget.php:105 ../inc/widget/runpress-widget.php:150
+#: ../runpress.php:526 ../runpress.php:535 ../runpress.php:771 ../runpress.php:
+#: 782 ../inc/widget/runpress-widget.php:105 ../inc/widget/runpress-widget.php:150
 msgid "Pace"
 msgstr ""
 
-#: ../runpress.php:523 ../runpress.php:532 ../runpress.php:766 ../runpress.php:777
+#: ../runpress.php:527 ../runpress.php:536 ../runpress.php:772 ../runpress.php:783
 msgid "Speed"
 msgstr ""
 
-#: ../runpress.php:545 ../runpress.php:792
+#: ../runpress.php:549 ../runpress.php:798
 msgid "Format: DD.MM.YYYY"
 msgstr ""
 
-#: ../runpress.php:545 ../runpress.php:792
+#: ../runpress.php:549 ../runpress.php:798
 msgid "Format: YYYY/MM/DD"
 msgstr ""
 
-#: ../runpress.php:546 ../runpress.php:547 ../runpress.php:793 ../runpress.php:
-#: 794 ../inc/widget/runpress-widget.php:164 ../inc/widget/runpress-widget.php:164
+#: ../runpress.php:550 ../runpress.php:551 ../runpress.php:799 ../runpress.php:
+#: 800 ../inc/widget/runpress-widget.php:164 ../inc/widget/runpress-widget.php:164
 msgid "Format: hh:mm:ss"
 msgstr ""
 
-#: ../runpress.php:577 ../runpress.php:1025
+#: ../runpress.php:581 ../runpress.php:1018
 msgid ""
 "Please click the following button once to synchronize your local wordpress "
 "database with the entries in Runtastic."
 msgstr ""
 
-#: ../runpress.php:579 ../runpress.php:1027
+#: ../runpress.php:583 ../runpress.php:1020
 msgid "Read Entries from Runtastic"
 msgstr ""
 
-#: ../runpress.php:586 ../runpress.php:1035
+#: ../runpress.php:590 ../runpress.php:1028
 msgid ""
 "If you want to delete the entries in your local db, click the following "
 "button. Only the entries in your local db will be deleted. It does not "
 "affect the entries in the runtastic db!"
 msgstr ""
 
-#: ../runpress.php:588
+#: ../runpress.php:592
 msgid "Delete all entries in local DB"
 msgstr ""
 
-#: ../runpress.php:684
+#: ../runpress.php:690
 msgid "DB sync successful."
 msgstr ""
 
-#: ../runpress.php:684 ../runpress.php:691 ../runpress.php:710 ../runpress.php:
-#: 716 ../runpress.php:1004 ../runpress.php:1013
+#: ../runpress.php:690 ../runpress.php:697 ../runpress.php:716 ../runpress.php:
+#: 722 ../runpress.php:997 ../runpress.php:1006
 msgid "| <strong>Dismiss</strong>"
 msgstr ""
 
-#: ../runpress.php:691
+#: ../runpress.php:697
 msgid "DB sync failed! Please check the error message (if any) or try again."
 msgstr ""
 
-#: ../runpress.php:710
+#: ../runpress.php:716
 msgid "DB successfully truncated."
 msgstr ""
 
-#: ../runpress.php:716
+#: ../runpress.php:722
 msgid "DB was not successfully truncated. Please try again."
 msgstr ""
 
-#: ../runpress.php:896 ../runpress.php:920
+#: ../runpress.php:901 ../runpress.php:925
 msgid "Month"
 msgstr ""
 
-#: ../runpress.php:913
+#: ../runpress.php:918
 msgid "Results"
 msgstr ""
 
-#: ../runpress.php:935 ../inc/widget/runpress-widget.php:112 ..
+#: ../runpress.php:940 ../inc/widget/runpress-widget.php:112 ..
 #: /inc/widget/runpress-widget.php:132 ../inc/widget/runpress-widget.php:174
 msgid "Sorry, no data found!"
 msgstr ""
 
-#: ../runpress.php:1004
+#: ../runpress.php:997
 msgid "Cronjob scheduled."
 msgstr ""
 
-#: ../runpress.php:1013
+#: ../runpress.php:1006
 msgid "Cronjob deleted."
 msgstr ""
 
-#: ../runpress.php:1017
+#: ../runpress.php:1010
 msgid "RunPress Sync Settings"
 msgstr ""
 
-#: ../runpress.php:1019
+#: ../runpress.php:1012
 msgid "Entries in local database: "
 msgstr ""
 
-#: ../runpress.php:1022
+#: ../runpress.php:1015
 msgid "Manual sync of the local DB"
 msgstr ""
 
-#: ../runpress.php:1032
+#: ../runpress.php:1025
 msgid "Delete all entries from the local DB"
 msgstr ""
 
-#: ../runpress.php:1037
+#: ../runpress.php:1030
 msgid "Delete all entries in local db"
 msgstr ""
 
-#: ../runpress.php:1042
+#: ../runpress.php:1035
 msgid "Schedule a Wordpress Cron Job"
 msgstr ""
 
-#: ../runpress.php:1047
+#: ../runpress.php:1040
 msgid "Your have scheduled a WP Cron job to run at the following basis "
 msgstr ""
 
-#: ../runpress.php:1051
+#: ../runpress.php:1044
 msgid "Define a WP Cron job to start the sync of your local db automatically."
 msgstr ""
 
-#: ../runpress.php:1056
+#: ../runpress.php:1049
 msgid "Interval:"
 msgstr ""
 
-#: ../runpress.php:1058
+#: ../runpress.php:1051
 msgid "Hourly"
 msgstr ""
 
-#: ../runpress.php:1059
+#: ../runpress.php:1052
 msgid "every 6 hours"
 msgstr ""
 
-#: ../runpress.php:1060
+#: ../runpress.php:1053
 msgid "every 12 hours"
 msgstr ""
 
-#: ../runpress.php:1061
+#: ../runpress.php:1054
 msgid "once a day"
 msgstr ""
 
-#: ../runpress.php:1062
+#: ../runpress.php:1055
 msgid "once a week"
 msgstr ""
 
-#: ../runpress.php:1070
+#: ../runpress.php:1063
 msgid "Change scheduled Cron job"
 msgstr ""
 
-#: ../runpress.php:1078
+#: ../runpress.php:1071
 msgid "Schedule Cron job"
 msgstr ""
 
-#: ../runpress.php:1089
+#: ../runpress.php:1082
 msgid "Delete the scheduled Wordpress Cron job"
 msgstr ""
 
-#: ../runpress.php:1092
+#: ../runpress.php:1085
 msgid "Click here to delete the scheduled Wordpress Cron job for RunPress."
 msgstr ""
 
-#: ../runpress.php:1094
+#: ../runpress.php:1087
 msgid "Delete Cron Job"
 msgstr ""
 
-#: ../runpress.php:1115
+#: ../runpress.php:1108
 msgid "General Shortcode usage"
 msgstr ""
 
-#: ../runpress.php:1117
+#: ../runpress.php:1110
 msgid ""
 "You can choose between 3 possibilities to display your runtastic running "
 "activities: <b>table</b>, <b>datatable</b> and <b>chart</b>.<br /><br />You "
@@ -433,71 +432,71 @@ msgid ""
 "Widget which has been installed with the activation of this plugin."
 msgstr ""
 
-#: ../runpress.php:1119
+#: ../runpress.php:1112
 msgid "Runpress Shortcode Generator"
 msgstr ""
 
-#: ../runpress.php:1139
+#: ../runpress.php:1132
 msgid "Reset"
 msgstr ""
 
-#: ../runpress.php:1144
+#: ../runpress.php:1137
 msgid "Year:"
 msgstr ""
 
-#: ../runpress.php:1151 ../runpress.php:1164 ../runpress.php:1176
+#: ../runpress.php:1144 ../runpress.php:1157 ../runpress.php:1169
 msgid "empty"
 msgstr ""
 
-#: ../runpress.php:1155
+#: ../runpress.php:1148
 msgid "<i>If \"empty\" the default value (the actual year) will be used.</i>"
 msgstr ""
 
-#: ../runpress.php:1159
+#: ../runpress.php:1152
 msgid "Display:"
 msgstr ""
 
-#: ../runpress.php:1161
+#: ../runpress.php:1154
 msgid "Table"
 msgstr ""
 
-#: ../runpress.php:1163
+#: ../runpress.php:1156
 msgid "Chart"
 msgstr ""
 
-#: ../runpress.php:1168
+#: ../runpress.php:1161
 msgid "<i>If \"empty\" the default value (table) will be used.</i>"
 msgstr ""
 
-#: ../runpress.php:1172
+#: ../runpress.php:1165
 msgid "Sortorder:"
 msgstr ""
 
-#: ../runpress.php:1174
+#: ../runpress.php:1167
 msgid "Descending"
 msgstr ""
 
-#: ../runpress.php:1175
+#: ../runpress.php:1168
 msgid "Ascending"
 msgstr ""
 
-#: ../runpress.php:1180
+#: ../runpress.php:1173
 msgid "<i>If \"empty\" the default value (descending) will be used.</i>"
 msgstr ""
 
-#: ../runpress.php:1184
+#: ../runpress.php:1177
 msgid " Title:"
 msgstr ""
 
-#: ../runpress.php:1186
+#: ../runpress.php:1179
 msgid "<i>Leave the text field blank to show no title.</i>"
 msgstr ""
 
-#: ../runpress.php:1192
+#: ../runpress.php:1185
 msgid "Generate Shortcode"
 msgstr ""
 
-#: ../runpress.php:1195
+#: ../runpress.php:1188
 msgid ""
 "<i>After clicking this button the shortcode will be generated and displayed "
 "above. Just click into the field which holds the shortcode an use the "
@@ -506,11 +505,11 @@ msgid ""
 "and paste the copied shortcode by using the keyboard shortcut CTRL + V.</i>"
 msgstr ""
 
-#: ../runpress.php:1211
+#: ../runpress.php:1204
 msgid "four time daily"
 msgstr ""
 
-#: ../runpress.php:1215
+#: ../runpress.php:1208
 msgid "weekly"
 msgstr ""
 
