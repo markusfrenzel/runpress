@@ -34,3 +34,12 @@ This plugin uses the PHP curl library. Ask your provider to install / activate t
 * initial version
 
 == Upgrade Notice ==
+
+== Screenshots ==
+
+1. The Settings Page
+2. Local Database
+3. Synchronization Options
+4. Shortcode Generator
+5. Widget Output of the last activity
+6. Chart which can be displayed in pages/posts
