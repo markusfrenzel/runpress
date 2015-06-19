@@ -1,0 +1,33 @@
+div.runpress_singletable {
+    display: table;
+    width: calc(100% - 10px);
+    border: none;
+    padding: 5px;
+    font-family: arial;
+}
+  
+div.runpress_singletablerow {
+	  display: table-row;
+	  font-size: 10pt;
+}
+  
+div.runpress_singletabledata { 
+    display: table-cell;
+    border: none;
+    width: 300px;
+    padding: 5px;
+    line-height: 10pt;
+}
+
+div.runpress_singletabledata:first-line {
+    font-weight: bold;
+    line-height: normal;
+}
+
+.alignleft {
+	float: left;
+}
+
+.alignright {
+	float: right;
+}
