@@ -1229,7 +1229,9 @@ function runpress_shortcode_generator() {
 			if( !document.getElementById( "title").value ) {
 				if ( document.getElementById( "display" ).value==" display=single" ) {
 					document.getElementById( "entry" ).value=' entry=' + document.getElementById( "entry" ).value;
-					generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + ']';
+					document.getElementById( "mapwidth" ).value=' mapwidth=' + document.getElementById( "mapwidth" ).value;
+					document.getElementById( "mapheight" ).value=' mapheight=' + document.getElementById( "mapheight" ).value;
+					generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + document.getElementById( "mapwidth" ).value + document.getElementById( "mapheight" ).value + ']';
 				}
 				else
 				{
@@ -1240,7 +1242,9 @@ function runpress_shortcode_generator() {
 			{
 				if ( document.getElementById( "display" ).value==" display=single" ) {
 					document.getElementById( "entry" ).value=' entry=' + document.getElementById( "entry" ).value;
-					generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + ' title="' + document.getElementById( "title" ).value + '"]';
+					document.getElementById( "mapwidth" ).value=' mapwidth=' + document.getElementById( "mapwidth" ).value;
+					document.getElementById( "mapheight" ).value=' mapheight=' + document.getElementById( "mapheight" ).value;
+					generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + document.getElementById( "mapwidth" ).value + document.getElementById( "mapheight" ).value + ' title="' + document.getElementById( "title" ).value + '"]';
 				}
 				else
 				{
@@ -1248,7 +1252,9 @@ function runpress_shortcode_generator() {
 				}
 			}
 			document.runpressgenerator.shortcode.value = generatedshortcode.replace( "  "," " );
-			document.getElementById( "entry" ).value = document.getElementById( "entry" ).value.replace( " entry=", "" );
+			document.getElementById( "entry" ).value = document.getElementById( "entry" ).value.replace( " entry=", "" );			
+			document.getElementById( "mapwidth" ).value = document.getElementById( "mapwidth" ).value.replace( " mapwidth=", "" );
+			document.getElementById( "mapheight" ).value = document.getElementById( "mapheight" ).value.replace( " mapheight=", "" );			
 		}
 	</script>
 	
@@ -1290,11 +1296,11 @@ function runpress_shortcode_generator() {
 	<tr>
 		<td><?php _e( 'Entry:', 'runpress' ) . ' '; ?></td>
 		<td><input type="text" id="entry" value="actual" size=30></td>
-		<td><?php _e( '<i>Only makes sense in combination with "single" to display.<br>Just copy and paste the ID value from your local RunPress Database.</i>', 'runpress' ); ?></td>
+		<td><?php _e( '<i>Only makes sense in combination with "single" to display.<br>Just copy and paste the ID value from your local RunPress Database or use the word "actual" for your latest run.</i>', 'runpress' ); ?></td>
 	</tr>
 	<tr>
 		<td><?php _e( 'Mapwidth / Mapheight:', 'runpress' ) . ' '; ?></td>
-		<td><input type="number" name="mapheight" min=1 max=1000 step=1> / <input type="number" name="mapwidth" min=1 max=1000 step=1</td>
+		<td><input type="number" id="mapheight" min=1 max=1000 step=1 value=500> / <input type="number" id="mapwidth" min=1 max=1000 step=1 value=350></td>
 		<td><?php _e( '<i>Only makes sense in combination with "single" to display.<br>Specifies the width and the height of the map which is shown in your post or page.</i>', 'runpress' ); ?></td>
 	</tr>
 	<tr>
