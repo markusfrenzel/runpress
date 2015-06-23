@@ -4,7 +4,7 @@ Tags: runpress,runtastic,running,tracking,sport,sports,gps,import runtastic,data
 Donate link: http://markusfrenzel.de/wordpress/?page_id=2336
 Requires at least: 3.3.1
 Tested up to: 4.2.2
-Stable tag: trunk
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
