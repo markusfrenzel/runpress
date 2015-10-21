@@ -7,7 +7,7 @@
  * 
  * Description: 	Imports your running activities from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
  * 
- * Version: 		1.1.0
+ * Version: 		1.2.0
  * 
  * Author: 			Markus Frenzel
  * Author URI: 		http://www.markusfrenzel.de
@@ -103,6 +103,15 @@ $runpress_trail = __( 'trail', 'runpress' );
 $runpress_offroad = __( 'offroad', 'runpress' );
 $runpress_mixed = __( 'mixed', 'runpress' );
 $runpress_beach = __( 'beach', 'runpress' );
+/* types of activities */
+$runpress_running = __( 'running', 'runpress' );
+$runpress_hiking = __( 'hiking', 'runpress' );
+$runpress_racecycling = __( 'racecycling', 'runpress' );
+$runpress_mountainbiking = __( 'mountainbiking', 'runpress' );
+$runpress_cycling = __( 'cycling', 'runpress' );
+$runpress_nordicwalking = __( 'nordicwalking', 'runpress' );
+$runpress_ergometer = __( 'ergometer', 'runpress' );
+$runpress_treadmill = __( 'treadmill', 'runpress' );
 /* plugin description */
 $runpress_plugin_description = __( 'Imports your running activities from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.', 'runpress' );
 
@@ -455,11 +464,6 @@ function runpress_options() {
 	<tr>
 	<td colspan="2"><hr /></td></tr>
 	<tr>
-	<td><?php _e( 'Activitytype:', 'runpress' ); ?></td>
-	<td><?php _e( 'Running only', 'runpress' ); ?></td>
-	<td></td>
-	</tr>
-	<tr>
 	<td><?php _e( 'Unit Type:', 'runpress' ); ?></td>
 	<td><select name="<?php echo $data_field_unittype; ?>" size="1"><option value="Metric Units" <?php if( $opt_val_unittype=="Metric Units") { echo "selected"; } ?>><?php echo __( 'Metric Units', 'runpress' ); ?></option><option value="Imperial Units" <?php if( $opt_val_unittype=="Imperial Units") { echo "selected"; } ?>><?php echo __( 'Imperial Units', 'runpress' ); ?></option></select></td>
 	<td><font color="red"><?php echo $error_unittype; ?></font></td>
@@ -516,6 +520,7 @@ function runpress_local_db() {
 		  <thead>
 		  <tr>
 		  <th align='left'>ID</th>
+		  <th align='left'>" . __( 'Type', 'runpress' ) . "</th>
 		  <th align='left'>" . __( 'Date', 'runpress' ) . "</th>
 		  <th align='left'>" . __( 'Start', 'runpress' ) . "</th>
 		  <th align='left'>" . __( 'Duration', 'runpress' ) . "</th>
@@ -526,6 +531,7 @@ function runpress_local_db() {
 		  <tfoot>
 		  <tr>
 		  <th align='left'>ID</th>
+		  <th align='left'>" . __( 'Type', 'runpress' ) . "</th>
 		  <th align='left'>" . __( 'Date', 'runpress' ) . "</th>
 		  <th align='left'>" . __( 'Start', 'runpress' ) . "</th>
 		  <th align='left'>" . __( 'Duration', 'runpress' ) . "</th>
@@ -545,6 +551,7 @@ function runpress_local_db() {
 		( $opt_val_unittype == "Metric Units" ? $speed = round( $row->speed, 2 ) : $speed = round( $row->speed/1.609344, 2 ) );
 		$backendresult .= "<tr>";
 		$backendresult .= "<td>" . $row->id . "</td>";
+		$backendresult .= "<td>" . __( $row->type, 'runpress' ) . "</td>";
 		( $opt_val_unittype == "Metric Units" ? $backendresult .= "<td title='" . $date . " (" . __( 'Format: DD.MM.YYYY', 'runpress' ) . ")'>" . $date . "</td>" : $backendresult .= "<td title='" . $date . " (" . __( 'Format: YYYY/MM/DD', 'runpress' ) . ")'>" . $date . "</td>" );
 		$backendresult .= "<td title='" . $time . "(" . __( 'Format: hh:mm:ss', 'runpress' ) . ")'>" . $time . "</td>";
 		$backendresult .= "<td title='" . $duration . "(" . __( 'Format: hh:mm:ss', 'runpress' ) . ")'>" . $duration . "</td>";
@@ -614,7 +621,15 @@ function runpress_sync_database_manually() {
 	if( $runtastic->login() ) {
 		$activities = $runtastic->getActivities();
 		foreach( $activities as $activity ) {
-			if( $activity->type=="running" ) {
+			switch( $activity->type) {
+				case "running":
+				case "hiking":
+				case "racecycling":
+				case "mountainbiking":
+				case "cycling":
+				case "nordicwalking":
+				case "ergometer":
+				case "treadmill":
 				$wpdb->replace(
 				$runpress_db_name,
 				array(

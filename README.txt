@@ -3,8 +3,8 @@ Contributors: markusfrenzel
 Tags: runpress,runtastic,running,tracking,sport,sports,gps,import runtastic,database,import,run
 Donate link: http://markusfrenzel.de/wordpress/?page_id=2336
 Requires at least: 3.3.1
-Tested up to: 4.2.2
-Stable tag: 1.1.0
+Tested up to: 4.3.1
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -61,6 +61,11 @@ It depends on how you configured RunPress! I've implemented an option which allo
 The table is labeled with your MySQL table prefix of your wordpress installation (default: wp_) plus "runpress_db" 
 
 == Changelog ==
+
+= 1.2.0 =
+* added a few more types of activities to display: running, hiking, racecycling, mountainbiking, cycling, nordicwalking, ergometer and treadmill.
+* added support for those new activity types to use in shortcodes
+* widget edited to show the activity type
 
 = 1.1.0 =
 * added a new shortcode to display single entries
