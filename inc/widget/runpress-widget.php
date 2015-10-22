@@ -97,11 +97,34 @@ class runpress_widget extends WP_Widget {
 			$onlyshow = " WHERE type=";
 		}
 		
-		if( $opt1 ) { $onlyshow .= "'running'"; }
+		$build_onlyshow = array();
+		
+		if( $opt1 ) { $build_onlyshow[] = "running"; }
+		if( $opt2 ) { $build_onlyshow[] = "nordicwalking"; }
+		if( $opt3 ) { $build_onlyshow[] = "cycling"; }
+		if( $opt4 ) { $build_onlyshow[] = "mountainbiking"; }
+		if( $opt5 ) { $build_onlyshow[] = "racecycling"; }
+		if( $opt6 ) { $build_onlyshow[] = "hiking"; }
+		if( $opt7 ) { $build_onlyshow[] = "treadmill"; }
+		if( $opt8 ) { $build_onlyshow[] = "ergometer"; }
+		
+		if( count( $build_onlyshow ) >= 1 ) {
+			$onlyshow .= "'" . $build_onlyshow[0] . "'";
+		}
+		if( count( $build_onlyshow ) > 1 ) {
+			$first = true;
+			foreach( $build_onlyshow as $part_onlyshow ) {
+				if( $first ) {
+					$first = false;
+					continue;
+				}
+				$onlyshow .= " OR type='" . $part_onlyshow . "'";
+			}
+		}
 		
 		if( $l ) {
 			/* Select the last activity from the db and post its data into the widget */
-			$query = $wpdb->get_row( "SELECT type, date_day, date_month, date_year, distance, duration, pace, feeling, map_url FROM $runpress_db_name ORDER BY id desc LIMIT 1" );
+			$query = $wpdb->get_row( "SELECT type, date_day, date_month, date_year, distance, duration, pace, feeling, map_url FROM $runpress_db_name $onlyshow ORDER BY id desc LIMIT 1" );
 		    if( $query ) {
 
 				( $opt_val_unittype == "Metric Units" ? $date = sprintf( "%02s", $query->date_day ) . "." . sprintf( "%02s", $query->date_month ) . "." . sprintf( "%04s", $query->date_year ) : $date = sprintf( "%04s", $query->date_year ) . "/" . sprintf( "%02s", $query->date_month ) . "/" . sprintf( "%02s", $query->date_day ) );
@@ -134,10 +157,10 @@ class runpress_widget extends WP_Widget {
 		
 		if( $o ) {
 			/* Select only the highscore values */
-			( $opt_val_unittype == "Metric Units" ? $distance = round( $wpdb->get_var( "SELECT distance FROM $runpress_db_name ORDER BY distance DESC LIMIT 1" )/1000, 2 ) . " km" : $distance = round( ( $wpdb->get_var( "SELECT distance FROM $runpress_db_name ORDER BY distance DESC LIMIT 1" )/1000 )/1.609344, 2 ) . " mi." );
+			( $opt_val_unittype == "Metric Units" ? $distance = round( $wpdb->get_var( "SELECT distance FROM $runpress_db_name $onlyshow ORDER BY distance DESC LIMIT 1" )/1000, 2 ) . " km" : $distance = round( ( $wpdb->get_var( "SELECT distance FROM $runpress_db_name $onlyshow ORDER BY distance DESC LIMIT 1" )/1000 )/1.609344, 2 ) . " mi." );
 			if ( $distance && $distance>0 ) {
-				( $opt_val_unittype == "Metric Units" ? $duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) ) . " (h:m:s)" : $duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name ORDER BY duration DESC LIMIT 1" )/1000 ) ) . " (h:m:s)" ); 
-				( $opt_val_unittype == "Metric Units" ? $pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 ORDER BY pace asc LIMIT 1" )*60 ) ) . " min./km" : $pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 ORDER BY pace asc LIMIT 1" )*1.609344 )*60 ) . " min./mi." );
+				( $opt_val_unittype == "Metric Units" ? $duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name $onlyshow ORDER BY duration DESC LIMIT 1" )/1000 ) ) . " (h:m:s)" : $duration = date( 'H:i:s', ($wpdb->get_var( "SELECT duration FROM $runpress_db_name $onlyshow ORDER BY duration DESC LIMIT 1" )/1000 ) ) . " (h:m:s)" ); 
+				( $opt_val_unittype == "Metric Units" ? $pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 " . str_replace( ' WHERE', ' AND (', $onlyshow ) . ") ORDER BY pace asc LIMIT 1" )*60 ) ) . " min./km" : $pace = date( 'i:s', ($wpdb->get_var( "SELECT pace FROM $runpress_db_name WHERE pace>0 " . str_replace( ' WHERE', ' AND (', $onlyshow ) . ") ORDER BY pace asc LIMIT 1" )*1.609344 )*60 ) . " min./mi." );
 				
 				echo "<table>";
 				echo "<tr><td>" . __( 'Longest Distance', 'runpress' ) . ": </td><td>" . $distance . "</td></tr>";
@@ -157,7 +180,7 @@ class runpress_widget extends WP_Widget {
 			wp_register_style( 'runpress_tables_css', plugins_url() . '/runpress/inc/css/runpress.tables.css' );
 			wp_enqueue_style( 'runpress_tables_css' );
 			/* Show a table with the last 5 activities */
-			$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name ORDER BY id DESC LIMIT 5", OBJECT );
+			$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name $onlyshow ORDER BY id DESC LIMIT 5", OBJECT );
 			if( $query ) {
 											
 				echo "<table class='tableclass'>
