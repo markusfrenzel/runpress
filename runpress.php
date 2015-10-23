@@ -757,17 +757,41 @@ function runpress_shortcode( $atts ) {
 		'title' => '',
 		'entry' => 'latest',
 		'mapwidth' => '200',
-		'mapheight' => '300'
+		'mapheight' => '300',
+		'showonly' => false
 		), $atts );
+	
+	if( $a[ 'showonly' ] ) {
+		$a[ 'showonly' ] = str_replace( "'", "", $a[ 'showonly' ]);
+		$a[ 'showonly' ] = str_replace( '"', '', $a[ 'showonly' ]);
+		$parts_displayonly = explode( ",", $a[ 'showonly' ] );
+		if( count( $parts_displayonly ) >= 1 ) {
+			$displayonly .= " AND type='" . $parts_displayonly[0] . "'";
+		}
+		if( count( $parts_displayonly ) > 1 ) {
+			$first=true;
+			foreach( $parts_displayonly as $build_displayonly ) {
+				if( $first ) {
+					$first = false;
+					continue;
+				}
+				$displayonly .= " OR type='" . $build_displayonly . "'";
+			}
+		}
+		echo "Nach Bau = " . $displayonly . "<br />";
+	}
+	else {
+		$displayonly = "";
+	}
 	
 	if( $a[ 'display' ] == "single" ) {
 		runpress_enqueue_scripts();
 		if( $a[ 'entry' ] == "latest" ) {
-			$query = $wpdb->get_row( "SELECT date_day, date_month, date_year, distance, duration, pace, feeling, map_url, speed, kcal, heartrate_avg, heartrate_max, elevation_gain, elevation_loss, surface, weather, feeling, notes, date_hour, date_minutes FROM $runpress_db_name WHERE date_year=" . $a[ 'year' ] . " ORDER BY id desc LIMIT 1" );
+			$query = $wpdb->get_row( "SELECT date_day, date_month, date_year, distance, duration, pace, feeling, map_url, speed, kcal, heartrate_avg, heartrate_max, elevation_gain, elevation_loss, surface, weather, feeling, notes, date_hour, date_minutes FROM $runpress_db_name WHERE date_year=" . $a[ 'year' ] . $displayonly . " ORDER BY id desc LIMIT 1" );
 		}
 		else
 		{
-			$query = $wpdb->get_row( "SELECT date_day, date_month, date_year, distance, duration, pace, feeling, map_url, speed, kcal, heartrate_avg, heartrate_max, elevation_gain, elevation_loss, surface, weather, feeling, notes, date_hour, date_minutes FROM $runpress_db_name WHERE id=" . $a[ 'entry' ] . " ORDER BY id desc LIMIT 1" );
+			$query = $wpdb->get_row( "SELECT date_day, date_month, date_year, distance, duration, pace, feeling, map_url, speed, kcal, heartrate_avg, heartrate_max, elevation_gain, elevation_loss, surface, weather, feeling, notes, date_hour, date_minutes FROM $runpress_db_name WHERE id=" . $a[ 'entry' ] . $displayonly . " ORDER BY id desc LIMIT 1" );
 		}
 		
 		if( $query ) {
@@ -857,11 +881,15 @@ function runpress_shortcode( $atts ) {
 	else
 	{
 		if( ( $a[ 'year' ] > 999 ) and $a[ 'year' ] < 10000 ) {
-			$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name WHERE date_year=" . $a[ 'year' ] . " ORDER BY id " . $a[ 'sortorder' ], OBJECT );
+			$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name WHERE date_year=" . $a[ 'year' ] . $displayonly . " ORDER BY id " . $a[ 'sortorder' ], OBJECT );
 		}
 		else
 		{
-			$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name ORDER BY id " . $a[ 'sortorder' ], OBJECT );
+			if( $displayonly ) {
+				$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name WHERE " . str_replace( " AND ", "", $displayonly ) . " ORDER BY id " . $a[ 'sortorder' ], OBJECT );
+			} else {
+				$query = $wpdb->get_results( "SELECT * FROM $runpress_db_name ORDER BY id " . $a[ 'sortorder' ], OBJECT );
+			}
 		}
 
 	if( $query ) {
@@ -876,6 +904,7 @@ function runpress_shortcode( $atts ) {
 			$header .= "<table id='{$a['display']}_results_{$a['year']}' class='cell-border' cellspacing='0' width='100%'>";
 			$header .= "<thead>";
 			$header .= "<tr>";
+			$header .= "<th align='left'>" . __( 'Type', 'runpress' ) . "</th>";
 			$header .= "<th align='left'>" . __( 'Date', 'runpress' ) . "</th>";
 			$header .= "<th align='left'>" . __( 'Start', 'runpress' ) . "</th>";
 			$header .= "<th align='left'>" . __( 'Duration', 'runpress' ) . "</th>";
@@ -887,6 +916,7 @@ function runpress_shortcode( $atts ) {
 			/* Define the footer of the table */
 			$footer .= "<tfoot>";
 			$footer .= "<tr>";
+			$footer .= "<th align='left'>" . __( 'Type', 'runpress' ) . "</th>";
 			$footer .= "<th align='left'>" . __( 'Date', 'runpress' ) . "</th>";
 			$footer .= "<th align='left'>" . __( 'Start', 'runpress' ) . "</th>";
 			$footer .= "<th align='left'>" . __( 'Duration', 'runpress' ) . "</th>";
@@ -907,6 +937,7 @@ function runpress_shortcode( $atts ) {
 				$time = sprintf( "%02s", $row->date_hour ) . ":" . sprintf( "%02s", $row->date_minutes ) . ":" . sprintf( "%02s", $row->date_seconds );
 				( $opt_val_unittype == "Metric Units" ? $speed = round( $row->speed, 2 ) : $speed = round( $row->speed/1.609344, 2 ) );
 				$body .= "<tr>";
+				$body .= "<td title='" . __( $row->type, 'runpress' ) . "'>" . __( $row->type, 'runpress' ) . "</td>";
 				( $opt_val_unittype == "Metric Units" ? $body .= "<td title='" . $date . " (" . __( 'Format: DD.MM.YYYY', 'runpress' ) . ")'>" . $date . "</td>" : $body .= "<td title='" . $date . " (" . __( 'Format: YYYY/MM/DD', 'runpress' ) . ")'>" . $date . "</td>" );
 				$body .= "<td title='" . $time . " (" . __( 'Format: hh:mm:ss', 'runpress' ) . ")'>" . $time . "</td>";
 				$body .= "<td title='" . $duration . " (" . __( 'Format: hh:mm:ss', 'runpress' ) . ")'>" . $duration . "</td>";
@@ -1244,7 +1275,11 @@ function runpress_shortcode_generator() {
 	?>
 	
 	<script type="text/javascript">
+		var yourArray = new Array();
 		jQuery(document).ready(function($){
+			$('input:checkbox[name=showtype]:checked').each(function() {
+				yourArray.push($(this).val());
+			});
 			$('#tr_entry').hide();
 			$('#tr_mapdimensions').hide();
 			$('#tr_year').show();
@@ -1270,7 +1305,7 @@ function runpress_shortcode_generator() {
 			if( !document.getElementById( "title").value ) {
 				if ( document.getElementById( "display" ).value==" display=single" ) {
 					document.getElementById( "entry" ).value=' entry=' + document.getElementById( "entry" ).value;
-					generatedshortcode = '[runpress ' + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + ' mapwidth=' + document.getElementById( "mapwidth" ).value + ' mapheight=' + document.getElementById( "mapheight" ).value + ']';
+					generatedshortcode = '[runpress ' + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + ' mapwidth=' + document.getElementById( "mapwidth" ).value + ' mapheight=' + document.getElementById( "mapheight" ).value + ']' + yourArray.toString();
 				}
 				else
 				{
@@ -1359,6 +1394,20 @@ function runpress_shortcode_generator() {
 		<td><?php _e( ' Title:', 'runpress' ) . ' '; ?></td>
 		<td><input type="text" id="title" value="RunPress" size=30></td>
 		<td><?php _e( '<i>Leave the text field blank to show no title.</i>', 'runpress' ); ?></td>
+	</tr>
+	<tr>
+		<td halign="left" valign="top"><?php _e( 'Type', 'runpress' ) . ': '; ?></td>
+		<td>
+			<input type="checkbox" name="showtype" value="running" id="type_running"> <?php _e( 'running', 'runpress' ); ?><br />
+			<input type="checkbox" name="showtype" value="nordicwalking" id="type_nordicwalking"> <?php _e( 'nordicwalking', 'runpress' ); ?><br />
+			<input type="checkbox" name="showtype" value="cycling" id="type_cycling"> <?php _e( 'cycling', 'runpress' ); ?><br />
+			<input type="checkbox" name="showtype" value="mountainbiking" id="type_mountainbiking"> <?php _e( 'mountainbiking', 'runpress' ); ?><br />
+			<input type="checkbox" name="showtype" value="racecycling" id="type_racecycling"> <?php _e( 'racecycling', 'runpress' ); ?><br />
+			<input type="checkbox" name="showtype" value="hiking" id="type_hiking"> <?php _e( 'hiking', 'runpress' ); ?><br />
+			<input type="checkbox" name="showtype" value="treadmill" id="type_treadmill"> <?php _e( 'treadmill', 'runpress' ); ?><br />
+			<input type="checkbox" name="showtype" value="ergometer" id="type_ergometer"> <?php _e( 'ergometer', 'runpress' ); ?><br />
+		</td>
+		<td halign="left" valign="top"><?php _e( '<i>Leave the type field blank to show all activity types.</i>', 'runpress' ); ?></td>
 	</tr>
     </table>
 	</form>
