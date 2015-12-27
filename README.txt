@@ -1,23 +1,23 @@
 === RunPress ===
 Contributors: markusfrenzel
-Tags: runpress,runtastic,running,tracking,sport,sports,gps,import runtastic,database,import,run
+Tags: runpress,runtastic,running,nordicwalking,cycling,mountainbiking,racecycling,hiking,treadmill,ergometer,tracking,sport,sports,gps,import runtastic,database,import,run
 Donate link: http://markusfrenzel.de/wordpress/?page_id=2336
 Requires at least: 3.3.1
-Tested up to: 4.3.1
+Tested up to: 4.4.0
 Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-Imports your running activities from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
+Imports your sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
 
 == Description ==
-Do you ever want to display your running activities from Runtastic.com on your own Website? This is no problem any longer.
+Do you ever want to display your sports activities from Runtastic.com on your own Website? This is no problem any longer.
 
-RunPress gives you the opportunity to query the Runtastic website by using your Runtastic username and password. It imports your Runtastic running activities (and at the moment ONLY the running activities) into a table of your wordpress installation. 
+RunPress gives you the opportunity to query the Runtastic website by using your Runtastic username and password. It imports your Runtastic sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) into a table of your wordpress installation. 
 
-You will be capable of viewing your runtastic running activities in the admin backend. By the use of shortcodes you're able to show your activities on non-admin pages of your site like posts and pages. Use the shortcode generator to easily create the needed shortcodes without any programming knowledge.
+You will be capable of viewing your runtastic sports activities in the admin backend. By the use of shortcodes you're able to show your activities on non-admin pages of your site like posts and pages. Use the shortcode generator to easily create the needed shortcodes without any programming knowledge.
 
-A widget is included to show your very latest running activity, your high-scores or the last 5 running activities in a table.
+A widget is included to show your very latest sport activity, your high-scores or the last 5 sports activities in a table.
 
 RunPress is continuously under development. Just share your wishes with me and I'll have a look at them.
 
@@ -45,11 +45,11 @@ Have a look at the plugins webpage <a href="http://markusfrenzel.de/wordpress/?p
 = Where can I find documentation on the plugin? =
 Refer to the <a href="http://markusfrenzel.de/wordpress/?page_id=2247" target="_blank">Plugin Webpage</a>
 
-= I've installed and configured the plugin but I do not see any running activities on my webpage! =
-You've got to import your running activities from Runtastic into your wordpress database and setup a shortcode to display your data in your webpage. Have a look at the admin page, "RunPress", "Local DB" or check the documentation.
+= I've installed and configured the plugin but I do not see any sports activities on my webpage! =
+You've got to import your activities from Runtastic into your wordpress database and setup a shortcode to display your data in your webpage. Have a look at the admin page, "RunPress", "Local DB" or check the documentation.
 
 = How do I display my activities on my website? =
-It is possible in post and pages (via shortcodes) and there is also a widget to display your very latest running activity, your High-Scores or the last 5 running activities in the sidebar of your wordpress page.
+It is possible in post and pages (via shortcodes) and there is also a widget to display your very latest sport activity, your High-Scores or the last 5 sports activities in the sidebar of your wordpress page.
 
 = How do I create a shortcode? =
 The easiest way is to use the integrated shortcode generator. It is located in your admin page, "RunPress", "Shortcode Generator". There a also some examples mentioned.

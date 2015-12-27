@@ -5,7 +5,7 @@
  * Plugin Name: 	RunPress
  * Plugin URI: 		http://markusfrenzel.de/wordpress/?page_id=2247
  * 
- * Description: 	Imports your running activities from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
+ * Description: 	Imports your sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
  * 
  * Version: 		1.2.0
  * 
@@ -50,7 +50,10 @@ global $wpdb;
 global $runpress_db_version;
 global $runpress_db_name;
 
-$runpress_db_version = "1.0.0";
+// runpress_db_versions
+// 1.0.0 - Initial Release
+// 1.0.1 - Accept NULL Values on the map_url column
+$runpress_db_version = "1.0.1";
 $runpress_db_name = $wpdb->prefix . "runpress_db";
 
 /* Definitions */
@@ -113,7 +116,7 @@ $runpress_nordicwalking = __( 'nordicwalking', 'runpress' );
 $runpress_ergometer = __( 'ergometer', 'runpress' );
 $runpress_treadmill = __( 'treadmill', 'runpress' );
 /* plugin description */
-$runpress_plugin_description = __( 'Imports your running activities from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.', 'runpress' );
+$runpress_plugin_description = __( 'Imports your sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.', 'runpress' );
 
 /*********************
  ***               ***
@@ -160,7 +163,7 @@ function runpress_activate() {
 				page_url VARCHAR(200) NOT NULL,
 				create_route_url_class VARCHAR(200) NOT NULL,
 				create_route_url VARCHAR(200) NOT NULL,
-				map_url TEXT NOT NULL,
+				map_url TEXT NULL,
 				date_year INT(4) NOT NULL,
 				date_month INT(2) NOT NULL,
 				date_day INT(2) NOT NULL,
@@ -180,7 +183,12 @@ function runpress_activate() {
 	
 	if( $installed_ver != $runpress_db_version ) {
 		/* If there will be database changes in the future... */
-				
+		
+		$sql="ALTER TABLE `$runpress_db_name` CHANGE `map_url` `map_url` text NULL";		
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbDelta( $sql );
+		update_option( "runpress_option_db_version", $runpress_db_version );
+		
 		/* $sql = "";
 		 * require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		 * dbDelta( $sql );
@@ -233,13 +241,13 @@ function runpress_autoupdate_db_check() {
 	global $runpress_db_name;
 	if( get_site_option( 'runpress_option_db_version' ) != $runpress_db_version ) {
 		
-//		if( get_option( 'runpress_option_db_version' ) < '1.1.0' ) {
-//			$wpdb->query("ALTER TABLE `$runpress_db_name` MODIFY COLUMN map_url TEXT NOT NULL");
-//			update_option( 'runpress_option_db_version', $runpress_db_version );
-//			/* Check if there are entries in the db... update the existing entries */
-//			$empty_check = $wpdb->get_var( "SELECT COUNT(*) FROM $runpress_db_name" );
-//			if( $empty_check > 0 ) { runpress_sync_database_manually(); }
-//		} /* Update V1.1.0 */
+		if( get_option( 'runpress_option_db_version' ) < '1.0.1' ) {
+			$wpdb->query("ALTER TABLE `$runpress_db_name` MODIFY COLUMN map_url TEXT NULL");
+			update_option( 'runpress_option_db_version', $runpress_db_version );
+			/* Check if there are entries in the db... update the existing entries */
+			$empty_check = $wpdb->get_var( "SELECT COUNT(*) FROM $runpress_db_name" );
+			if( $empty_check > 0 ) { runpress_sync_database_manually(); }
+		} /* Update V1.0.1 */
 		
 	}
 }
@@ -758,7 +766,7 @@ function runpress_shortcode( $atts ) {
 		'entry' => 'latest',
 		'mapwidth' => '200',
 		'mapheight' => '300',
-		'showonly' => false
+		'showonly' => 'running'
 		), $atts );
 	
 	if( $a[ 'showonly' ] ) {
@@ -766,7 +774,7 @@ function runpress_shortcode( $atts ) {
 		$a[ 'showonly' ] = str_replace( '"', '', $a[ 'showonly' ]);
 		$parts_displayonly = explode( ",", $a[ 'showonly' ] );
 		if( count( $parts_displayonly ) >= 1 ) {
-			$displayonly .= " AND type='" . $parts_displayonly[0] . "'";
+			$displayonly = " AND type='" . $parts_displayonly[0] . "'";
 		}
 		if( count( $parts_displayonly ) > 1 ) {
 			$first=true;
@@ -778,7 +786,6 @@ function runpress_shortcode( $atts ) {
 				$displayonly .= " OR type='" . $build_displayonly . "'";
 			}
 		}
-		echo "Nach Bau = " . $displayonly . "<br />";
 	}
 	else {
 		$displayonly = "";
@@ -787,11 +794,11 @@ function runpress_shortcode( $atts ) {
 	if( $a[ 'display' ] == "single" ) {
 		runpress_enqueue_scripts();
 		if( $a[ 'entry' ] == "latest" ) {
-			$query = $wpdb->get_row( "SELECT date_day, date_month, date_year, distance, duration, pace, feeling, map_url, speed, kcal, heartrate_avg, heartrate_max, elevation_gain, elevation_loss, surface, weather, feeling, notes, date_hour, date_minutes FROM $runpress_db_name WHERE date_year=" . $a[ 'year' ] . $displayonly . " ORDER BY id desc LIMIT 1" );
+			$query = $wpdb->get_row( "SELECT type, date_day, date_month, date_year, distance, duration, pace, feeling, map_url, speed, kcal, heartrate_avg, heartrate_max, elevation_gain, elevation_loss, surface, weather, feeling, notes, date_hour, date_minutes FROM $runpress_db_name WHERE date_year=" . $a[ 'year' ] . $displayonly . " ORDER BY id desc LIMIT 1" );
 		}
 		else
 		{
-			$query = $wpdb->get_row( "SELECT date_day, date_month, date_year, distance, duration, pace, feeling, map_url, speed, kcal, heartrate_avg, heartrate_max, elevation_gain, elevation_loss, surface, weather, feeling, notes, date_hour, date_minutes FROM $runpress_db_name WHERE id=" . $a[ 'entry' ] . $displayonly . " ORDER BY id desc LIMIT 1" );
+			$query = $wpdb->get_row( "SELECT type, date_day, date_month, date_year, distance, duration, pace, feeling, map_url, speed, kcal, heartrate_avg, heartrate_max, elevation_gain, elevation_loss, surface, weather, feeling, notes, date_hour, date_minutes FROM $runpress_db_name WHERE id=" . $a[ 'entry' ] . $displayonly . " ORDER BY id desc LIMIT 1" );
 		}
 		
 		if( $query ) {
@@ -816,6 +823,10 @@ function runpress_shortcode( $atts ) {
 			$header .= "<p><h2>" . $a[ 'title' ] . "</h2>";
 			$header .= "<div class='runpress_singletable'>";
 			$header .= "<div class='runpress_singletablerow'>
+						<div class='runpress_singletabledata'>" . __( 'Type', 'runpress' ) . "
+						<br>
+						" . __( $query->type, 'runpress' ). " 
+						</div>
 						<div class='runpress_singletabledata'>" . __( 'Distance', 'runpress' ) . "
 						<br>
 						" . $distance ."
@@ -1275,21 +1286,25 @@ function runpress_shortcode_generator() {
 	?>
 	
 	<script type="text/javascript">
-		var yourArray = new Array();
+		
 		jQuery(document).ready(function($){
-			$('input:checkbox[name=showtype]:checked').each(function() {
-				yourArray.push($(this).val());
-			});
+			
 			$('#tr_entry').hide();
 			$('#tr_mapdimensions').hide();
 			$('#tr_year').show();
 			$('#tr_sortorder').show();
+			$('#tr_availabletypes').show();
+			$('#tr_availableonlyonetype').hide();
 			$('#display').change(function(){
 				if($('#display').val() == ' display=single') {
 					$('#tr_entry').show();
 					$('#tr_mapdimensions').show();
 					$('#tr_year').hide();
 					$('#tr_sortorder').hide();
+					$('#tr_availabletypes').hide();
+					$('#tr_availableonlyonetype').show();
+					$('#tr_availabletypes input').removeAttr('checked');
+					$('#tr_availableonlyonetype input').removeAttr('checked');
 				}
 				else
 				{
@@ -1297,34 +1312,50 @@ function runpress_shortcode_generator() {
 					$('#tr_mapdimensions').hide();
 					$('#tr_year').show();
 					$('#tr_sortorder').show();
+					$('#tr_availabletypes').show();
+					$('#tr_availableonlyonetype').hide();
+					$('#tr_availabletypes input').removeAttr('checked');
+					$('#tr_availableonlyonetype input').removeAttr('checked');
 				}
 			});
 		});
 				
 		function transferFields() {
+			jQuery(document).ready(function($) {
+				var yourArray = new Array();
+				
+				$('input[name="showtype"]:checked').each(function() {
+					yourArray.push(this.value);
+			});
+
+			if( yourArray < 1) { 
+				yourArray = 'running'; 
+			}
+
 			if( !document.getElementById( "title").value ) {
 				if ( document.getElementById( "display" ).value==" display=single" ) {
 					document.getElementById( "entry" ).value=' entry=' + document.getElementById( "entry" ).value;
-					generatedshortcode = '[runpress ' + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + ' mapwidth=' + document.getElementById( "mapwidth" ).value + ' mapheight=' + document.getElementById( "mapheight" ).value + ']' + yourArray.toString();
+					generatedshortcode = '[runpress ' + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + ' mapwidth=' + document.getElementById( "mapwidth" ).value + ' mapheight=' + document.getElementById( "mapheight" ).value + ' showonly=' + yourArray + ']';
 				}
 				else
 				{
-					generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ']';
+					generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ' showonly=' + yourArray + ']';
 				}
 			}
 			else
 			{
 				if ( document.getElementById( "display" ).value==" display=single" ) {
 					document.getElementById( "entry" ).value=' entry=' + document.getElementById( "entry" ).value;
-					generatedshortcode = '[runpress ' + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + ' mapwidth=' + document.getElementById( "mapwidth" ).value + ' mapheight=' + document.getElementById( "mapheight" ).value + ' title="' + document.getElementById( "title" ).value + '"]';
+					generatedshortcode = '[runpress ' + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + ' mapwidth=' + document.getElementById( "mapwidth" ).value + ' mapheight=' + document.getElementById( "mapheight" ).value + ' title="' + document.getElementById( "title" ).value + '" showonly=' + yourArray + ']';
 				}
 				else
 				{
-					generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ' title="' + document.getElementById( "title" ).value + '"]';
+					generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ' title="' + document.getElementById( "title" ).value + '" showonly=' + yourArray + ']';
 				}
 			}
 			document.runpressgenerator.shortcode.value = generatedshortcode.replace( "  "," " );
-			document.getElementById( "entry" ).value = document.getElementById( "entry" ).value.replace( " entry=", "" );			
+			document.getElementById( "entry" ).value = document.getElementById( "entry" ).value.replace( " entry=", "" );	
+			});
 		}
 		
 		function resetFields() {
@@ -1395,7 +1426,7 @@ function runpress_shortcode_generator() {
 		<td><input type="text" id="title" value="RunPress" size=30></td>
 		<td><?php _e( '<i>Leave the text field blank to show no title.</i>', 'runpress' ); ?></td>
 	</tr>
-	<tr>
+	<tr id="tr_availabletypes">
 		<td halign="left" valign="top"><?php _e( 'Type', 'runpress' ) . ': '; ?></td>
 		<td>
 			<input type="checkbox" name="showtype" value="running" id="type_running"> <?php _e( 'running', 'runpress' ); ?><br />
@@ -1409,6 +1440,21 @@ function runpress_shortcode_generator() {
 		</td>
 		<td halign="left" valign="top"><?php _e( '<i>Leave the type field blank to show all activity types.</i>', 'runpress' ); ?></td>
 	</tr>
+	<tr id="tr_availableonlyonetype">
+		<td halign="left" valign="top"><?php _e( 'Type', 'runpress' ). ': '; ?></td>
+		<td>
+			<input type="radio" id="type_running" name="showtype" value="running"><label for="type_running"> <?php _e( 'running', 'runpress' ); ?></label><br />
+			<input type="radio" id="type_nordicwalking" name="showtype" value="nordicwalking"> <label for="type_nordicwalking"><?php _e( 'nordicwalking', 'runpress' ); ?></label><br />
+			<input type="radio" id="type_cycling" name="showtype" value="cycling"> <label for="type_cycling"><?php _e( 'cycling', 'runpress' ); ?></label><br />
+			<input type="radio" id="type_mountainbiking" name="showtype" value="mountainbiking"> <label for="type_mountainbiking"><?php _e( 'mountainbiking', 'runpress' ); ?></label><br />
+			<input type="radio" id="type_racecycling" name="showtype" value="racecycling"> <label for="type_racecycling"><?php _e( 'racecycling', 'runpress' ); ?></label><br />
+			<input type="radio" id="type_hiking" name="showtype" value="hiking"> <label for="type_hiking"><?php _e( 'hiking', 'runpress' ); ?></label><br />
+			<input type="radio" id="type_treadmill" name="showtype" value="treadmill"> <label for="type_treadmill"><?php _e( 'treadmill', 'runpress' ); ?></label><br />
+			<input type="radio" id="type_ergometer" name="showtype" value="ergometer"> <label for="type_ergometer"><?php _e( 'ergometer', 'runpress' ); ?></label><br />
+		</td>
+	</tr>
+	<p id="tr_array">
+	</p>
     </table>
 	</form>
 	<br />

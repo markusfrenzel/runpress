@@ -5,7 +5,7 @@
  * Plugin Name: 	RunPress
  * Plugin URI: 		http://markusfrenzel.de/wordpress/?page_id=2247
  * 
- * Description: 	Imports your running activities from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included. 
+ * Description: 	Imports your sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
  * 
  * Version: 		same as runpress.php
  * 
