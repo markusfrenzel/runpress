@@ -47,7 +47,7 @@ class runpress_widget extends WP_Widget {
 		parent::__construct(
 			'runpress_widget', // Base ID
 			__('Runpress Widget', 'runpress'), // Name
-			array( 'description' => __( 'A widget for the Runpress Wordpress Plugin to display your running activities from runtastic.com. Cached in your local DB.', 'runpress' ), ) // Args
+			array( 'description' => __( 'A widget for the Runpress Wordpress Plugin to display your sports activities from runtastic.com. Cached in your local DB.', 'runpress' ), ) // Args
 		);
 	}
 
