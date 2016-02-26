@@ -3,8 +3,8 @@ Contributors: markusfrenzel
 Tags: runpress,runtastic,running,nordicwalking,cycling,mountainbiking,racecycling,hiking,treadmill,ergometer,tracking,sport,sports,gps,import runtastic,database,import,run
 Donate link: http://markusfrenzel.de/wordpress/?page_id=2336
 Requires at least: 3.3.1
-Tested up to: 4.4.0
-Stable tag: 1.2.0
+Tested up to: 4.4.2
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -27,6 +27,10 @@ Do you think RunPress is useful for you? Then please consider to <a href="http:/
 
 ATTENTION: You MUST have CURL-Support in your PHP.INI active!
 
+RunPress is now multisite capable (implemented February 2016).
+
+Please consider a donation if you like RunPress. Every (even the smallest) donation is going to motivate the developer of RunPress to create new functions and additions to the plugin without splitting it up into a free and a buyable edition.
+
 == Installation ==
 1. Make sure that you've registered with Runtastic.com and that you've got your username and password in place.
 2. PHP5 or better required on your Wordpress Site. CURL-Support in your PHP.INI must be active!
@@ -35,6 +39,9 @@ ATTENTION: You MUST have CURL-Support in your PHP.INI active!
 5. Go to the RunPress Settings Page and configure it by typing in your Runtastic username and password. That's all
 
 == Frequently Asked Questions ==
+
+= I like RunPress very much. Is it possible to donate to you to show my appreciation to your development? =
+Sure. Just place your <a href="http://markusfrenzel.de/wordpress/?page_id=2336" target="_blank">donation</a> here. Even the smallest value will motivate me to keep the development up and running.
 
 = I get a fatal error: Call to undefined function curl_init() =
 This plugin uses the PHP curl library. Ask your provider to install / activate the curl library if it is not available on your system.
@@ -61,6 +68,9 @@ It depends on how you configured RunPress! I've implemented an option which allo
 The table is labeled with your MySQL table prefix of your wordpress installation (default: wp_) plus "runpress_db" 
 
 == Changelog ==
+
+= 1.3.0 =
+* added support for multisite wordpress installations
 
 = 1.2.0 =
 * added a few more types of activities to display: running, hiking, racecycling, mountainbiking, cycling, nordicwalking, ergometer and treadmill.
