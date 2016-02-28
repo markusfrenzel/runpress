@@ -75,6 +75,7 @@ add_action( 'widgets_init', 'runpress_register_widget' );		// Register the runpr
 add_action( 'admin_menu', 'runpress_admin_menu' );				// Add the admin menu structure
 add_action( 'runpress_event_hook', 'runpress_cronjob_event' );	// The scheduled WP-Cron Job (if any)
 add_action( 'wp_enqueue_scripts', 'runpress_enqueue_google_api' );
+add_action( 'wp_dashboard_setup', 'runpress_add_dashboard_widget' );
 
 /* Actions for multisite environmente */
 add_action( 'wpmu_new_blog', 'runpress_create_subscribe_table_mu' );
@@ -378,6 +379,166 @@ function runpress_load_textdomain() {
 }
 
 /*
+ * Function:   runpress_add_dashboard_widget
+ * Attributes: none
+ * 
+ * Implements the dashboard widget of RunPress
+ * 
+ * @since 1.3.0
+ * 
+ */
+function runpress_add_dashboard_widget() {
+	wp_add_dashboard_widget( 'runpress_dashboard_widget', __( 'RunPress Statistics', 'runpress' ), 'runpress_dashboard_widget_function' );
+}
+
+/*
+ * Function:   runpress_dashboard_widget_function
+ * Attributes: none
+ * 
+ * Shows the statistics information in the dashboard
+ * 
+ * @since 1.3.0
+ * 
+ */
+function runpress_dashboard_widget_function() {
+	global $wpdb;
+	global $runpress_db_name;
+	
+	$query = $wpdb->get_row( "SELECT type, date_day, date_month, date_year, distance, duration, pace, feeling, map_url FROM $runpress_db_name ORDER BY id desc LIMIT 1" );
+	if( $query ) {
+		echo __( 'Your latest ', 'runpress' ) . __( $query->type, 'runpress' ) . __( ' activity was ', 'runpress' ) . __( $query->feeling, 'runpress' ) . '.<br /><br />';
+	} else {
+		echo __( 'Nothing to show here yet.<br /><br />', 'runpress' );
+	}
+	
+	$query_sums = $wpdb->get_results( "SELECT type, COUNT(id) as activitycount FROM $runpress_db_name GROUP BY type" );
+	if( $query_sums ) {
+		$yearfrom = $wpdb->get_var( "SELECT MIN(date_year) FROM $runpress_db_name" );
+		$yearuntil = $wpdb->get_var( "SELECT MAX(date_year) FROM $runpress_db_name" );
+		?>
+		<div id="da2" style="display:inline"><h2><?php echo __( 'Overall Statistics', 'runpress' ) . '</h2><h3>(' . __( 'Period: ', 'runpress' ) . $yearfrom . ' - ' . $yearuntil . ')</h3>'; ?><a href="javascript:showall()"><?php echo __( 'Show', 'runpress' ); ?></a></div>
+		<div id="nd2" style="display:none"><h2><?php echo __( 'Overall Statistics', 'runpress' ) . '</h2><h3>(' . __( 'Period: ', 'runpress' ) . $yearfrom . ' - ' . $yearuntil . ')</h3>'; ?><a href="javascript:hideall()"><?php echo __( 'Show', 'runpress' ); ?></a></div>
+		<div id="ve2" style="display:none">
+			<div class="runpressTable">
+				<div class="runpressTableRow">
+					<div class="runpressTableHead">
+						<strong><?php echo __( 'Activity', 'runpress' ); ?></strong>
+					</div>
+					<div class="runpressTableHead">
+						<strong><?php echo __( 'Count', 'runpress' ); ?></strong>
+					</div>
+				</div>
+			<?php
+			foreach( $query_sums as $query_sum ) {
+				?>
+				<div class="runpressTableRow">
+					<div class="runpressTableCell">
+						<?php echo __( $query_sum->type, 'runpress' ); ?>
+					</div>
+					<div class="runpressTableCell">
+						<?php echo $query_sum->activitycount; ?>
+					</div>
+				</div>
+				<?php
+			}
+			?>
+			</div>
+		</div>
+		<?php
+	}
+	
+	$actual_year = date( "Y" );
+	$query_sums_year = $wpdb->get_results( "SELECT type, COUNT(id) as activitycountyear FROM $runpress_db_name WHERE date_year=$actual_year GROUP BY type" );
+	if( $query_sums_year ) {
+		?>
+		<div id="da1" style="display:inline"><h2><?php echo __( 'Statistics', 'runpress' ) . ' ' . $actual_year; ?></h2><a href="javascript:showyear()"><?php echo __( 'Show', 'runpress' ); ?></a></div>
+		<div id="nd1" style="display:none"><h2><?php echo __( 'Statistics', 'runpress' ). ' ' . $actual_year; ?></h2><a href="javascript:hideyear()"><?php echo __( 'Hide', 'runpress' ); ?></a></div>
+		<div id="ve1" style="display:none">
+			<div class="runpressTable">
+				<div class="runpressTableRow">
+					<div class="runpressTableHead">
+						<strong><?php echo __( 'Activity', 'runpress' ); ?></strong>
+					</div>
+					<div class="runpressTableHead">
+						<strong><?php echo __( 'Count', 'runpress' ); ?></strong>
+					</div>
+				</div>
+			<?php
+			foreach( $query_sums_year as $query_sum_year ) {
+				?>
+				<div class="runpressTableRow">
+					<div class="runpressTableCell">
+						<?php echo __( $query_sum_year->type, 'runpress' ); ?>
+					</div>
+					<div class="runpressTableCell">
+						<?php echo $query_sum_year->activitycountyear; ?>
+					</div>
+				</div>
+				<?php
+			}
+			?>
+			</div>
+		</div>
+		<?php		
+	}
+	?>
+	<script type="text/javascript">
+		function showyear() {
+			if( document.getElementById ) document.getElementById("ve1").style.display = "inline";
+			if( document.getElementById ) document.getElementById("da1").style.display = "none";
+			if( document.getElementById ) document.getElementById("nd1").style.display = "inline";
+		}
+		function hideyear() {
+			if( document.getElementById ) document.getElementById("ve1").style.display = "none";
+			if( document.getElementById ) document.getElementById("da1").style.display = "inline";
+			if( document.getElementById ) document.getElementById("nd1").style.display = "none";
+		}
+		function showall() {
+			if( document.getElementById ) document.getElementById("ve2").style.display = "inline";
+			if( document.getElementById ) document.getElementById("da2").style.display = "none";
+			if( document.getElementById ) document.getElementById("nd2").style.display = "inline";
+		}
+		function hideall() {
+			if( document.getElementById ) document.getElementById("ve2").style.display = "none";
+			if( document.getElementById ) document.getElementById("da2").style.display = "inline";
+			if( document.getElementById ) document.getElementById("nd2").style.display = "none";
+		}
+	</script>
+	<style type="text/css">
+		.runpressTable {
+		    	display: table;
+		    	width: 100%;
+		}
+		.runpressTableRow {
+		    	display: table-row;
+		}
+		.runpressTableHeading {
+		    	display: table-header-group;
+		    	background-color: #ddd;
+		}
+		.runpressTableCell, .runpressTableHead {
+		    	display: table-cell;
+		    	padding: 3px 10px;
+		    	border: 1px solid #999999;
+		}
+		.runpressTableHeading {
+		    	display: table-header-group;
+		    	background-color: #ddd;
+		    	font-weight: bold;
+		}
+		.runpressTableFoot {
+		    	display: table-footer-group;
+		    	font-weight: bold;
+		    	background-color: #ddd;
+		}
+		.runpressTableBody {
+		    	display: table-row-group;
+		}
+	</style>
+	<?php
+}
+
+/*
  * Function:   runpress_register_widget
  * Attributes: none
  * 
@@ -402,6 +563,7 @@ function runpress_admin_menu() {
 	add_submenu_page( 'runpress', __( 'RunPress Local DB', 'runpress' ), __( 'Local DB', 'runpress' ), 'manage_options', 'runpress-local-db', 'runpress_local_db' );
 	add_submenu_page( 'runpress', __( 'RunPress Sync', 'runpress' ), __( 'Sync', 'runpress' ), 'manage_options', 'runpress-sync', 'runpress_sync' );
 	add_submenu_page( 'runpress', __( 'RunPress Shortcode Generator', 'runpress' ), __( 'Shortcode Generator', 'runpress' ), 'manage_options', 'runpress-shortcode-generator', 'runpress_shortcode_generator' );
+	add_submenu_page( 'runpress', __( 'RunPress Donation', 'runpress' ), __( 'Donate!', 'runpress' ), 'manage_options', 'runpress-donate', 'runpress_donate' );
 	add_action( 'load-' . $hook_suffix, 'runpress_load_function' );
 	add_action( 'load-' . $hook_suffix, 'runpress_help_tab' );
 }
@@ -693,6 +855,8 @@ function runpress_local_db() {
 			/* Init dataTable */
 			jQuery('#backend_results').dataTable( {
 				"ordering": false,
+				"aLengthMenu": [[10,25,50,75,100,-1],[10,25,50,75,100,"All"]],
+				"iDisplayLength": 10,
 				<?php
 				if( $dt_translation ) {
 					echo "\"language\": { \"url\":  \"$dt_translation\" },";
@@ -1373,6 +1537,34 @@ function runpress_sync() {
 		</div>
 		<?php
 	}
+}
+
+/*
+ * Function:   runpress_donate
+ * Attributes: none
+ * 
+ * Software development and motivation can be easily pushed: by a donation
+ * 
+ * @since 1.3.0
+ */
+function runpress_donate() {
+	echo "<h2>" . __( 'RunPress Donation', 'runpress' ) . "</h2>";
+	echo "<h3>" . __( 'Motivate the developer of this plugin', 'runpress' ). "</h3>";
+	echo __( 'Please consider a small (or even a big) donation to the developer of the RunPress Plugin, Markus Frenzel.<br /><br /><b>I am not affiliated with nor am I working at Runtastic.</b> RunPress is a private project of me and is not supported by Runtastic or its affiliates.<br /><br />I appreciate every donation to keep my motivation level and the further development of RunPress up and running.<br /><br />', 'runpress' );
+	echo __( 'German speaking RunPress user may use this icon to donate via paypal:<br /><br />', 'runpress' );
+	?>
+	<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top"><input name="cmd" type="hidden" value="_s-xclick" />
+    <input name="hosted_button_id" type="hidden" value="MWKHFATNUJB5S" />
+    <input alt="Jetzt einfach, schnell und sicher online bezahlen – mit PayPal." name="submit" src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif" type="image" />
+    <img src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" alt="" width="1" height="1" border="0" /></form><br /><br />
+	<?php
+	echo __( 'English speaking RunPress User may use this icon to donate via paypal:<br /><br />', 'runpress' );
+	?>
+	<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top"><input name="cmd" type="hidden" value="_s-xclick" />
+    <input name="hosted_button_id" type="hidden" value="H3Z6D9H6TTF8L" />
+    <input alt="PayPal - The safer, easier way to pay online!" name="submit" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" type="image" />
+    <img src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" alt="" width="1" height="1" border="0" /></form>&nbsp;
+	<?php
 }
 
 /*

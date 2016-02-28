@@ -71,6 +71,8 @@ The table is labeled with your MySQL table prefix of your wordpress installation
 
 = 1.3.0 =
 * added support for multisite wordpress installations
+* updated datatable scripts to fix a bug
+* added dashboard widget to show simple statistics
 
 = 1.2.0 =
 * added a few more types of activities to display: running, hiking, racecycling, mountainbiking, cycling, nordicwalking, ergometer and treadmill.
