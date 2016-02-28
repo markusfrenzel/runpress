@@ -7,7 +7,7 @@
  * 
  * Description: 	Imports your sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
  * 
- * Version: 		1.2.0
+ * Version: 		1.3.0
  * 
  * Author: 			Markus Frenzel
  * Author URI: 		http://www.markusfrenzel.de
@@ -53,7 +53,8 @@ global $runpress_db_name;
 // runpress_db_versions
 // 1.0.0 - Initial Release
 // 1.0.1 - Accept NULL Values on the map_url column
-$runpress_db_version = "1.0.1";
+// 1.0.2 - Changed behaviour to support multisites
+$runpress_db_version = "1.0.2";
 $runpress_db_name = $wpdb->prefix . "runpress_db";
 
 /* Definitions */
@@ -75,9 +76,15 @@ add_action( 'admin_menu', 'runpress_admin_menu' );				// Add the admin menu stru
 add_action( 'runpress_event_hook', 'runpress_cronjob_event' );	// The scheduled WP-Cron Job (if any)
 add_action( 'wp_enqueue_scripts', 'runpress_enqueue_google_api' );
 
+/* Actions for multisite environmente */
+add_action( 'wpmu_new_blog', 'runpress_create_subscribe_table_mu' );
+
 /* Filters */
 add_filter( 'cron_schedules', 'runpress_add_cronjob_definitions' );
 add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'runpress_action_links' );
+
+/* Filters for multisite environments */
+add_filter( 'wpmu_drob_tables', 'runpress_delete_subscribe_table_mu' );
 
 /* Shortcodes */
 add_shortcode( 'runpress', 'runpress_shortcode' );
@@ -138,64 +145,96 @@ function runpress_activate() {
 	global $runpress_db_version; 	// Version number of the runpress DB for further DB changes needed
 	global $runpress_db_name;		// Name of the local DB
 	
-	if($wpdb->get_var( "SHOW TABLES LIKE '$runpress_db_name'" ) != $runpress_db_name ) {
-		
-		$sql = "CREATE TABLE $runpress_db_name (
-				id INT (10) NOT NULL AUTO_INCREMENT,
-				type VARCHAR(20) NOT NULL,
-				type_id INT(3) NOT NULL,
-				duration INT(10) NOT NULL,
-				distance INT(10) NOT NULL,
-				pace FLOAT(10,2) NOT NULL,
-				speed VARCHAR(20) NOT NULL,
-				kcal INT(10) NOT NULL,
-				heartrate_avg INT(10) NOT NULL,
-				heartrate_max INT(10) NOT NULL,
-				elevation_gain INT(10) NOT NULL,
-				elevation_loss INT(10) NOT NULL,
-				surface VARCHAR(20) NOT NULL,
-				weather VARCHAR(20) NOT NULL,
-				feeling VARCHAR(20) NOT NULL,
-				weather_id INT(10) NOT NULL,
-				feeling_id INT(10) NOT NULL,
-				surface_id INT(10) NOT NULL,
-				notes TEXT NOT NULL,
-				page_url VARCHAR(200) NOT NULL,
-				create_route_url_class VARCHAR(200) NOT NULL,
-				create_route_url VARCHAR(200) NOT NULL,
-				map_url TEXT NULL,
-				date_year INT(4) NOT NULL,
-				date_month INT(2) NOT NULL,
-				date_day INT(2) NOT NULL,
-				date_hour INT(2) NOT NULL,
-				date_minutes INT(2) NOT NULL,
-				date_seconds INT(2) NOT NULL,
-				UNIQUE KEY id(id)
-				);";
+	if( function_exists( 'is_multisite' ) && is_multisite() ) {
+		// check if it is network activation. if so run the activation function for ech id
+		if( $networkwide ) {
+			$old_blog = $wpdb->blogid;
+			// get all blog ids
+			$blogids = $wbdp->get_col( "SELECT blog_id FROM $wpdb->blogs" );
 			
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		dbDelta( $sql );
+			foreach( $blogids as $blog_id ) {
+				switch_to_blog( $blog_id );
+				// create runpress database table if not exists
+				runpress_create_table();
+			}
+			switch_to_blog( $old_blog );
+			return;
+		}
 	}
-	
-	add_option( "runpress_option_db_version", $runpress_db_version );
-	
-	$installed_ver = get_option( "runpress_option_db_version" );
-	
-	if( $installed_ver != $runpress_db_version ) {
-		/* If there will be database changes in the future... */
-		
-		$sql="ALTER TABLE `$runpress_db_name` CHANGE `map_url` `map_url` text NULL";		
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		dbDelta( $sql );
-		update_option( "runpress_option_db_version", $runpress_db_version );
-		
-		/* $sql = "";
-		 * require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		 * dbDelta( $sql );
-		 * update_option( "runpress_option_db_version", $runpress_db_version );
-		 */
-	 }
+	// create database table if not exists
+	runpress_create_table();
  }
+
+/*
+ * Function:   runpress_create_table()
+ * Attributes: none
+ * 
+ * Function to create the needed table to store the runtastic entries
+ * 
+ * @since 1.3.0
+ */
+function runpress_create_table() {
+	global $wpdb;
+	global $runpress_db_version;
+	global $runpress_db_name;
+	
+	if($wpdb->get_var( "SHOW TABLES LIKE '$runpress_db_name'" ) != $runpress_db_name ) {
+			
+			$sql = "CREATE TABLE $runpress_db_name (
+					id INT (10) NOT NULL AUTO_INCREMENT,
+					type VARCHAR(20) NOT NULL,
+					type_id INT(3) NOT NULL,
+					duration INT(10) NOT NULL,
+					distance INT(10) NOT NULL,
+					pace FLOAT(10,2) NOT NULL,
+					speed VARCHAR(20) NOT NULL,
+					kcal INT(10) NOT NULL,
+					heartrate_avg INT(10) NOT NULL,
+					heartrate_max INT(10) NOT NULL,
+					elevation_gain INT(10) NOT NULL,
+					elevation_loss INT(10) NOT NULL,
+					surface VARCHAR(20) NOT NULL,
+					weather VARCHAR(20) NOT NULL,
+					feeling VARCHAR(20) NOT NULL,
+					weather_id INT(10) NOT NULL,
+					feeling_id INT(10) NOT NULL,
+					surface_id INT(10) NOT NULL,
+					notes TEXT NOT NULL,
+					page_url VARCHAR(200) NOT NULL,
+					create_route_url_class VARCHAR(200) NOT NULL,
+					create_route_url VARCHAR(200) NOT NULL,
+					map_url TEXT NULL,
+					date_year INT(4) NOT NULL,
+					date_month INT(2) NOT NULL,
+					date_day INT(2) NOT NULL,
+					date_hour INT(2) NOT NULL,
+					date_minutes INT(2) NOT NULL,
+					date_seconds INT(2) NOT NULL,
+					UNIQUE KEY id(id)
+					);";
+				
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			dbDelta( $sql );
+		}
+		add_option( "runpress_option_db_version", $runpress_db_version );
+		
+		$installed_ver = get_option( "runpress_option_db_version" );
+		
+		if( $installed_ver != $runpress_db_version ) {
+			/* If there will be database changes in the future... */
+			
+			$sql="ALTER TABLE `$runpress_db_name` CHANGE `map_url` `map_url` text NULL";		
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			dbDelta( $sql );
+			update_option( "runpress_option_db_version", $runpress_db_version );
+			
+			/* $sql = "";
+			 * require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			 * dbDelta( $sql );
+			 * update_option( "runpress_option_db_version", $runpress_db_version );
+			 */
+		 }
+}
  
 /*
  * Function:   runpress_deactivate
@@ -208,7 +247,36 @@ function runpress_activate() {
 function runpress_deactivate() {
 	global $wpdb;
 	global $runpress_db_name;
-	/* Check if the user wants to delete all options... if so.. do it! */
+	
+	// check if its running in a multisite environment
+	if( function_exists( 'is_multisite' ) && is_multisite() ) {
+		$old_blog = $wpdb->blogid;
+		// get all blog ids
+		$blogids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+		
+		foreach( $blogids as $blog_id ) {
+			switch_to_blog( $blog_id );
+			runpress_delete_options();
+			runpress_delete_table();
+		}
+		switch_to_blog( $old_blog );
+	} else {
+		$runpress_delete_options();
+		$runpress_delete_table();
+	}
+	/* Delete the scheduled WP-Cron if it is there */
+	wp_clear_scheduled_hook( 'runpress_event_hook' );
+}
+
+/*
+ * Function:   runpress_delete_options
+ * Attributes: none
+ * 
+ * Deletes option on deactivation of the plugin if a user wants to
+ * 
+ * @since 1.3.0
+ */
+function runpress_delete_options() {
 	if( get_option( 'runpress_option_delete_options' ) == 1 ) {
 		delete_option( 'runpress_option_db_version' );
 		delete_option( 'runpress_option_username' );
@@ -216,17 +284,29 @@ function runpress_deactivate() {
 		delete_option( 'runpress_option_unittype' );
 		delete_option( 'runpress_option_delete_options' );
 		delete_option( 'runpress_option_cronjobtime' );
-		delete_option( 'runpress_runtastic_username' );
+		delete_option( 'runpress_option_runtastic_username' );
 		delete_option( 'runpress_runtastic_uid' );
-		/* Truncate the database */
-		$delete = $wpdb->query( "TRUNCATE TABLE $runpress_db_name" );
-		/* Drop the table */
-		$drop = $wpdb->query( "DROP TABLE IF EXISTS $runpress_db_name" );
 	}
-	/* Delete the scheduled WP-Cron if it is there */
-	wp_clear_scheduled_hook( 'runpress_event_hook' );
 }
 
+/*
+ * Function:   runpress_delete_table
+ * Attributes: none
+ * 
+ * Truncates and drops the runpress table on deactivation of the plugin
+ * 
+ * @since 1.3.0
+ */
+function runpress_delete_table() {
+	global $wpdb;
+	global $runpress_db_name;
+	
+	/* Truncate the database */
+	$delete = $wpdb->query( "TRUNCATE TABLE $runpress_db_name" );
+	/* Drop the table*/
+	$drop = $wpdb-> query( "DROP TABLE IF EXISTS $runpress_db_name" );
+}
+ 
 /*
  * Function:   runpress_autoupdate_db_check
  * Attributes: none
@@ -251,6 +331,39 @@ function runpress_autoupdate_db_check() {
 		
 	}
 }
+
+/*
+ * Function:   runpress_create_subscribe_table_mu
+ * Attributes: Wordpress pregiven
+ * 
+ * Creates a subscribe table if a new blog is added to a multisite environment
+ * 
+ * @since 1.3.0
+ */
+function runpress_create_subscribe_table_mu( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
+	if( is_plugin_active_for_network( 'runpress/runpress.php' ) ) {
+		switch_to_blog( $blog_id );
+		create_subscribe_table();
+		restore_current_blog();
+	}
+}
+
+/*
+ * Function:   runpress_delete_subscribe_table_mu
+ * Attributes: Wordpress pregiven
+ * 
+ * Deletes a subscribe table if a blog is deleted from a multisite environment
+ * 
+ * @since 1.3.0
+ */
+function runpress_delete_subscribe_table_mu( $tables ) {
+	global $wpdb;
+	global $runpress_db_name;
+	
+	$tables[] = $runpress_db_name;
+	return $tables;
+}
+		
 
 /*
  * Function:   runpress_load_textdomain
