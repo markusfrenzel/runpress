@@ -64,7 +64,7 @@ The easiest way is to use the integrated shortcode generator. It is located in y
 = What will happen to the data if I uninstall the plugin? =
 It depends on how you configured RunPress! I've implemented an option which allows you to deactivate or deinstall the plugin without the loss of your data.
 
-= I've forgotten to set the option of deleting all data and uninstalled your plugin. Which table do I have to delete on my database to get rid of the runtastic data?
+= I've forgotten to set the option of deleting all data and uninstalled your plugin. Which table do I have to delete on my database to get rid of the runtastic data? =
 The table is labeled with your MySQL table prefix of your wordpress installation (default: wp_) plus "runpress_db" 
 
 == Changelog ==
