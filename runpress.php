@@ -481,6 +481,11 @@ function runpress_dashboard_widget_function() {
 		</div>
 		<?php		
 	}
+	$path = 'admin.php?page=runpress-donate';
+	$url = admin_url( $path );
+	$link = "<a href='{$url}'>Donate here</a>";
+	echo '<br /><br />';
+	echo __( 'Please consider a donation to keep the further development of RunPress up and running.', 'runpress' ) . ' | ' . $link;
 	?>
 	<script type="text/javascript">
 		function showyear() {
