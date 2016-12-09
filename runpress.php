@@ -7,7 +7,7 @@
  * 
  * Description: 	Imports your sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
  * 
- * Version: 		1.3.0
+ * Version: 		1.4.0 (Free Edition)
  * 
  * Author: 			Markus Frenzel
  * Author URI: 		http://www.markusfrenzel.de
@@ -23,7 +23,7 @@
  */
 
 /*
- * Copyright (C) 2014, 2015 Markus Frenzel
+ * Copyright (C) 2014, 2015, 2016 Markus Frenzel
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License as 
@@ -278,7 +278,7 @@ function runpress_deactivate() {
  * @since 1.3.0
  */
 function runpress_delete_options() {
-	if( get_option( 'runpress_option_delete_options' ) == 1 ) {
+	if( get_option( 'runpress_option_delete_options' ) == '1' ) {
 		delete_option( 'runpress_option_db_version' );
 		delete_option( 'runpress_option_username' );
 		delete_option( 'runpress_option_userpass' );
@@ -1102,36 +1102,28 @@ function runpress_shortcode( $atts ) {
 			$feeling = $query->feeling;
 			$starttime = sprintf( "%02s", $query->date_hour ) . ":" . sprintf( "%02s", $query->date_minutes );
 			/* Define the title of the shortcode */
-			$header .= "<p><h2>" . $a[ 'title' ] . "</h2>";
-			$header .= "<div class='runpress_singletable'>";
-			$header .= "<div class='runpress_singletablerow'>
-						<div class='runpress_singletabledata'>" . __( 'Type', 'runpress' ) . "
-						<br>
-						" . __( $query->type, 'runpress' ). " 
-						</div>
-						<div class='runpress_singletabledata'>" . __( 'Distance', 'runpress' ) . "
-						<br>
-						" . $distance ."
-						</div>
-						<div class='runpress_singletabledata'>" . __( 'Date', 'runpress' ) . "
-						<br>
-						" . $date . ", " . $starttime . "
-						</div>
-						<div class='runpress_singletabledata'>" . __( 'Avg. Pace', 'runpress' ) . "
-						<br>
-						" . $pace . "
-						</div>
-						<div class='runpress_singletabledata'>" . __( 'Elevation', 'runpress' ) . "
-						<br>
-						<span class='alignleft'>+</span><span class='alignright'>" . $elevationgain . "</span><br>
-						<span class='alignleft'>-</span><span class='alignright'>" . $elevationloss . "</span>
-						</div>
-						<div style='clear: both;'></div>					
-						</div>
-						</div>";
-			$body .= "<div class='runpress_singletable'>
-					  <div class='runpress_singletablerow'>
-					  <div class='runpress_singletabledata'>";
+			$header .= "<table>
+							<caption>" . $a[ 'title' ] . "</caption>";
+			$header .= "	<thead>
+								<tr>
+									<th>" . __( 'Type', 'runpress' ) . "</th>
+									<th>" . __( 'Distance', 'runpress' ) . "</th>
+									<th>" . __( 'Date', 'runpress' ) . "</th>
+									<th>" . __( 'Avg. Pace', 'runpress' ) . "</th>
+									<th>" . __( 'Elevation', 'runpress' ) . "</th>
+								</tr>
+							</thead>";
+			$body	.= "	<tbody>
+								<tr valign='top' align='left'>
+									<td>" . __( $query->type, 'runpress' ) . "</td>
+									<td>" . $distance . "</td>
+									<td>" . $date . ", " . $starttime . "</td>
+									<td>" . $pace . "</td>
+									<td>+ " . $elevationgain . "<br>- " . $elevationloss . "</td>
+								</tr>
+								<tr>
+									<td colspan='5'>";
+						
 			if( !$query->map_url ) {
 				/* load the image with a translated string in it */
 				$body .= "<img src='" . plugins_url() . "/runpress/inc/img/showjpg.php?image=nomapfound.jpg&text=" . __( 'No map found!', 'runpress' ) . "' />";
@@ -1140,32 +1132,26 @@ function runpress_shortcode( $atts ) {
 			{
 				$body .= "<img src='http:" . str_replace( 'width=50&height=70', 'width=' . $a[ 'mapwidth' ] . '&height=' . $a[ 'mapheight' ], $query->map_url ) . "'>";
 			}
-			$body .= "</div></div></div>";
-			$footer .= "<div class='runpress_singletable'>
-						<div class='runpress_singletablerow'>
-						<div class='runpress_singletabledata'>" . __( 'Calories', 'runpress' ) . "
-						<br>
-						" . $calories . " kcal
-						</div>
-						<div class='runpress_singletabledata'>" . __( 'Heartrate', 'runpress' ) .  "
-						<br>
-						<span class='alignleft'>" . __( 'Avg.', 'runpress' ) . "</span><span class='alignright'>" . $heartrateavg . "</span><br>
-						<span class='alignleft'>" . __( 'Max.', 'runpress' ) . "</span><span class='alignright'>" . $heartratemax . "</span>
-						</div>
-						<div class='runpress_singletabledata'>" . __( 'Weather', 'runpress') . "
-						<br>
-						" . __( $weather, 'runpress' ) . "
-						</div>
-						<div class='runpress_singletabledata'>" . __( 'Surface', 'runpress' ) . "
-						<br>
-						" . __( $surface, 'runpress' ) . "
-						</div>
-						<div class='runpress_singletabledata'>" . __( 'Feeling', 'runpress') . "
-						<br>
-						" . __( $feeling, 'runpress' ) . "
-						</div>
-						</div>";
-			$footer .= "</div></p>";
+			$body .= "</td>
+								</tr>
+							</tbody>";
+			$footer .= "	<tfoot>
+								<tr>
+									<th>" . __( 'Calories', 'runpress' ) . "</th>
+									<th>" . __( 'Heartrate', 'runpress' ) . "</th>
+									<th>" . __( 'Weather', 'runpress') . "</th>
+									<th>" . __( 'Surface', 'runpress' ) . "</th>
+									<th>" . __( 'Feeling', 'runpress') . "</th>
+								</tr>
+								<tr valign='top' align='left'>
+									<td>" . $calories . " kcal </td>
+									<td>" . __( 'Avg.', 'runpress' ) . " " . $heartrateavg . "<br>" . __( 'Max.', 'runpress' ) . " " . $heartratemax . "</td>
+									<td>" . __( $weather, 'runpress' ) . "</td>
+									<td>" . __( $surface, 'runpress' ) . "</td>
+									<td>" . __( $feeling, 'runpress' ) . "</td>
+								</tr>
+							</tfoot>
+						</table>";
 			$returncontent = "";
 			$returncontent = $header . $body . $footer;
 		}

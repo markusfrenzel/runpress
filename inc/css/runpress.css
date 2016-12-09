@@ -1,33 +1,16 @@
-div.runpress_singletable {
-    display: table;
-    width: calc(100% - 10px);
-    border: none;
-    padding: 5px;
-    font-family: arial;
-}
-  
-div.runpress_singletablerow {
-	  display: table-row;
-	  font-size: 10pt;
-}
-  
-div.runpress_singletabledata { 
-    display: table-cell;
-    border: none;
-    width: 300px;
-    padding: 5px;
-    line-height: 10pt;
-}
+/* Credits:
+ * 	This bit of code: Exis | exisweb.net/responsive-tables-in-wordpress
+ * 	Original Idea: Dudley Storey | codepen.io/dudleystorey/pen/Geprd */
 
-div.runpress_singletabledata:first-line {
-    font-weight: bold;
-    line-height: normal;
-}
-
-.alignleft {
-	float: left;
-}
-
-.alignright {
-	float: right;
+@media screen and (max-width: 600px) {
+	table {width:100%;}
+	thead {display: none;}
+	tr:nth-of-type(2n) {background-color: inherit;}
+	tr td:first-child {background: #f0f0f0; font-weight:bold;font-size:1.3em;}
+	tbody td {display: block; text-align:center;}
+	tbody id:before {
+		content: attr(data-th);
+		display: block;
+		text-align:center;
+	}
 }
