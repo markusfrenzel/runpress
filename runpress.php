@@ -3,11 +3,11 @@
  * File Name:		runpress.php
  * 
  * Plugin Name: 	RunPress
- * Plugin URI: 		http://markusfrenzel.de/wordpress/?page_id=2247
+ * Plugin URI: 		http://runpress.markusfrenzel.de
  * 
  * Description: 	Imports your sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
  * 
- * Version: 		1.4.0 (Free Edition)
+ * Version: 		1.4.0
  * 
  * Author: 			Markus Frenzel
  * Author URI: 		http://www.markusfrenzel.de
@@ -63,6 +63,7 @@ define( 'RUNPRESS_PLUGIN_PATH', plugin_dir_path(__FILE__) );	// Used to find the
 /* Required scripts */
 require_once( RUNPRESS_PLUGIN_PATH . 'inc/widget/runpress-widget.php' );	// Load the code for the runpress widget
 require_once( RUNPRESS_PLUGIN_PATH . 'inc/class.runtastic.php' );			// Load the runtastic class by Timo Schlueter (timo.schlueter@me.com / www.timo.in)
+require_once( RUNPRESS_PLUGIN_PATH . 'inc/class.runtasticactivitylist.php' );// Load the runtastic activity list class by Timo Schlueter (timo.schlueter@me.com / www.timo.in)
 
 /* Hooks */
 register_activation_hook( __FILE__, 'runpress_activate' );		// Create the local DB and so on
@@ -807,7 +808,6 @@ function runpress_local_db() {
 	echo "<table id='backend_results' class='cell-border' cellspacing='0' width='100%'>
 		  <thead>
 		  <tr>
-		  <th align='left'>ID</th>
 		  <th align='left'>" . __( 'Type', 'runpress' ) . "</th>
 		  <th align='left'>" . __( 'Date', 'runpress' ) . "</th>
 		  <th align='left'>" . __( 'Start', 'runpress' ) . "</th>
@@ -818,7 +818,6 @@ function runpress_local_db() {
 		  </tr></thead>
 		  <tfoot>
 		  <tr>
-		  <th align='left'>ID</th>
 		  <th align='left'>" . __( 'Type', 'runpress' ) . "</th>
 		  <th align='left'>" . __( 'Date', 'runpress' ) . "</th>
 		  <th align='left'>" . __( 'Start', 'runpress' ) . "</th>
@@ -838,7 +837,6 @@ function runpress_local_db() {
 		$duration = date( 'H:i:s', ( $row->duration/1000 ) );
 		( $opt_val_unittype == "Metric Units" ? $speed = round( $row->speed, 2 ) : $speed = round( $row->speed/1.609344, 2 ) );
 		$backendresult .= "<tr>";
-		$backendresult .= "<td>" . $row->id . "</td>";
 		$backendresult .= "<td>" . __( $row->type, 'runpress' ) . "</td>";
 		( $opt_val_unittype == "Metric Units" ? $backendresult .= "<td title='" . $date . " (" . __( 'Format: DD.MM.YYYY', 'runpress' ) . ")'>" . $date . "</td>" : $backendresult .= "<td title='" . $date . " (" . __( 'Format: YYYY/MM/DD', 'runpress' ) . ")'>" . $date . "</td>" );
 		$backendresult .= "<td title='" . $time . "(" . __( 'Format: hh:mm:ss', 'runpress' ) . ")'>" . $time . "</td>";
@@ -904,7 +902,7 @@ function runpress_sync_database_manually() {
 	global $wpdb;
 	global $runpress_db_name;
 	/* query the runtastic website */
-	$runtastic = new RunPress_Runtastic();
+	$runtastic = new RunPress_Runtastic\RunPress_Runtastic();
 	$runtastic->setUsername( get_option( 'runpress_option_username' ) );
 	$runtastic->setPassword( get_option( 'runpress_option_userpass' ) );
 	$runtastic->setTimeout( 20 );
@@ -1048,7 +1046,7 @@ function runpress_shortcode( $atts ) {
 		'entry' => 'latest',
 		'mapwidth' => '200',
 		'mapheight' => '300',
-		'showonly' => 'running'
+		'showonly' => ''
 		), $atts );
 	
 	if( $a[ 'showonly' ] ) {
@@ -1575,6 +1573,8 @@ function runpress_shortcode_generator() {
 	/* the shortcode should be as easy as an order at starbucks */
 	echo __( 'You can choose between 4 possibilities to display your runtastic activities: <b>table</b>, <b>datatable</b>, <b>chart</b> and <b>single</b>.<br /><br />You might limit the data to display by declaring a specific <b>year</b>. <i>If you do not declare a year the actual year will be used!</i><br /><br />The data <b>sortorder</b> can be changed by declaring the specific variable.<br /><br />Use the <b>title</b> variable to label your data with a heading.<br /><h4>Examples:</h4>[runpress year="2014" display="table" sortorder="desc"]<br /><i>This shortcode will show your data from 2014, sorted descending by the runtastic id within a normal table</i><br /><br />[runpress display="datatable"]<br /><i>This shortcode will show your data from the actual year, sorted descending by the runtastic id within a special table called "DataTable".</i><br /><br />[runpress year="2015" display="chart" sortorder="desc"]<br /><i>This shortcode will show your data from 2015, ignoring the sortorder because it will only show the monthly sums of your running activities within a chart powered by Google Charts.</i><br /><br />[runpress display="single" entry="latest" mapwidth="500" mapheight="300"]<br /><i>This shortcode will show the single event specified by the "entry" variable with a lot of details including map!</i><br /><br /><h3>How to use this shortcode?</h3>Just copy the example shortcode (including the square brackets at the beginning and the end) or use the Generator to build a new one and paste it into the page where the data should be displayed. It runs also in posts... not only in pages!<br /><br />If you want to use the data in a widget area: please use the RunPress Widget which has been installed with the activation of this plugin.', 'runpress' );
 	
+	echo __( "Jetzt mal Butter bei die Fische", "runpress" );
+	
 	/* show the generator */
 	echo "<h3>" . __( 'Runpress Shortcode Generator', 'runpress' ). "</h3>";
 	/* check the possible years to display */
@@ -1614,10 +1614,25 @@ function runpress_shortcode_generator() {
 					$('#tr_availableonlyonetype input').removeAttr('checked');
 				}
 			});
+			
+			$('#tr_entry').change(function(){
+				if( $('#entry').val() == 'entry=latest' ) {
+					if( $('#tr_availableonlyonetype').is(':hidden')) {
+						$('#tr_availableonlyonetype').fadeToggle('slow');
+					}
+				}
+				if( $('#entry').val() != 'entry=latest' ) {
+					if( $('#tr_availableonlyonetype').is(':visible')) {
+						$('#tr_availableonlyonetype').fadeToggle('slow');
+					}
+				}
+			});
+			
 		});
-				
+						
 		function transferFields() {
 			jQuery(document).ready(function($) {
+				
 				var yourArray = new Array();
 				
 				$('input[name="showtype"]:checked').each(function() {
@@ -1625,43 +1640,70 @@ function runpress_shortcode_generator() {
 			});
 
 			if( yourArray < 1) { 
-				yourArray = 'running'; 
+				yourArray = ''; 
 			}
 
 			if( !document.getElementById( "title").value ) {
 				if ( document.getElementById( "display" ).value==" display=single" ) {
-					document.getElementById( "entry" ).value=' entry=' + document.getElementById( "entry" ).value;
-					generatedshortcode = '[runpress ' + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + ' mapwidth=' + document.getElementById( "mapwidth" ).value + ' mapheight=' + document.getElementById( "mapheight" ).value + ' showonly=' + yourArray + ']';
+
+					document.getElementById( "entry" ).value=' ' + document.getElementById( "entry" ).value;
+										
+					if(yourArray = '' ) {
+							generatedshortcode = '[runpress ' + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + ' mapwidth=' + document.getElementById( "mapwidth" ).value + ' mapheight=' + document.getElementById( "mapheight" ).value + ']';
+						}
+						else
+						{
+							generatedshortcode = '[runpress ' + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + ' mapwidth=' + document.getElementById( "mapwidth" ).value + ' mapheight=' + document.getElementById( "mapheight" ).value + ' showonly=' + yourArray + ']';
+						}
 				}
 				else
 				{
-					generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ' showonly=' + yourArray + ']';
+					if( !yourArray ) {
+						generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ']';
+					}
+					else
+					{
+						generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ' showonly=' + yourArray + ']';
+					}
 				}
 			}
 			else
 			{
 				if ( document.getElementById( "display" ).value==" display=single" ) {
-					document.getElementById( "entry" ).value=' entry=' + document.getElementById( "entry" ).value;
-					generatedshortcode = '[runpress ' + document.getElementById( "display" ).value + document.getElementById( "entry" ).value + ' mapwidth=' + document.getElementById( "mapwidth" ).value + ' mapheight=' + document.getElementById( "mapheight" ).value + ' title="' + document.getElementById( "title" ).value + '" showonly=' + yourArray + ']';
+					
+					if( !yourArray ) {
+						generatedshortcode = '[runpress ' + document.getElementById( "display" ).value + " " + document.getElementById( "entry" ).value + ' mapwidth=' + document.getElementById( "mapwidth" ).value + ' mapheight=' + document.getElementById( "mapheight" ).value + ' title="' + document.getElementById( "title" ).value + ']';
+					}
+					else
+					{
+						generatedshortcode = '[runpress ' + document.getElementById( "display" ).value + " " + document.getElementById( "entry" ).value + ' mapwidth=' + document.getElementById( "mapwidth" ).value + ' mapheight=' + document.getElementById( "mapheight" ).value + ' title="' + document.getElementById( "title" ).value + '" showonly=' + yourArray + ']';
+					}
 				}
 				else
 				{
-					generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ' title="' + document.getElementById( "title" ).value + '" showonly=' + yourArray + ']';
+					if( !yourArray ) {
+						generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ' title="' + document.getElementById( "title" ).value + '"]';
+					}
+					else
+					{
+						generatedshortcode = '[runpress ' + document.getElementById( "year" ).value + document.getElementById( "display" ).value + document.getElementById( "sortorder" ).value + ' title="' + document.getElementById( "title" ).value + '" showonly=' + yourArray + ']';
+					}
 				}
 			}
 			document.runpressgenerator.shortcode.value = generatedshortcode.replace( "  "," " );
-			document.getElementById( "entry" ).value = document.getElementById( "entry" ).value.replace( " entry=", "" );	
+			document.getElementById( "entry" ).value = document.getElementById( "entry" ).value.replace( " entry=", "" );
+			
 			});
 		}
 		
 		function resetFields() {
 			document.runpressgenerator.shortcode.value = "";
-			document.getElementById( "display" ).value = document.getElementById( "display" );
+			document.getElementById( "display" ).value = document.getElementById( "display" ).value;
 		}
 	</script>
 	<form name="runpressgenerator">
 	<input type="text" id="shortcode" value="" size=80>
-	<!-- <input type="reset" value="<?php _e( 'Reset', 'runpress' ); ?>"> -->
+	
 	<input type="button" class="button-primary" onclick="resetFields()" value="<?php _e( 'Reset', 'runpress' ); ?>">
     <br />
     <br />
@@ -1697,8 +1739,28 @@ function runpress_shortcode_generator() {
 		</tr>
 	<tr id="tr_entry">
 		<td><?php _e( 'Entry:', 'runpress' ) . ' '; ?></td>
-		<td><input type="text" id="entry" value="latest" size=30></td>
-		<td><?php _e( '<i>Just copy and paste the ID value from your local RunPress Database or use the word "latest" for your latest run.</i>', 'runpress' ); ?></td>
+		
+		<td><select id="entry" name="entry" size="1"><option value="entry=latest"><?php _e( 'latest', 'runpress' ); ?></option>
+				<?php
+				$opt_val_unittype = get_option( 'runpress_option_unittype', 'Metric Units' );
+				foreach( $available_years as $years ) {
+					/* read all entries depending upon the selection of the user */
+					$available_entries = $wpdb->get_results( "SELECT id, type, date_year, date_month, date_day, distance FROM $runpress_db_name WHERE date_year=$years->date_year ORDER BY id DESC;" );
+					echo "<optgroup label=\"" . __( 'Year:', 'runpress' ) . " " . $years->date_year . "\">";
+					foreach( $available_entries as $available_entry ) {
+						$entry_day = sprintf( "%02s", $available_entry->date_day );
+						$entry_month = sprintf( "%02s", $available_entry->date_month );
+						$entry_year = sprintf( "%04s", $available_entry->date_year );
+						( $opt_val_unittype == "Metric Units" ? $entry_date = $entry_day . "." . $entry_month . "." . $entry_year : $date = $entry_year . "/" . $entry_month . "/" . $entry_day );
+						( $opt_val_unittype == "Metric Units" ? $entry_distance = round( $available_entry->distance/1000, 2 ) . " km" : $entry_distance = round( ( $available_entry->distance/1000)/1.609344, 2 ) . " mi." );
+						echo "<option value=\"entry=$available_entry->id\">$entry_date: " . __( $available_entry->type, "runpress" ) . ": $entry_distance</option>";
+					}
+					echo "</optgroup>";
+				}
+				?>
+			</select>
+		</td>
+		<td><?php _e( '<i>Just choose the activity from the dropdown list or use the entry <b>latest</b> for your latest activity.</i>', 'runpress' ); ?></td>
 	</tr>
 	<tr id="tr_mapdimensions">
 		<td><?php _e( 'Mapwidth / Mapheight:', 'runpress' ) . ' '; ?></td>

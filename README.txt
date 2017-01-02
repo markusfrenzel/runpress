@@ -3,8 +3,8 @@ Contributors: markusfrenzel
 Tags: runpress,runtastic,running,nordicwalking,cycling,mountainbiking,racecycling,hiking,treadmill,ergometer,tracking,sport,sports,gps,import runtastic,database,import,run
 Donate link: http://markusfrenzel.de/wordpress/?page_id=2336
 Requires at least: 3.3.1
-Tested up to: 4.4.2
-Stable tag: 1.3.0
+Tested up to: 4.7
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -68,6 +68,17 @@ It depends on how you configured RunPress! I've implemented an option which allo
 The table is labeled with your MySQL table prefix of your wordpress installation (default: wp_) plus "runpress_db" 
 
 == Changelog ==
+
+= 1.4.0 =
+* added ability to click single entries in the shortcode generator withour using copy and paste of activity id numbers
+* changed the way tables are build in the runpress widget and every other table used with runpress to fix a bug with various themes
+* optimized runpress tables to fit in screens of different resolutions via css
+* fixed some small bugs in the main code which loads needed css files
+* fixed a small bug in the runpress shortcode generator
+* updated the main import script to the latest version
+* updated the jquery-datatables css and js scripts to the latest versions
+* fixed a small bug regarding translations of the plugin
+* preparing to release a premium version (fee-based) of the plugin
 
 = 1.3.0 =
 * added support for multisite wordpress installations
