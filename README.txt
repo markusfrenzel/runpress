@@ -72,7 +72,10 @@ The table is labeled with your MySQL table prefix of your wordpress installation
 = 1.4.1 =
 * fixed a huge bug which prevents users of the plugin to save their runtastic credentials
 * fixed some small bugs regarding admin notices and error messages
-* added some text about the differences between premium an free version of the plugin
+* fixed a huge bug regarding the ability to disable the plugin and delete the options
+* fixed some typos
+* added a small help function for fresh installs of the plugin so that the user knows what to do first
+* added some text about the differences between premium and the free version of the plugin
 
 = 1.4.0 =
 * added ability to click single entries in the shortcode generator withour using copy and paste of activity id numbers

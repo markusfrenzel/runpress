@@ -23,7 +23,7 @@
  */
 
 /*
- * Copyright (C) 2014, 2015, 2016 Markus Frenzel
+ * Copyright (C) 2014, 2015, 2016, 2017 Markus Frenzel
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License as 
@@ -263,8 +263,8 @@ function runpress_deactivate() {
 		}
 		switch_to_blog( $old_blog );
 	} else {
-		$runpress_delete_options();
-		$runpress_delete_table();
+		runpress_delete_options();
+		runpress_delete_table();
 	}
 	/* Delete the scheduled WP-Cron if it is there */
 	wp_clear_scheduled_hook( 'runpress_event_hook' );
@@ -287,7 +287,7 @@ function runpress_delete_options() {
 		delete_option( 'runpress_option_delete_options' );
 		delete_option( 'runpress_option_cronjobtime' );
 		delete_option( 'runpress_option_runtastic_username' );
-		delete_option( 'runpress_runtastic_uid' );
+		delete_option( 'runpress_option_runtastic_uid' );
 	}
 }
 
@@ -583,14 +583,17 @@ function runpress_admin_menu() {
  * @since 1.0.0
  */ 
 function runpress_admin_notices() {
-	echo "<div class='notice notice-info is-dismissible'><p>" . __( 'RunPress is not configured yet. Please do it now.', 'runpress' ) . "</p></div>\n";
+	$path_config = 'admin.php?page=runpress';
+	$url_config = admin_url( $path_config );
+	$link_config = "<a href='{$url_config}'>" . __( 'Start configuration.', 'runpress' ) ."</a>";
+	echo "<div class='notice notice-info is-dismissible'><p>" . __( 'RunPress is not configured yet. Please do it now.', 'runpress' ) . " " . $link_config . "</p></div>\n";
 }
 
 /*
  * Function:   runpress_load_function
  * Attributes: none
  * 
- * The load function to surpress the admin notice if we are on our options page
+ * The load function to suppress the admin notice if we are on our options page
  * 
  * @since 1.0.0
  */ 
@@ -639,8 +642,8 @@ function runpress_options() {
 	$opt_pass = 'runpress_option_userpass';
 	$opt_unittype = 'runpress_option_unittype';
 	$opt_deleteoptions = 'runpress_option_delete_options';
-	$opt_runtastic_username = 'runpress_runtastic_username';
-	$opt_runtastic_uid = 'runpress_runtastic_uid';
+	$opt_runtastic_username = 'runpress_option_runtastic_username';
+	$opt_runtastic_uid = 'runpress_option_runtastic_uid';
 	$hidden_field_name = 'runpress_hidden';
 	$data_field_name = 'runpress_username';
 	$data_field_pass = 'runpress_userpass';
@@ -722,17 +725,19 @@ function runpress_options() {
 			if( $runtastic->login() ) {
 				update_option( $opt_runtastic_username, $runtastic->getUsername() );
 				update_option( $opt_runtastic_uid, $runtastic->getUid() );
-				/* Show an 'settings saved' mesage on the screen */
+				/* Show an 'settings saved' message on the screen */
 				echo "<div class='notice notice-success is-dismissible'><p><strong>" . __( 'Settings saved.', 'runpress' ) . "</strong></p></div>";
 			}
 			else
 			{
 				delete_option( $opt_runtastic_username, NULL );
 				delete_option( $opt_runtastic_uid, NULL);
-				echo "<div class='notice notice-error'><p><strong>" . __( 'An error occured. Please check your user credentials and try again!', 'runpress' ) . "</strong></p></div>";
+				echo "<div class='notice notice-error'><p><strong>" . __( 'An error occurred. Please check your user credentials and try again!', 'runpress' ) . "</strong></p></div>";
 			}
 		}
 	}
+	/* If this is a initial setup... show the tutorial */
+	runpress_show_configuration_tutorial();
 	/* Now show the settings editing screen */
 	?>
 	<div class="wrap">
@@ -1910,4 +1915,20 @@ function runpress_action_links( $links ) {
 	return $links;
 }
 
+/*
+ * Function:   runpress_show_configuration_tutorial
+ * Attributes: none
+ *  
+ * Function to add a short symbolic tutorial of the needed configuration steps
+ * 
+ * @since 1.4.1
+ */
+function runpress_show_configuration_tutorial() {
+	runpress_enqueue_scripts();
+	$url = plugin_dir_url( __FILE__ ) . "inc/img/glass_numbers/";
+	$opt_runtastic_username = 'runpress_option_runtastic_username';
+	if( get_option( $opt_runtastic_username ) == false ) {
+		echo '<img class="tutorial" src="' . $url . 'glass_numbers_1.png"> Save your Runtastic Credentials';
+	}
+}
 ?>
