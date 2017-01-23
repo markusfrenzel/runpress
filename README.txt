@@ -4,7 +4,7 @@ Tags: runpress,runtastic,running,nordicwalking,cycling,mountainbiking,racecyclin
 Donate link: http://markusfrenzel.de/wordpress/?page_id=2336
 Requires at least: 3.3.1
 Tested up to: 4.7
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
@@ -68,6 +68,11 @@ It depends on how you configured RunPress! I've implemented an option which allo
 The table is labeled with your MySQL table prefix of your wordpress installation (default: wp_) plus "runpress_db" 
 
 == Changelog ==
+
+= 1.4.1 =
+* fixed a huge bug which prevents users of the plugin to save their runtastic credentials
+* fixed some small bugs regarding admin notices and error messages
+* added some text about the differences between premium an free version of the plugin
 
 = 1.4.0 =
 * added ability to click single entries in the shortcode generator withour using copy and paste of activity id numbers

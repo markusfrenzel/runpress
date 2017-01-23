@@ -7,7 +7,7 @@
  * 
  * Description: 	Imports your sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
  * 
- * Version: 		1.4.0
+ * Version: 		1.4.1
  * 
  * Author: 			Markus Frenzel
  * Author URI: 		http://www.markusfrenzel.de
@@ -583,7 +583,7 @@ function runpress_admin_menu() {
  * @since 1.0.0
  */ 
 function runpress_admin_notices() {
-	echo "<div id='notice' class='update-nag'><p>" . __( 'RunPress is not configured yet. Please do it now.', 'runpress' ) . "</p></div>\n";
+	echo "<div class='notice notice-info is-dismissible'><p>" . __( 'RunPress is not configured yet. Please do it now.', 'runpress' ) . "</p></div>\n";
 }
 
 /*
@@ -655,7 +655,7 @@ function runpress_options() {
 	$opt_val_runtastic_uid = get_option( $opt_runtastic_uid, '' );
 	/* Check if the runtastic username is already in the db */
 	if( get_option( $opt_runtastic_username ) != false ) {
-		echo "<div id='notice' class='updated'><p>" . __( 'Your Runtastic Username: ', 'runpress' ) . get_option( $opt_runtastic_username) . " / UID: " . get_option( $opt_runtastic_uid ) . "</p></div>\n";
+		echo "<div class='notice notice-success is-dismissible'><p>" . __( 'Your Runtastic Username: ', 'runpress' ) . get_option( $opt_runtastic_username) . " / UID: " . get_option( $opt_runtastic_uid ) . "</p></div>\n";
 	}
 	/* Lets see if the user has posted some information. If so, the hidden field will be set to 'Y' */
 	if( isset( $_POST[ $hidden_field_name ] ) && $_POST[ $hidden_field_name ] == 'Y' ) {
@@ -715,23 +715,23 @@ function runpress_options() {
 
 		if( isset( $opt_val_name ) && isset( $opt_val_pass ) ) {
 			/* Query the runtastic website to get the runtastic username and uid */
-			$runtastic = new RunPress_Runtastic();
+			$runtastic = new RunPress_Runtastic\RunPress_Runtastic();
 			$runtastic->setUsername( $opt_val_name );
 			$runtastic->setPassword( $opt_val_pass );
 			$runtastic->setTimeout( 20 );
 			if( $runtastic->login() ) {
 				update_option( $opt_runtastic_username, $runtastic->getUsername() );
 				update_option( $opt_runtastic_uid, $runtastic->getUid() );
+				/* Show an 'settings saved' mesage on the screen */
+				echo "<div class='notice notice-success is-dismissible'><p><strong>" . __( 'Settings saved.', 'runpress' ) . "</strong></p></div>";
 			}
 			else
 			{
-				echo "<div id='notice' class='error' onclick='remove(this)'><p><strong>" . _e( 'An error occured. Please check your user credentials and try again!', 'runpress' ) . "</strong></p></div>";
-				update_option( $opt_runtastic_username, NULL );
-				update_option( $opt_runtastic_uid, NULL);
+				delete_option( $opt_runtastic_username, NULL );
+				delete_option( $opt_runtastic_uid, NULL);
+				echo "<div class='notice notice-error'><p><strong>" . __( 'An error occured. Please check your user credentials and try again!', 'runpress' ) . "</strong></p></div>";
 			}
 		}
-		/* Show an 'settings updated' mesage on the screen */
-		echo "<div id='notice' class='updated' onclick='remove(this)'><p><strong>" . __( 'Settings saved.', 'runpress' ) . "</strong></p></div>";
 	}
 	/* Now show the settings editing screen */
 	?>
@@ -987,14 +987,14 @@ function runpress_sync_database_manually() {
 		}
 		/* on completion we show an 'db sync successful' message on the screen */
 		?>
-		<div id="notice" class="updated" onclick="remove(this)"><p><?php _e( 'DB sync successful.', 'runpress' ); ?> <?php _e( '| <strong>Dismiss</strong>', 'runpress' ) ; ?></p></div>
+		<div class="notice notice-success is-dismissible"><p><?php _e( 'DB sync successful.', 'runpress' ); ?></p></div>
 		<?php
 	}
 	else
 	{
 		/* show an errow message if the sync fail */
 		?>
-		<div id="notice" class="error" onclick="remove(this)"><p><?php _e( 'DB sync failed! Please check the error message (if any) or try again.', 'runpress' ); ?> <?php _e( '| <strong>Dismiss</strong>', 'runpress' ); ?></p></div>
+		<div class="notice notice-warning is-dismissible"><p><?php _e( 'DB sync failed! Please check the error message (if any) or try again.', 'runpress' ); ?></p></div>
 		<?php
 	}
 }
@@ -1013,13 +1013,13 @@ function runpress_delete_database_manually() {
 	$delete = $wpdb->query( "TRUNCATE TABLE $runpress_db_name" );
 	if( $delete==TRUE ) {
 		?>
-		<div id="notice" class="updated" onclick="remove(this)"><p><?php _e( 'DB successfully truncated.', 'runpress' ); ?> <?php _e( '| <strong>Dismiss</strong>', 'runpress' );?></p></div>
+		<div class="notice notice-success is-dismissible"><p><?php _e( 'DB successfully truncated.', 'runpress' ); ?></p></div>
 		<?php
 	}
 	else
 	{
 		?>
-		<div id="notice" class="error" onclick="remove(this)"><p><?php _e( 'DB was not successfully truncated. Please try again.', 'runpress' ); ?> <?php _e( '| <strong>Dismiss</strong>', 'runpress' ); ?></p></div>
+		<div class="notice notice-warning is-dismissible"><p><?php _e( 'DB was not successfully truncated. Please try again.', 'runpress' ); ?></p></div>
 		<?php
 	}
 }
@@ -1430,7 +1430,7 @@ function runpress_sync() {
 			wp_schedule_event( time(), $opt_val_cronjobtime, 'runpress_event_hook' );
 		}
 		?>
-		<div id="notice" class="updated" onclick="remove(this)"><p><?php _e( 'Cronjob scheduled.', 'runpress' ); ?> <?php _e( '| <strong>Dismiss</strong>', 'runpress' ) ; ?></p></div>
+		<div class="notice notice-success is-dismissible"><p><?php _e( 'Cronjob scheduled.', 'runpress' ); ?></p></div>
 		<?php
 	}
 	/* see if the user wants to delete the cron job */
@@ -1439,7 +1439,7 @@ function runpress_sync() {
 		delete_option( 'runpress_option_cronjobtime' );
 		$opt_val_cronjobtime = '';
 		?>
-		<div id="notice" class="updated" onclick="remove(this)"><p><?php _e( 'Cronjob deleted.', 'runpress' ); ?> <?php _e( '| <strong>Dismiss</strong>', 'runpress' ) ; ?></p></div>
+		<div class="notice notice-success is-dismissible"><p><?php _e( 'Cronjob deleted.', 'runpress' ); ?></p></div>
 		<?php
 	}
 	/* now display the local db entry count */
