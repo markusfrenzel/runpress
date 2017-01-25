@@ -736,8 +736,6 @@ function runpress_options() {
 			}
 		}
 	}
-	/* If this is a initial setup... show the tutorial */
-	runpress_show_configuration_tutorial();
 	/* Now show the settings editing screen */
 	?>
 	<div class="wrap">
@@ -777,6 +775,8 @@ function runpress_options() {
 	</form>
 	</div>
 	<?php
+	/* If this is a initial setup... show the tutorial */
+	runpress_show_configuration_tutorial();
 }
 
 /*
@@ -1577,9 +1577,7 @@ function runpress_shortcode_generator() {
 	echo "<h3>" . __( 'General Shortcode usage', 'runpress' ) . "</h3>";
 	/* the shortcode should be as easy as an order at starbucks */
 	echo __( 'You can choose between 4 possibilities to display your runtastic activities: <b>table</b>, <b>datatable</b>, <b>chart</b> and <b>single</b>.<br /><br />You might limit the data to display by declaring a specific <b>year</b>. <i>If you do not declare a year the actual year will be used!</i><br /><br />The data <b>sortorder</b> can be changed by declaring the specific variable.<br /><br />Use the <b>title</b> variable to label your data with a heading.<br /><h4>Examples:</h4>[runpress year="2014" display="table" sortorder="desc"]<br /><i>This shortcode will show your data from 2014, sorted descending by the runtastic id within a normal table</i><br /><br />[runpress display="datatable"]<br /><i>This shortcode will show your data from the actual year, sorted descending by the runtastic id within a special table called "DataTable".</i><br /><br />[runpress year="2015" display="chart" sortorder="desc"]<br /><i>This shortcode will show your data from 2015, ignoring the sortorder because it will only show the monthly sums of your running activities within a chart powered by Google Charts.</i><br /><br />[runpress display="single" entry="latest" mapwidth="500" mapheight="300"]<br /><i>This shortcode will show the single event specified by the "entry" variable with a lot of details including map!</i><br /><br /><h3>How to use this shortcode?</h3>Just copy the example shortcode (including the square brackets at the beginning and the end) or use the Generator to build a new one and paste it into the page where the data should be displayed. It runs also in posts... not only in pages!<br /><br />If you want to use the data in a widget area: please use the RunPress Widget which has been installed with the activation of this plugin.', 'runpress' );
-	
-	echo __( "Jetzt mal Butter bei die Fische", "runpress" );
-	
+
 	/* show the generator */
 	echo "<h3>" . __( 'Runpress Shortcode Generator', 'runpress' ). "</h3>";
 	/* check the possible years to display */
@@ -1924,11 +1922,93 @@ function runpress_action_links( $links ) {
  * @since 1.4.1
  */
 function runpress_show_configuration_tutorial() {
-	runpress_enqueue_scripts();
-	$url = plugin_dir_url( __FILE__ ) . "inc/img/glass_numbers/";
+	global $wpdb;
+	global $runpress_db_name;
+	wp_register_style( 'runpress_css', plugins_url() . '/runpress/inc/css/runpress.css' );
+	wp_enqueue_style( 'runpress_css' );
+	add_thickbox();
+	
+	$url_numbers = plugin_dir_url( __FILE__ ) . "inc/img/glass_numbers/";
+	$url_hooks = plugin_dir_url( __FILE__ ) . "inc/img/";
+	
 	$opt_runtastic_username = 'runpress_option_runtastic_username';
-	if( get_option( $opt_runtastic_username ) == false ) {
-		echo '<img class="tutorial" src="' . $url . 'glass_numbers_1.png"> Save your Runtastic Credentials';
+	$check_option = get_option( $opt_runtastic_username );
+	
+	$url_settings = get_admin_url(null, 'admin.php?page=runpress');
+	$url_sync = get_admin_url(null, 'admin.php?page=runpress-sync');
+	$url_shortcode = get_admin_url(null, 'admin.php?page=runpress-shortcode-generator');
+	$url_donate = get_admin_url(null, 'admin.php?page=runpress-donate');
+	
+	$i = 1;
+	
+	if( $check_option == NULL ) {
+		echo '<div id="hinweis1" style="display:none;">
+				<p>
+					<a href="' . $url_settings . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_1.png"><img class="tutorialpic_act" src="' . $url_hooks . 'red_hook.png">Save your RunTastic credentials</a>
+				</p>
+				<p>
+					<a href="' . $url_sync . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_2.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Sync your entries from RunTastic to your local database</a>
+				</p>
+				<p>
+					<a href="' . $url_shortcode . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_3.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Build a shortcode to implement your activities into your Posts or Pages</a>
+				</p>
+				<p>
+					<a href="' . $url_donate . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_4.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Think about a donation to keep the plugin author motivated</a>
+				</p>
+			  </div>';
 	}
+	else
+	{
+		$i++;
+	}
+	
+	$check_count = $wpdb->get_var( "SELECT COUNT(*) FROM $runpress_db_name" );
+	if( $check_count == 0 ) {
+		echo '<div id="hinweis2" style="display:none;">
+				<p>
+					<a href="' . $url_settings . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_1.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'green_hook.png">Save your RunTastic credentials</a>
+				</p>
+				<p>
+					<a href="' . $url_sync . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_2.png"><img class="tutorialpic_act" src="' . $url_hooks . 'red_hook.png">Sync your entries from RunTastic to your local database </a>
+				</p>
+				<p>
+					<a href="' . $url_shortcode . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_3.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Build a shortcode to implement your activities into your Posts or Pages</a>
+				</p>
+				<p>
+					<a href="' . $url_donate . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_4.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Think about a donation to keep the plugin author motivated</a>
+				</p>
+			  </div>';
+	}
+	else
+	{
+		$i++;
+	}
+	
+	global $post;
+	if( shortcode_exists( 'runpress' ) ) {
+		echo "YEAH, shortcode is applied on home page.";
+	}
+	else
+	{
+		echo "Houston, we have a problem!!!";
+	}
+	
+	echo '<div id="hinweis4" style="display:none;">
+			<p>
+				<a href="' . $url_settings . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_1.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'green_hook.png">Save your RunTastic credentials</a>
+			</p>
+			<p>
+				<a href="' . $url_sync . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_2.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'green_hook.png">Sync your entries from RunTastic to your local database </a>
+			</p>
+			<p>
+				<a href="' . $url_shortcode . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_3.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'green_hook.png">Build a shortcode to implement your activities into your Posts or Pages</a>
+			</p>
+			<p>
+				<a href="' . $url_donate . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_4.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'green_hook.png">Think about a donation to keep the plugin author motivated</a>
+			</p>
+		  </div>';
+		  
+    echo '<a href="#TB_inline?width=auto&height=auto&inlineId=hinweis' . $i . '" class="thickbox">' . __('Need help? Check the tutorial!', 'runpress' ) . '</a>';		
+	return;
 }
 ?>
