@@ -76,6 +76,9 @@ The table is labeled with your MySQL table prefix of your wordpress installation
 * fixed some typos
 * added a small help function for fresh installs of the plugin so that the user knows what to do first
 * added some text about the differences between premium and the free version of the plugin
+* added actual high score table of donations
+* fixed a bug which causes error messages even if the user enters correct login data for the runtastic website
+* added an option to stop bothering the user about sending a donation
 
 = 1.4.0 =
 * added ability to click single entries in the shortcode generator withour using copy and paste of activity id numbers

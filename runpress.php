@@ -288,6 +288,7 @@ function runpress_delete_options() {
 		delete_option( 'runpress_option_cronjobtime' );
 		delete_option( 'runpress_option_runtastic_username' );
 		delete_option( 'runpress_option_runtastic_uid' );
+		delete_option( 'runpress_option_donation' );
 	}
 }
 
@@ -569,7 +570,15 @@ function runpress_admin_menu() {
 	add_submenu_page( 'runpress', __( 'RunPress Local DB', 'runpress' ), __( 'Local DB', 'runpress' ), 'manage_options', 'runpress-local-db', 'runpress_local_db' );
 	add_submenu_page( 'runpress', __( 'RunPress Sync', 'runpress' ), __( 'Sync', 'runpress' ), 'manage_options', 'runpress-sync', 'runpress_sync' );
 	add_submenu_page( 'runpress', __( 'RunPress Shortcode Generator', 'runpress' ), __( 'Shortcode Generator', 'runpress' ), 'manage_options', 'runpress-shortcode-generator', 'runpress_shortcode_generator' );
-	add_submenu_page( 'runpress', __( 'RunPress Donation', 'runpress' ), __( 'Donate!', 'runpress' ), 'manage_options', 'runpress-donate', 'runpress_donate' );
+	// if the user didn't want to see any donation links... we won't add a submenu for that
+	$check_option_donation = get_option( 'runpress_option_botherdonations', 0 );
+	if( $check_option_donation == 1 ) {
+	}
+	else
+	{
+		add_submenu_page( 'runpress', __( 'RunPress Donation', 'runpress' ), __( 'Donate!', 'runpress' ), 'manage_options', 'runpress-donate', 'runpress_donate' );
+	}
+	add_submenu_page( 'runpress', __( 'RunPress Donations Leaderboard', 'runpress' ), __( 'Donations Leaderbord', 'runpress' ), 'manage_options', 'runpress-donations-leaderboard', 'runpress_donations_leaderboard' );
 	add_action( 'load-' . $hook_suffix, 'runpress_load_function' );
 	add_action( 'load-' . $hook_suffix, 'runpress_help_tab' );
 }
@@ -637,6 +646,7 @@ function runpress_options() {
 	$error_pass = '';
 	$error_unittype = '';
 	$error_deleteoptions = '';
+	$error_botherdonations = '';
 	/* Variables for the field and option names */
 	$opt_name = 'runpress_option_username';
 	$opt_pass = 'runpress_option_userpass';
@@ -644,11 +654,13 @@ function runpress_options() {
 	$opt_deleteoptions = 'runpress_option_delete_options';
 	$opt_runtastic_username = 'runpress_option_runtastic_username';
 	$opt_runtastic_uid = 'runpress_option_runtastic_uid';
+	$opt_botherdonations = 'runpress_option_botherdonations';
 	$hidden_field_name = 'runpress_hidden';
 	$data_field_name = 'runpress_username';
 	$data_field_pass = 'runpress_userpass';
 	$data_field_unittype = 'runpress_unittype';
 	$data_field_deleteoptions = 'runpress_delete_options';
+	$data_field_botherdonations = 'runpress_botherdonations';
 	/* Read the existing option values from the database */
 	$opt_val_name = get_option( $opt_name, '' );
 	$opt_val_pass = get_option( $opt_pass, '' );
@@ -656,6 +668,7 @@ function runpress_options() {
 	$opt_val_deleteoptions = get_option( $opt_deleteoptions, 0 );
 	$opt_val_runtastic_username = get_option( $opt_runtastic_username, '' );
 	$opt_val_runtastic_uid = get_option( $opt_runtastic_uid, '' );
+	$opt_val_botherdonations = get_option( $opt_botherdonations, 0 );
 	/* Check if the runtastic username is already in the db */
 	if( get_option( $opt_runtastic_username ) != false ) {
 		echo "<div class='notice notice-success is-dismissible'><p>" . __( 'Your Runtastic Username: ', 'runpress' ) . get_option( $opt_runtastic_username) . " / UID: " . get_option( $opt_runtastic_uid ) . "</p></div>\n";
@@ -716,23 +729,36 @@ function runpress_options() {
 			$error_deleteoptions = __( 'Value was set to the default value!', 'runpress' );
 		}
 
+		$save_values_botherdonations = array( "0","1" );
+		if( in_array( $_POST[ $data_field_botherdonations ], $save_values_botherdonations, true ) ) {
+			$opt_val_botherdonations = $_POST[ $data_field_botherdonations ];
+			update_option( $opt_botherdonations, $opt_val_botherdonations );
+		}
+		else
+		{
+			update_option( $opt_botherdonations, 0 );
+			$error_botherdonations = __( 'Value was set to the default value!', 'runpress' );
+		}
+
 		if( isset( $opt_val_name ) && isset( $opt_val_pass ) ) {
 			/* Query the runtastic website to get the runtastic username and uid */
 			$runtastic = new RunPress_Runtastic\RunPress_Runtastic();
 			$runtastic->setUsername( $opt_val_name );
 			$runtastic->setPassword( $opt_val_pass );
-			$runtastic->setTimeout( 20 );
+			$runtastic->setTimeout( 100 );
 			if( $runtastic->login() ) {
 				update_option( $opt_runtastic_username, $runtastic->getUsername() );
 				update_option( $opt_runtastic_uid, $runtastic->getUid() );
 				/* Show an 'settings saved' message on the screen */
 				echo "<div class='notice notice-success is-dismissible'><p><strong>" . __( 'Settings saved.', 'runpress' ) . "</strong></p></div>";
+				$runtastic->logout();
 			}
 			else
 			{
+				$statuscode = $runtastic->getResponseStatusCode();
 				delete_option( $opt_runtastic_username, NULL );
 				delete_option( $opt_runtastic_uid, NULL);
-				echo "<div class='notice notice-error'><p><strong>" . __( 'An error occurred. Please check your user credentials and try again!', 'runpress' ) . "</strong></p></div>";
+				echo "<div class='notice notice-error'><p><strong>" . __( 'An error occurred. Please check your user credentials and try again!', 'runpress' ) . "</strong> ERROR-Code: " . $statuscode . "</p></div>";
 			}
 		}
 	}
@@ -767,6 +793,14 @@ function runpress_options() {
 	<td><?php _e( 'Delete Options:', 'runpress' ); ?></td>
 	<td><input type="hidden" name="<?php echo $data_field_deleteoptions; ?>" value="0"><input type="checkbox" name="<?php echo $data_field_deleteoptions; ?>" value="1" <?php if ( $opt_val_deleteoptions == 1 ) { echo 'checked="checked"'; } ?>><?php _e( 'Deletes all options on deactivation of the plugin.', 'runpress' ); ?></td>
 	<td><font color="red"><?php echo $error_deleteoptions; ?></font></td>
+	</tr>
+	<tr>
+	<td colspan="2"><hr /></td>
+	</tr>
+	<tr>
+		<td><?php _e( 'Donations:', 'runpress' ); ?></td>
+		<td><input type="hidden" name="<?php echo $data_field_botherdonations; ?>" value="0"><input type="checkbox" name="<?php echo $data_field_botherdonations; ?>" value="1" <?php if ( $opt_val_botherdonations == 1 ) { echo 'checked="checked"'; } ?>><?php _e( 'Don\'t bother me about sending a donation! I\'ve already donated or I don\'t want to donate.', 'runpress' ); ?></td>
+		<td><font color="red"><?php echo $error_botherdonations; ?></font></td>
 	</tr>
 	</table>
 	<p class="submit">
@@ -893,6 +927,7 @@ function runpress_local_db() {
 	</form>
 	</div>
 	<?php
+	runpress_show_configuration_tutorial();
 }
 
 /*
@@ -910,7 +945,7 @@ function runpress_sync_database_manually() {
 	$runtastic = new RunPress_Runtastic\RunPress_Runtastic();
 	$runtastic->setUsername( get_option( 'runpress_option_username' ) );
 	$runtastic->setPassword( get_option( 'runpress_option_userpass' ) );
-	$runtastic->setTimeout( 20 );
+	$runtastic->setTimeout( 100 );
 	if( $runtastic->login() ) {
 		$activities = $runtastic->getActivities();
 		foreach( $activities as $activity ) {
@@ -994,12 +1029,14 @@ function runpress_sync_database_manually() {
 		?>
 		<div class="notice notice-success is-dismissible"><p><?php _e( 'DB sync successful.', 'runpress' ); ?></p></div>
 		<?php
+		$runtastic->logout();
 	}
 	else
 	{
 		/* show an errow message if the sync fail */
+		$statuscode = $runtastic->getResponseStatusCode();
 		?>
-		<div class="notice notice-warning is-dismissible"><p><?php _e( 'DB sync failed! Please check the error message (if any) or try again.', 'runpress' ); ?></p></div>
+		<div class="notice notice-warning is-dismissible"><p><?php _e( 'DB sync failed! Please check the error message (if any) or try again.', 'runpress' ); echo "ERROR-Code: " . $statuscode; ?></p></div>
 		<?php
 	}
 }
@@ -1531,6 +1568,7 @@ function runpress_sync() {
 		</div>
 		<?php
 	}
+	runpress_show_configuration_tutorial();
 }
 
 /*
@@ -1547,6 +1585,7 @@ function runpress_donate() {
 	echo __( 'Please consider a small (or even a big) donation to the developer of the RunPress Plugin, Markus Frenzel.<br /><br /><b>I am not affiliated with nor am I working at Runtastic.</b> RunPress is a private project of me and is not supported by Runtastic or its affiliates.<br /><br />I appreciate every donation to keep my motivation level and the further development of RunPress up and running.<br /><br />', 'runpress' );
 	echo __( 'German speaking RunPress user may use this icon to donate via paypal:<br /><br />', 'runpress' );
 	?>
+
 	<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top"><input name="cmd" type="hidden" value="_s-xclick" />
     <input name="hosted_button_id" type="hidden" value="MWKHFATNUJB5S" />
     <input alt="Jetzt einfach, schnell und sicher online bezahlen – mit PayPal." name="submit" src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif" type="image" />
@@ -1558,7 +1597,9 @@ function runpress_donate() {
     <input name="hosted_button_id" type="hidden" value="H3Z6D9H6TTF8L" />
     <input alt="PayPal - The safer, easier way to pay online!" name="submit" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" type="image" />
     <img src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" alt="" width="1" height="1" border="0" /></form>&nbsp;
+    <br />
 	<?php
+	runpress_show_configuration_tutorial();
 }
 
 /*
@@ -1821,9 +1862,11 @@ function runpress_shortcode_generator() {
 	<br />
 	<br />
 	<input type="button" class="button-primary" onclick="transferFields()" value="<?php _e( 'Generate Shortcode', 'runpress' ); ?>">
-	<br />
+	<br /><br />
 	<?php
 	_e( '<i>After clicking this button the shortcode will be generated and displayed above. Just click into the field which holds the shortcode an use the keyboard shortcut CTRL + C to copy it to your clipboard. Then edit or create a post or a page which should contain the shortcode, click into the editor and paste the copied shortcode by using the keyboard shortcut CTRL + V.</i>', 'runpress' );
+	echo "<br /><br />";
+	runpress_show_configuration_tutorial();
 }
 
 /*
@@ -1933,82 +1976,80 @@ function runpress_show_configuration_tutorial() {
 	
 	$opt_runtastic_username = 'runpress_option_runtastic_username';
 	$check_option = get_option( $opt_runtastic_username );
+	$check_option_donation = get_option( 'runpress_option_botherdonations' );
 	
 	$url_settings = get_admin_url(null, 'admin.php?page=runpress');
 	$url_sync = get_admin_url(null, 'admin.php?page=runpress-sync');
 	$url_shortcode = get_admin_url(null, 'admin.php?page=runpress-shortcode-generator');
 	$url_donate = get_admin_url(null, 'admin.php?page=runpress-donate');
 	
-	$i = 1;
-	
-	if( $check_option == NULL ) {
-		echo '<div id="hinweis1" style="display:none;">
-				<p>
-					<a href="' . $url_settings . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_1.png"><img class="tutorialpic_act" src="' . $url_hooks . 'red_hook.png">Save your RunTastic credentials</a>
-				</p>
-				<p>
-					<a href="' . $url_sync . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_2.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Sync your entries from RunTastic to your local database</a>
-				</p>
-				<p>
-					<a href="' . $url_shortcode . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_3.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Build a shortcode to implement your activities into your Posts or Pages</a>
-				</p>
-				<p>
-					<a href="' . $url_donate . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_4.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Think about a donation to keep the plugin author motivated</a>
-				</p>
-			  </div>';
-	}
-	else
-	{
-		$i++;
-	}
-	
 	$check_count = $wpdb->get_var( "SELECT COUNT(*) FROM $runpress_db_name" );
-	if( $check_count == 0 ) {
-		echo '<div id="hinweis2" style="display:none;">
-				<p>
-					<a href="' . $url_settings . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_1.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'green_hook.png">Save your RunTastic credentials</a>
-				</p>
-				<p>
-					<a href="' . $url_sync . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_2.png"><img class="tutorialpic_act" src="' . $url_hooks . 'red_hook.png">Sync your entries from RunTastic to your local database </a>
-				</p>
-				<p>
-					<a href="' . $url_shortcode . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_3.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Build a shortcode to implement your activities into your Posts or Pages</a>
-				</p>
-				<p>
-					<a href="' . $url_donate . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_4.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Think about a donation to keep the plugin author motivated</a>
-				</p>
-			  </div>';
-	}
-	else
-	{
-		$i++;
-	}
+	$search_shortcode = runpress_is_used( "runpress" );
 	
-	global $post;
-	if( shortcode_exists( 'runpress' ) ) {
-		echo "YEAH, shortcode is applied on home page.";
-	}
-	else
-	{
-		echo "Houston, we have a problem!!!";
-	}
-	
-	echo '<div id="hinweis4" style="display:none;">
-			<p>
-				<a href="' . $url_settings . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_1.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'green_hook.png">Save your RunTastic credentials</a>
-			</p>
-			<p>
-				<a href="' . $url_sync . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_2.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'green_hook.png">Sync your entries from RunTastic to your local database </a>
-			</p>
-			<p>
-				<a href="' . $url_shortcode . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_3.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'green_hook.png">Build a shortcode to implement your activities into your Posts or Pages</a>
-			</p>
-			<p>
-				<a href="' . $url_donate . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_4.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'green_hook.png">Think about a donation to keep the plugin author motivated</a>
-			</p>
-		  </div>';
+	echo '<div id="runpress_tutorial" style="display:none;">';
+	echo ( $check_option == NULL ) ? '<p><a href="' . $url_settings . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_1.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Save your RunTastic credentials</a></p>' : '<p><a href="' . $url_settings . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_1.png"><img class="tutorialpic_act" src="' . $url_hooks . 'green_hook.png">Save your RunTastic credentials</a></p>';
+	echo ( $check_count == 0 ) ? '<p><a href="' . $url_sync . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_2.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Sync your entries from RunTastic to your local database</a></p>' : '<p><a href="' . $url_sync . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_2.png"><img class="tutorialpic_act" src="' . $url_hooks . 'green_hook.png">Sync your entries from RunTastic to your local database </a></p>';
+	echo ( $search_shortcode == FALSE ) ? '<p><a href="' . $url_shortcode . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_3.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Build a shortcode to implement your activities into your Posts or Pages</a></p>' : '<p><a href="' . $url_shortcode . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_3.png"><img class="tutorialpic_act" src="' . $url_hooks . 'green_hook.png">Build a shortcode to implement your activities into your Posts or Pages</a></p>';
+	echo ( $check_option_donation == FALSE ) ? '<p><a href="' . $url_donate . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_4.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Think about a donation to keep the plugin author motivated</a></p>' : '<p><a href="' . $url_donate . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_4.png"><img class="tutorialpic_act" src="' . $url_hooks . 'green_hook.png">Think about a donation to keep the plugin author motivated</a></p>';
+	echo '</div>';
 		  
-    echo '<a href="#TB_inline?width=auto&height=auto&inlineId=hinweis' . $i . '" class="thickbox">' . __('Need help? Check the tutorial!', 'runpress' ) . '</a>';		
+    echo '<a href="#TB_inline?width=auto&height=auto&inlineId=runpress_tutorial" class="thickbox">' . __('Need help? Check the tutorial!', 'runpress' ) . '</a>';		
 	return;
+}
+
+/*
+ * Function:   runpress_is_used
+ * Attributes: shortcode
+ *  
+ * Function to check if the runpress shortcode is used (or any other specified shortcode)
+ * 
+ * @since 1.4.1
+ */
+function runpress_is_used( $shortcode='' ) {
+	$mypages = get_pages();
+	$is_used = false;
+	foreach( $mypages as $page ) {
+		$content = $page->post_content;
+		if( has_shortcode( $content, $shortcode ) ) {
+			$is_used = true;
+			break;
+		}
+	}
+	if( $is_used == false ) {
+		$myposts = get_posts();
+		foreach( $myposts as $post ) {
+			$content = $post->post_content;
+			if( has_shortcode( $content, $shortcode ) ) {
+				$is_used = true;
+				break;
+			}
+		}
+	}
+	return $is_used;
+}
+
+/*
+ * Function:   runpress_donations_leaderboard
+ * Attributes: none
+ *  
+ * Function to present the leaderboard of donations visualized by flags of the donaters country
+ * 
+ * @since 1.4.1
+ */
+function runpress_donations_leaderboard() {
+	wp_register_style( 'runpress_css', plugins_url() . '/runpress/inc/css/runpress.css' );
+	wp_enqueue_style( 'runpress_css' );
+	echo "<h2>" . __( 'RunPress Donations Leaderboard', 'runpress' ) . "</h2>";
+	echo "<h3>" . __( 'Is your country still on top?', 'runpress' ) . "</h3>";
+	
+	echo __( 'I really appreciate donations by the users of RunPress because they are keeping me motivated in developing new versions of RunPress. <br /><br />It isn\'t important which country is on top of this list... I\'m thankful for every coin you are willing to donate. <br /><br /><strong>Always remember:</strong> It\'s not the donation amount that matters - it\'s the thought that counts!', 'runpress' );
+	
+	echo "<h4>" . __( 'Leaderboard since the last update of RunPress:', 'runpress' ) . "</h4>";
+	
+	$url_flags = plugin_dir_url( __FILE__ ) . "inc/img/flags/";
+	
+	echo '<div class="tooltip"><span class="tooltiptext">' . __( '1st. Place', 'runpress' ) . ': ' . __( 'Denmark', 'runpress' ) . '</span><img width="90px" height="90px" alt="' . __( 'Denmark', 'runpress' ) . '" src="' . $url_flags . 'Denmark.png"></div>';
+	echo '<div class="tooltip"><span class="tooltiptext">' . __( '2nd. Place', 'runpress' ) . ': ' . __( 'Germany', 'runpress' ) . '</span><img width="90px" height="90px" alt="' . __( 'Germany', 'runpress' ) . '" src="' . $url_flags . 'Germany.png"></div>';
+	echo '<div class="tooltip"><span class="tooltiptext">' . __( '3rd. Place', 'runpress' ) . ': ' . __( 'Brazil', 'runpress' ) . '</span><img width="90px" height="90px" alt="' . __( 'Brazil', 'runpress' ) . '" src="' . $url_flags . 'Brazil.png"></div>';
 }
 ?>

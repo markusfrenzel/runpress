@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RunPress\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-27 19:46+0000\n"
+"POT-Creation-Date: 2016-12-28 18:22+0000\n"
 "POT-Revision-Date: Mon Feb 29 2016 11:53:23 GMT+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -83,42 +83,42 @@ msgstr ""
 msgid "beach"
 msgstr ""
 
-#: runpress.php:119 runpress.php:1788 runpress.php:1802
+#: runpress.php:119 runpress.php:1790 runpress.php:1804
 #: inc/widget/runpress-widget.php:266
 msgid "running"
 msgstr ""
 
-#: runpress.php:120 runpress.php:1793 runpress.php:1807
+#: runpress.php:120 runpress.php:1795 runpress.php:1809
 #: inc/widget/runpress-widget.php:276
 msgid "hiking"
 msgstr ""
 
-#: runpress.php:121 runpress.php:1792 runpress.php:1806
+#: runpress.php:121 runpress.php:1794 runpress.php:1808
 #: inc/widget/runpress-widget.php:274
 msgid "racecycling"
 msgstr ""
 
-#: runpress.php:122 runpress.php:1791 runpress.php:1805
+#: runpress.php:122 runpress.php:1793 runpress.php:1807
 #: inc/widget/runpress-widget.php:272
 msgid "mountainbiking"
 msgstr ""
 
-#: runpress.php:123 runpress.php:1790 runpress.php:1804
+#: runpress.php:123 runpress.php:1792 runpress.php:1806
 #: inc/widget/runpress-widget.php:270
 msgid "cycling"
 msgstr ""
 
-#: runpress.php:124 runpress.php:1789 runpress.php:1803
+#: runpress.php:124 runpress.php:1791 runpress.php:1805
 #: inc/widget/runpress-widget.php:268
 msgid "nordicwalking"
 msgstr ""
 
-#: runpress.php:125 runpress.php:1795 runpress.php:1809
+#: runpress.php:125 runpress.php:1797 runpress.php:1811
 #: inc/widget/runpress-widget.php:280
 msgid "ergometer"
 msgstr ""
 
-#: runpress.php:126 runpress.php:1794 runpress.php:1808
+#: runpress.php:126 runpress.php:1796 runpress.php:1810
 #: inc/widget/runpress-widget.php:278
 msgid "treadmill"
 msgstr ""
@@ -222,7 +222,7 @@ msgstr ""
 msgid "RunPress is not configured yet. Please do it now."
 msgstr ""
 
-#: runpress.php:614 runpress.php:1907
+#: runpress.php:614 runpress.php:1909
 msgid "Settings"
 msgstr ""
 
@@ -321,7 +321,7 @@ msgid "Entries in local database:"
 msgstr ""
 
 #: runpress.php:811 runpress.php:821 runpress.php:1107 runpress.php:1184
-#: runpress.php:1196 runpress.php:1786 runpress.php:1800
+#: runpress.php:1196 runpress.php:1788 runpress.php:1802
 #: inc/widget/runpress-widget.php:143
 msgid "Type"
 msgstr ""
@@ -606,107 +606,107 @@ msgid ""
 "Widget which has been installed with the activation of this plugin."
 msgstr ""
 
-#: runpress.php:1577
+#: runpress.php:1576
+msgid "Jetzt mal Butter bei die Fische"
+msgstr ""
+
+#: runpress.php:1579
 msgid "Runpress Shortcode Generator"
 msgstr ""
 
-#: runpress.php:1705
+#: runpress.php:1707
 msgid "Reset"
 msgstr ""
 
-#: runpress.php:1710
+#: runpress.php:1712
 msgid "Display:"
 msgstr ""
 
-#: runpress.php:1712
+#: runpress.php:1714
 msgid "Table"
 msgstr ""
 
-#: runpress.php:1714
+#: runpress.php:1716
 msgid "Chart"
 msgstr ""
 
-#: runpress.php:1715
+#: runpress.php:1717
 msgid "Single"
 msgstr ""
 
-#: runpress.php:1716 runpress.php:1731 runpress.php:1773
+#: runpress.php:1718 runpress.php:1733 runpress.php:1775
 msgid "empty"
 msgstr ""
 
-#: runpress.php:1720
+#: runpress.php:1722
 msgid "<i>If \"empty\" the default value (table) will be used.</i>"
 msgstr ""
 
-#: runpress.php:1724
+#: runpress.php:1726 runpress.php:1749
 msgid "Year:"
 msgstr ""
 
-#: runpress.php:1735
+#: runpress.php:1737
 msgid "<i>If \"empty\" the default value (the actual year) will be used.</i>"
 msgstr ""
 
-#: runpress.php:1739
+#: runpress.php:1741
 msgid "Entry:"
 msgstr ""
 
-#: runpress.php:1741
+#: runpress.php:1743
 msgid "latest"
 msgstr ""
 
-#: runpress.php:1747
-msgid "Year"
-msgstr ""
-
-#: runpress.php:1761
+#: runpress.php:1763
 msgid ""
 "<i>Just choose the activity from the dropdown list or use the entry <b>"
 "latest</b> for your latest activity.</i>"
 msgstr ""
 
-#: runpress.php:1764
+#: runpress.php:1766
 msgid "Mapwidth / Mapheight:"
 msgstr ""
 
-#: runpress.php:1766
+#: runpress.php:1768
 msgid ""
 "<i>Specifies the width and the height of the map which is shown in your post "
 "or page.</i>"
 msgstr ""
 
-#: runpress.php:1769
+#: runpress.php:1771
 msgid "Sortorder:"
 msgstr ""
 
-#: runpress.php:1771
+#: runpress.php:1773
 msgid "Descending"
 msgstr ""
 
-#: runpress.php:1772
+#: runpress.php:1774
 msgid "Ascending"
 msgstr ""
 
-#: runpress.php:1777
+#: runpress.php:1779
 msgid "<i>If \"empty\" the default value (descending) will be used.</i>"
 msgstr ""
 
-#: runpress.php:1781
+#: runpress.php:1783
 msgid " Title:"
 msgstr ""
 
-#: runpress.php:1783
+#: runpress.php:1785
 msgid "<i>Leave the text field blank to show no title.</i>"
 msgstr ""
 
-#: runpress.php:1797
+#: runpress.php:1799
 msgid "<i>Leave the type field blank to show all activity types.</i>"
 msgstr ""
 
-#: runpress.php:1818
+#: runpress.php:1820
 msgid "Generate Shortcode"
 msgstr ""
 
-#: runpress.php:1821
+#: runpress.php:1823
 msgid ""
 "<i>After clicking this button the shortcode will be generated and displayed "
 "above. Just click into the field which holds the shortcode an use the "
@@ -715,11 +715,11 @@ msgid ""
 "and paste the copied shortcode by using the keyboard shortcut CTRL + V.</i>"
 msgstr ""
 
-#: runpress.php:1837
+#: runpress.php:1839
 msgid "four time daily"
 msgstr ""
 
-#: runpress.php:1841
+#: runpress.php:1843
 msgid "weekly"
 msgstr ""
 
