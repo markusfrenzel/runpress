@@ -307,9 +307,9 @@ class RunPress_Runtastic
                 $iMonth = str_pad($iMonth, 2, '0', STR_PAD_LEFT);
             }
 
-            if (is_null($iYear)) {
-                $iYear = date("Y");
-            }
+            //if (is_null($iYear)) {
+            //    $iYear = date("Y");
+            //}
 
             foreach ($itemJsonData as $item) {
                 if (!is_null($iWeek)) { /* Get week statistics */

@@ -13,8 +13,16 @@
 		display: block;
 		text-align:center;
 	}
+	.runpress-slideshow li div h3 { font-size: 80px }
 }
 
+@media screen and (max-width: 1140px) {
+	.runpress-slideshow li div h3 { font-size: 140px }
+}
+
+/* Section: Tutorialpic 
+ * @since 1.4.1 
+ * */
 .tutorialpic_act {
     max-height: 46px;
 	max-width: 46px;
@@ -34,6 +42,13 @@
 	filter: alpha(opacity=50);
 	color: #CCCCCC;
 }
+/* ************************
+ * End Section: tutorialpic 
+ * ************************ */
+
+/* Section: tooltip
+ * @since 1.4.1 
+ * */
 
 /* Tooltip container */
 .tooltip {
@@ -84,3 +99,209 @@
 	border-style: solid;
 	border-color: transparent black transparent transparent;
 }
+
+/* ************************
+ * End Section: tooltip
+ * ************************ */
+
+/* Section: runpress-slideshow
+ * @since 1.4.1 
+ * Credits: taken from https://tympanus.net/codrops/2012/01/02/fullscreen-background-image-slideshow-with-css3/
+ * */
+
+.runpress-slideshow,
+.runpress-slideshow:after {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	z-index: -100;
+}
+.runpress-slideshow:after {
+	content: '';
+	/* background: transparent url(../img/pattern.png) repeat top left; */
+}
+.runpress-slideshow li span {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	color: transparent;
+	background-size: cover;
+	background-position: 50% 50%;
+	background-repeat: none;
+	opacity: 0;
+	z-index: -100;
+	animation: imageAnimation 36s linear infinite 0s;
+	filter: grayscale(100%);
+	filter: gray;
+}
+.runpress-slideshow li div {
+	z-index: -1000;
+	position: absolute;
+	bottom: 30px;
+	left: 0px;
+	width: 100%;
+	text-align: center;
+	opacity: 0;
+	color: #fff;
+	animation: titleAnimation 36s linear infinite 0s;
+}
+.runpress-slideshow li div h3 {
+	font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
+	font-size: 240px;
+	padding: 0;
+	line-height: 200px;
+}
+.runpress-slideshow li:nth-child(1) span[rel="config"] {
+	background-image: url(../img/slideshow/1.jpg)
+}
+.runpress-slideshow li:nth-child(2) span[rel="config"] {
+	background-image: url(../img/slideshow/2.jpg);
+	animation-delay: 6s;
+}
+.runpress-slideshow li:nth-child(3) span[rel="config"] {
+	background-image: url(../img/slideshow/3.jpg);
+	animation-delay: 12s;
+}
+.runpress-slideshow li:nth-child(4) span[rel="config"] {
+	background-image: url(../img/slideshow/4.jpg);
+	animation-delay: 18s;
+}
+.runpress-slideshow li:nth-child(5) span[rel="config"] {
+	background-image: url(../img/slideshow/5.jpg);
+	animation-delay: 24s;
+}
+.runpress-slideshow li:nth-child(6) span[rel="config"] {
+	background-image: url(../img/slideshow/6.jpg);
+	animation-delay: 30s;
+}
+.runpress-slideshow li:nth-child(1) span[rel="database"] {
+	background-image: url(../img/slideshow/7.jpg)
+}
+.runpress-slideshow li:nth-child(2) span[rel="database"] {
+	background-image: url(../img/slideshow/8.jpg);
+	animation-delay: 6s;
+}
+.runpress-slideshow li:nth-child(3) span[rel="database"] {
+	background-image: url(../img/slideshow/9.jpg);
+	animation-delay: 12s;
+}
+.runpress-slideshow li:nth-child(4) span[rel="database"] {
+	background-image: url(../img/slideshow/10.jpg);
+	animation-delay: 18s;
+}
+.runpress-slideshow li:nth-child(5) span[rel="database"] {
+	background-image: url(../img/slideshow/11.jpg);
+	animation-delay: 24s;
+}
+.runpress-slideshow li:nth-child(6) span[rel="database"] {
+	background-image: url(../img/slideshow/12.jpg);
+	animation-delay: 30s;
+}
+.runpress-slideshow li:nth-child(1) span[rel="sync"] {
+	background-image: url(../img/slideshow/13.jpg)
+}
+.runpress-slideshow li:nth-child(2) span[rel="sync"] {
+	background-image: url(../img/slideshow/14.jpg);
+	animation-delay: 6s;
+}
+.runpress-slideshow li:nth-child(3) span[rel="sync"] {
+	background-image: url(../img/slideshow/15.jpg);
+	animation-delay: 12s;
+}
+.runpress-slideshow li:nth-child(4) span[rel="sync"] {
+	background-image: url(../img/slideshow/16.jpg);
+	animation-delay: 18s;
+}
+.runpress-slideshow li:nth-child(5) span[rel="sync"] {
+	background-image: url(../img/slideshow/17.jpg);
+	animation-delay: 24s;
+}
+.runpress-slideshow li:nth-child(6) span[rel="sync"] {
+	background-image: url(../img/slideshow/18.jpg);
+	animation-delay: 30s;
+}
+.runpress-slideshow li:nth-child(1) span[rel="generator"] {
+	background-image: url(../img/slideshow/19.jpg)
+}
+.runpress-slideshow li:nth-child(2) span[rel="generator"] {
+	background-image: url(../img/slideshow/20.jpg);
+	animation-delay: 6s;
+}
+.runpress-slideshow li:nth-child(3) span[rel="generator"] {
+	background-image: url(../img/slideshow/21.jpg);
+	animation-delay: 12s;
+}
+.runpress-slideshow li:nth-child(4) span[rel="generator"] {
+	background-image: url(../img/slideshow/22.jpg);
+	animation-delay: 18s;
+}
+.runpress-slideshow li:nth-child(5) span[rel="generator"] {
+	background-image: url(../img/slideshow/23.jpg);
+	animation-delay: 24s;
+}
+.runpress-slideshow li:nth-child(6) span[rel="generator"] {
+	background-image: url(../img/slideshow/24.jpg);
+	animation-delay: 30s;
+}
+.runpress-slideshow li:nth-child(1) span[rel="donation"] {
+	background-image: url(../img/slideshow/25.jpg)
+}
+.runpress-slideshow li:nth-child(2) span[rel="donation"] {
+	background-image: url(../img/slideshow/26.jpg);
+	animation-delay: 6s;
+}
+.runpress-slideshow li:nth-child(3) span[rel="donation"] {
+	background-image: url(../img/slideshow/27.jpg);
+	animation-delay: 12s;
+}
+.runpress-slideshow li:nth-child(4) span[rel="donation"] {
+	background-image: url(../img/slideshow/28.jpg);
+	animation-delay: 18s;
+}
+.runpress-slideshow li:nth-child(5) span[rel="donation"] {
+	background-image: url(../img/slideshow/29.jpg);
+	animation-delay: 24s;
+}
+.runpress-slideshow li:nth-child(6) span[rel="donation"] {
+	background-image: url(../img/slideshow/30.jpg);
+	animation-delay: 30s;
+}
+.runpress-slideshow li:nth-child(2) div {
+	animation-delay: 6s;
+}
+.runpress-slideshow li:nth-child(3) div {
+	animation-delay: 12s;
+}
+.runpress-slideshow li:nth-child(4) div {
+	animation-delay: 18s;
+}
+.runpress-slideshow li:nth-child(5) div {
+	animation-delay: 24s;
+}
+.runpress-slideshow li:nth-child(6) div {
+	animation-delay: 30s;
+}
+
+@keyframes imageAnimation {
+	0% { opacity: 0; animation-timing-function: ease-in; }
+	8% { opacity: 0.2; animation-timing-function: ease-out; }
+	17% { opacity: 0.2 }
+	25% { opacity: 0 }
+	100% { opacity: 0 }
+}
+
+@keyframes titleAnimation {
+	0% { opacity: 0 }
+	8% { opacity: 0.3 }
+	17% { opacity: 0.3 }
+	19% { opacity: 0 }
+	100% { opacity: 0 }
+}
+
+/* ************************
+ * End Section: runpress-slideshow
+ * ************************ */

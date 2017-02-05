@@ -642,6 +642,8 @@ function runpress_help_tab() {
  * @since 1.0.0
  */
 function runpress_options() {
+	wp_register_style( 'runpress_css', plugins_url() . '/runpress/inc/css/runpress.css' );
+	wp_enqueue_style( 'runpress_css' );
 	$error_name = '';
 	$error_pass = '';
 	$error_unittype = '';
@@ -811,6 +813,47 @@ function runpress_options() {
 	<?php
 	/* If this is a initial setup... show the tutorial */
 	runpress_show_configuration_tutorial();
+	/* Show a slideshow in the background to get a bit more attention */
+	?>
+	<ul class="runpress-slideshow">
+		<li>
+			<span rel="config">Image 01</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="config">Image 02</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="config">Image 03</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="config">Image 04</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="config">Image 05</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="config">Image 06</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+	</ul>
+	<?php
 }
 
 /*
@@ -928,6 +971,47 @@ function runpress_local_db() {
 	</div>
 	<?php
 	runpress_show_configuration_tutorial();
+	/* Show a slideshow in the background to get a bit more attention */
+	?>
+	<ul class="runpress-slideshow">
+		<li>
+			<span rel="database">Image 01</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="database">Image 02</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="database">Image 03</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="database">Image 04</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="database">Image 05</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="database">Image 06</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+	</ul>
+	<?php
 }
 
 /*
@@ -1195,6 +1279,10 @@ function runpress_shortcode( $atts ) {
 			$returncontent = "";
 			$returncontent = $header . $body . $footer;
 		}
+		else
+		{
+			$returncontent = __( 'Sorry, no data found!', 'runpress' );
+		}
 		return $returncontent;
 	}
 	else
@@ -1400,8 +1488,12 @@ function runpress_shortcode( $atts ) {
 		}
 		return $returncontent;
 	}
+	else
+	{
+		$returncontent = __( 'Sorry, no data found!', 'runpress' );
+	}
 }
-	return __( 'Sorry, no data found!', 'runpress' );
+	return $returncontent;
 }
 	
 /*
@@ -1569,6 +1661,47 @@ function runpress_sync() {
 		<?php
 	}
 	runpress_show_configuration_tutorial();
+		/* Show a slideshow in the background to get a bit more attention */
+	?>
+	<ul class="runpress-slideshow">
+		<li>
+			<span rel="sync">Image 01</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="sync">Image 02</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="sync">Image 03</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="sync">Image 04</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="sync">Image 05</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="sync">Image 06</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+	</ul>
+	<?php
 }
 
 /*
@@ -1600,6 +1733,47 @@ function runpress_donate() {
     <br />
 	<?php
 	runpress_show_configuration_tutorial();
+		/* Show a slideshow in the background to get a bit more attention */
+	?>
+	<ul class="runpress-slideshow">
+		<li>
+			<span rel="donation">Image 01</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="donation">Image 02</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="donation">Image 03</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="donation">Image 04</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="donation">Image 05</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="donation">Image 06</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+	</ul>
+	<?php	
 }
 
 /*
@@ -1867,6 +2041,47 @@ function runpress_shortcode_generator() {
 	_e( '<i>After clicking this button the shortcode will be generated and displayed above. Just click into the field which holds the shortcode an use the keyboard shortcut CTRL + C to copy it to your clipboard. Then edit or create a post or a page which should contain the shortcode, click into the editor and paste the copied shortcode by using the keyboard shortcut CTRL + V.</i>', 'runpress' );
 	echo "<br /><br />";
 	runpress_show_configuration_tutorial();
+		/* Show a slideshow in the background to get a bit more attention */
+	?>
+	<ul class="runpress-slideshow">
+		<li>
+			<span rel="generator">Image 01</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="generator">Image 02</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="generator">Image 03</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="generator">Image 04</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="generator">Image 05</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="generator">Image 06</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+	</ul>
+	<?php	
 }
 
 /*
@@ -1987,10 +2202,10 @@ function runpress_show_configuration_tutorial() {
 	$search_shortcode = runpress_is_used( "runpress" );
 	
 	echo '<div id="runpress_tutorial" style="display:none;">';
-	echo ( $check_option == NULL ) ? '<p><a href="' . $url_settings . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_1.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Save your RunTastic credentials</a></p>' : '<p><a href="' . $url_settings . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_1.png"><img class="tutorialpic_act" src="' . $url_hooks . 'green_hook.png">Save your RunTastic credentials</a></p>';
-	echo ( $check_count == 0 ) ? '<p><a href="' . $url_sync . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_2.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Sync your entries from RunTastic to your local database</a></p>' : '<p><a href="' . $url_sync . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_2.png"><img class="tutorialpic_act" src="' . $url_hooks . 'green_hook.png">Sync your entries from RunTastic to your local database </a></p>';
-	echo ( $search_shortcode == FALSE ) ? '<p><a href="' . $url_shortcode . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_3.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Build a shortcode to implement your activities into your Posts or Pages</a></p>' : '<p><a href="' . $url_shortcode . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_3.png"><img class="tutorialpic_act" src="' . $url_hooks . 'green_hook.png">Build a shortcode to implement your activities into your Posts or Pages</a></p>';
-	echo ( $check_option_donation == FALSE ) ? '<p><a href="' . $url_donate . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_4.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">Think about a donation to keep the plugin author motivated</a></p>' : '<p><a href="' . $url_donate . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_4.png"><img class="tutorialpic_act" src="' . $url_hooks . 'green_hook.png">Think about a donation to keep the plugin author motivated</a></p>';
+	echo ( $check_option == NULL ) ? '<p><a href="' . $url_settings . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_1.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">' . __( 'Save your RunTastic credentials', 'runpress' ) . '</a></p>' : '<p><a href="' . $url_settings . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_1.png"><img class="tutorialpic_act" src="' . $url_hooks . 'green_hook.png">' . __( 'Save your RunTastic credentials', 'runpress' ) . '</a></p>';
+	echo ( $check_count == 0 ) ? '<p><a href="' . $url_sync . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_2.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">' . __( 'Sync your entries from RunTastic to your local database', 'runpress' ) . '</a></p>' : '<p><a href="' . $url_sync . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_2.png"><img class="tutorialpic_act" src="' . $url_hooks . 'green_hook.png">' . __( 'Sync your entries from RunTastic to your local database', 'runpress' ) . '</a></p>';
+	echo ( $search_shortcode == FALSE ) ? '<p><a href="' . $url_shortcode . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_3.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">' . __( 'Build a shortcode to implement your activities into your Posts or Pages', 'runpress' ) . '</a></p>' : '<p><a href="' . $url_shortcode . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_3.png"><img class="tutorialpic_act" src="' . $url_hooks . 'green_hook.png">' . __( 'Build a shortcode to implement your activities into your Posts or Pages', 'runpress' ) . '</a></p>';
+	echo ( $check_option_donation == FALSE ) ? '<p><a href="' . $url_donate . '"><img class="tutorialpic_pas" src="' . $url_numbers . 'glass_numbers_4.png"><img class="tutorialpic_pas" src="' . $url_hooks . 'red_hook.png">' . __( 'Think about a donation to keep the plugin author motivated', 'runpress' ) . '</a></p>' : '<p><a href="' . $url_donate . '"><img class="tutorialpic_act" src="' . $url_numbers . 'glass_numbers_4.png"><img class="tutorialpic_act" src="' . $url_hooks . 'green_hook.png">' . __( 'Think about a donation to keep the plugin author motivated', 'runpress' ) . '</a></p>';
 	echo '</div>';
 		  
     echo '<a href="#TB_inline?width=auto&height=auto&inlineId=runpress_tutorial" class="thickbox">' . __('Need help? Check the tutorial!', 'runpress' ) . '</a>';		
@@ -2051,5 +2266,47 @@ function runpress_donations_leaderboard() {
 	echo '<div class="tooltip"><span class="tooltiptext">' . __( '1st. Place', 'runpress' ) . ': ' . __( 'Denmark', 'runpress' ) . '</span><img width="90px" height="90px" alt="' . __( 'Denmark', 'runpress' ) . '" src="' . $url_flags . 'Denmark.png"></div>';
 	echo '<div class="tooltip"><span class="tooltiptext">' . __( '2nd. Place', 'runpress' ) . ': ' . __( 'Germany', 'runpress' ) . '</span><img width="90px" height="90px" alt="' . __( 'Germany', 'runpress' ) . '" src="' . $url_flags . 'Germany.png"></div>';
 	echo '<div class="tooltip"><span class="tooltiptext">' . __( '3rd. Place', 'runpress' ) . ': ' . __( 'Brazil', 'runpress' ) . '</span><img width="90px" height="90px" alt="' . __( 'Brazil', 'runpress' ) . '" src="' . $url_flags . 'Brazil.png"></div>';
+	
+			/* Show a slideshow in the background to get a bit more attention */
+	?>
+	<ul class="runpress-slideshow">
+		<li>
+			<span rel="donation">Image 01</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="donation">Image 02</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="donation">Image 03</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="donation">Image 04</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="donation">Image 05</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+		<li>
+			<span rel="donation">Image 06</span>
+			<div>
+				<h3></h3>
+			</div>
+		</li>
+	</ul>
+	<?php
 }
 ?>
