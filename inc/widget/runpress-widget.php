@@ -5,7 +5,7 @@
  * Plugin Name: 	RunPress
  * Plugin URI: 		http://markusfrenzel.de/wordpress/?page_id=2247
  * 
- * Description: 	Imports your sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
+ * Description: 	Imports your sports activities (have a look at the readme for details) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
  * 
  * Version: 		same as runpress.php
  * 
@@ -23,7 +23,7 @@
  */
 
 /*
- * Copyright (C) 2014, 2015 Markus Frenzel
+ * Copyright (C) 2014, 2015, 2016, 2017 Markus Frenzel
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License as 
@@ -72,14 +72,12 @@ class runpress_widget extends WP_Widget {
 		$o = !empty( $instance['onlyhighscores'] ) ? '1' : '0';
 		$s = !empty( $instance['showtable'] ) ? '1' : '0';
 		
-		$opt1 = !empty( $instance['opt_running'] ) ? '1' : '0';
-		$opt2 = !empty( $instance['opt_nordicwalking'] ) ? '1' : '0';
-		$opt3 = !empty( $instance['opt_cycling'] ) ? '1' : '0';
-		$opt4 = !empty( $instance['opt_mountainbiking'] ) ? '1' : '0';
-		$opt5 = !empty( $instance['opt_racecycling'] ) ? '1' : '0';
-		$opt6 = !empty( $instance['opt_hiking'] ) ? '1' : '0';
-		$opt7 = !empty( $instance['opt_treadmill'] ) ? '1' : '0';
-		$opt8 = !empty( $instance['opt_ergometer'] ) ? '1' : '0';
+		$runpress_sport_activities = array( "running", "nordicwalking", "cycling", "mountainbiking", "racecycling", "hiking", "treadmill", "ergometer", "elliptical", "spinning", "handbike", "skating", "skateboarding", "rowing", "swimming", "crosscountryskiing", "skiing", "snowboarding", "backcountryskiing", "sledding", "motorbiking", "walking", "riding" );
+		$count_activity = 0;
+		foreach( $runpress_sport_activities as $actual_activity ) {
+			$count_activity++;
+			${ 'opt' . $count_activity } = !empty( $instance['opt_' . $actual_activity] ) ? '1' : '0';
+		}
 
 		echo $args['before_widget'];
 		if( ! empty( $title ) )
@@ -89,7 +87,15 @@ class runpress_widget extends WP_Widget {
 			_e( 'No data selected!', 'runpress' );
 		}
 		
-		if(( !$opt1 ) && ( !$opt2 ) && ( !$opt3 ) && ( !$opt4 ) && ( !$opt5 ) && ( !$opt6 ) && ( !$opt7 ) && ( !$opt8 )) {
+		$runpress_widget_opts_array = array();
+		$count_opts_array = 0;
+		for( $i = 1; $i <= $count_activity; $i++ ) {
+			$runpress_widget_opts_array[] = ${ 'opt' . $i };
+		}
+		$i--;
+		
+		$opt_filter = array_filter( $runpress_widget_opts_array );
+		if( empty( $opt_filter ) ) {
 			$onlyshow = "";
 		}
 		else
@@ -99,14 +105,11 @@ class runpress_widget extends WP_Widget {
 		
 		$build_onlyshow = array();
 		
-		if( $opt1 ) { $build_onlyshow[] = "running"; }
-		if( $opt2 ) { $build_onlyshow[] = "nordicwalking"; }
-		if( $opt3 ) { $build_onlyshow[] = "cycling"; }
-		if( $opt4 ) { $build_onlyshow[] = "mountainbiking"; }
-		if( $opt5 ) { $build_onlyshow[] = "racecycling"; }
-		if( $opt6 ) { $build_onlyshow[] = "hiking"; }
-		if( $opt7 ) { $build_onlyshow[] = "treadmill"; }
-		if( $opt8 ) { $build_onlyshow[] = "ergometer"; }
+		for( $j = 1; $j <= $i; $j++ ) {
+			if( ${ 'opt' . $j } ) { 
+				$build_onlyshow[] = $runpress_sport_activities[$j-1];
+			}
+		}
 		
 		if( count( $build_onlyshow ) >= 1 ) {
 			$onlyshow .= "'" . $build_onlyshow[0] . "'";
@@ -137,7 +140,7 @@ class runpress_widget extends WP_Widget {
 				}
 				else
 				{
-					echo "<img src='http:" . str_replace( 'width=50&height=70', 'width=200&height=280', $query->map_url ) . "'><br />";
+					echo "<img src='https:" . str_replace( 'width=50&height=70', 'width=200&height=280', $query->map_url ) . "'><br />";
 				}
 				echo "<table>";
 				echo "<tr><td>" . __( 'Type', 'runpress' ) . ": </td><td>" . __( $query->type, 'runpress' ) . "</td></tr>";
@@ -238,14 +241,12 @@ class runpress_widget extends WP_Widget {
 		$lasttrack = isset( $instance[ 'lasttrack' ] ) ? (bool) $instance[ 'lasttrack' ] : false;
 		$onlyhighscores = isset( $instance[ 'onlyhighscores' ] ) ? (bool) $instance[ 'onlyhighscores'] : false;
 		$showtable = isset( $instance[ 'showtable' ] ) ? (booL) $instance[ 'showtable' ] : false;
-		$opt_running = isset( $instance[ 'opt_running' ] ) ? (bool) $instance[ 'opt_running' ] : false;
-		$opt_nordicwalking = isset( $instance[ 'opt_nordicwalking' ] ) ? (bool) $instance[ 'opt_nordicwalking' ] : false;
-		$opt_cycling = isset( $instance[ 'opt_cycling' ] ) ? (bool) $instance[ 'opt_cycling' ] : false;
-		$opt_mountainbiking = isset( $instance[ 'opt_mountainbiking' ] ) ? (bool) $instance[ 'opt_mountainbiking' ] : false;
-		$opt_racecycling = isset( $instance[ 'opt_racecycling' ] ) ? (bool) $instance[ 'opt_racecycling' ] : false;
-		$opt_hiking = isset( $instance[ 'opt_hiking' ] ) ? (bool) $instance[ 'opt_hiking' ] : false;
-		$opt_treadmill = isset( $instance[ 'opt_treadmill' ] ) ? (bool) $instance[ 'opt_treadmill' ] : false;
-		$opt_ergometer = isset( $instance[ 'opt_ergometer' ] ) ? (bool) $instance[ 'opt_ergometer' ] : false;
+		$runpress_sport_activities = array( "running", "nordicwalking", "cycling", "mountainbiking", "racecycling", "hiking", "treadmill", "ergometer", "elliptical", "spinning", "handbike", "skating", "skateboarding", "rowing", "swimming", "crosscountryskiing", "skiing", "snowboarding", "backcountryskiing", "sledding", "motorbiking", "walking", "riding" );
+		$count_activity = 0;
+		foreach( $runpress_sport_activities as $actual_activity ) {
+			$count_activity++;
+			${ 'opt_' . $actual_activity } = isset( $instance[ 'opt_' . $actual_activity ] ) ? (bool) $instance[ 'opt_' . $actual_activity ] : false;
+		}
 		?>
 		<p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' , 'runpress'); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>"></p>
@@ -262,24 +263,17 @@ class runpress_widget extends WP_Widget {
 		
 		<p>
 		<?php _e( 'Show activity types:', 'runpress' ); ?><br />
-		<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id( 'opt_running' ); ?>" name="<?php echo $this->get_field_name('opt_running' ); ?>"<?php checked( $opt_running ); ?> />
-		<label for="<?php echo $this->get_field_id( 'opt_running' ); ?>"><?php _e( 'running', 'runpress' ); ?></label><br />
-		<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id( 'opt_nordicwalking' ); ?>" name="<?php echo $this->get_field_name( 'opt_nordicwalking' ); ?>"<?php checked( $opt_nordicwalking ); ?> />
-		<label for="<?php echo $this->get_field_id( 'opt_nordicwalking' ); ?>"><?php _e( 'nordicwalking', 'runpress' ); ?></label><br />
-		<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id( 'opt_cycling' ); ?>" name="<?php echo $this->get_field_name( 'opt_cycling' ); ?>"<?php checked( $opt_cycling ); ?> />
-		<label for="<?php echo $this->get_field_id( 'opt_cycling' ); ?>"><?php _e( 'cycling', 'runpress' ); ?></label><br />
-		<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id( 'opt_running' ); ?>" name="<?php echo $this->get_field_name('opt_running' ); ?>"<?php checked( $opt_mountainbiking ); ?> />
-		<label for="<?php echo $this->get_field_id( 'opt_running' ); ?>"><?php _e( 'mountainbiking', 'runpress' ); ?></label><br />
-		<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id( 'opt_racecycling' ); ?>" name="<?php echo $this->get_field_name('opt_racecycling' ); ?>"<?php checked( $opt_racecycling ); ?> />
-		<label for="<?php echo $this->get_field_id( 'opt_racecycling' ); ?>"><?php _e( 'racecycling', 'runpress' ); ?></label><br />
-		<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id( 'opt_hiking' ); ?>" name="<?php echo $this->get_field_name('opt_hiking' ); ?>"<?php checked( $opt_hiking ); ?> />
-		<label for="<?php echo $this->get_field_id( 'opt_hiking' ); ?>"><?php _e( 'hiking', 'runpress' ); ?></label><br />
-		<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id( 'opt_treadmill' ); ?>" name="<?php echo $this->get_field_name('opt_treadmill' ); ?>"<?php checked( $opt_treadmill ); ?> />
-		<label for="<?php echo $this->get_field_id( 'opt_treadmill' ); ?>"><?php _e( 'treadmill', 'runpress' ); ?></label><br />
-		<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id( 'opt_ergometer' ); ?>" name="<?php echo $this->get_field_name('opt_ergometer' ); ?>"<?php checked( $opt_ergometer ); ?> />
-		<label for="<?php echo $this->get_field_id( 'opt_ergometer' ); ?>"><?php _e( 'ergometer', 'runpress' ); ?></label><br />
+		<?php
+		$count_activity = 0;
+		foreach( $runpress_sport_activities as $actual_activity ) {
+			$count_activity++;
+?>
+<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id( 'opt_' . $actual_activity ); ?>" name="<?php echo $this->get_field_name( 'opt_' . $actual_activity ); ?>"<?php checked( ${ 'opt_' . $actual_activity } ); ?> />
+<label for="<?php echo $this->get_field_id( 'opt_' . $actual_activity ); ?>"><?php _e( $actual_activity, 'runpress' ); ?></label><br />
+<?php
+		}
+		?>
 		</p>
-
 		<?php 
 	}
 
@@ -299,15 +293,12 @@ class runpress_widget extends WP_Widget {
 		$instance[ 'lasttrack' ] = !empty( $new_instance[ 'lasttrack' ] ) ? 1 : 0;
 		$instance[ 'onlyhighscores' ] = !empty( $new_instance[ 'onlyhighscores' ] ) ? 1 : 0;
 		$instance[ 'showtable' ] = !empty( $new_instance[ 'showtable' ] ) ? 1 : 0;
-		$instance[ 'opt_running' ] = !empty( $new_instance[ 'opt_running' ] ) ? 1 : 0;
-		$instance[ 'opt_nordicwalking' ] = !empty( $new_instance[ 'opt_nordicwalking' ] ) ? 1 : 0;
-		$instance[ 'opt_cycling' ] = !empty( $new_instance[ 'opt_cycling' ] ) ? 1 : 0;
-		$instance[ 'opt_mountainbiking' ] = !empty( $new_instance[ 'opt_mountainbiking' ] ) ? 1 : 0;
-		$instance[ 'opt_racecycling' ] = !empty( $new_instance[ 'opt_racecycling' ] ) ? 1 : 0;
-		$instance[ 'opt_hiking' ] = !empty( $new_instance[ 'opt_hiking' ] ) ? 1 : 0;
-		$instance[ 'opt_treadmill' ] = !empty( $new_instance[ 'opt_treadmill' ] ) ? 1 : 0;
-		$instance[ 'opt_ergometer' ] = !empty( $new_instance[ 'opt_ergometer' ] ) ? 1 : 0;
-
+		$runpress_sport_activities = array( "running", "nordicwalking", "cycling", "mountainbiking", "racecycling", "hiking", "treadmill", "ergometer", "elliptical", "spinning", "handbike", "skating", "skateboarding", "rowing", "swimming", "crosscountryskiing", "skiing", "snowboarding", "backcountryskiing", "sledding", "motorbiking", "walking", "riding" );
+		$count_activity = 0;
+		foreach( $runpress_sport_activities as $actual_activity ) {
+			$count_activity++;
+			$instance[ 'opt_' . $actual_activity ] = !empty( $new_instance[ 'opt_' . $actual_activity ] ) ? 1 : 0;
+		}
 		return $instance;
 	}
 

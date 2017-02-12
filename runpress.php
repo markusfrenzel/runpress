@@ -5,9 +5,9 @@
  * Plugin Name: 	RunPress
  * Plugin URI: 		http://runpress.markusfrenzel.de
  * 
- * Description: 	Imports your sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
+ * Description: 	Imports your sports activities (have a look at the readme for details) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
  * 
- * Version: 		1.4.1
+ * Version: 		1.4.2
  * 
  * Author: 			Markus Frenzel
  * Author URI: 		http://www.markusfrenzel.de
@@ -124,8 +124,24 @@ $runpress_cycling = __( 'cycling', 'runpress' );
 $runpress_nordicwalking = __( 'nordicwalking', 'runpress' );
 $runpress_ergometer = __( 'ergometer', 'runpress' );
 $runpress_treadmill = __( 'treadmill', 'runpress' );
+/* @since 1.4.2 */
+$runpress_elliptical = __( 'elliptical', 'runpress' );
+$runpress_spinning = __( 'spinning', 'runpress' );
+$runpress_handbike = __( 'handbike', 'runpress' );
+$runpress_skating = __( 'skating', 'runpress' );
+$runpress_skateboarding = __( 'skateboarding', 'runpress' );
+$runpress_rowing = __( 'rowing', 'runpress' );
+$runpress_swimming = __( 'swimming', 'runpress' );
+$runpress_crosscountryskiing = __( 'crosscountryskiing', 'runpress' );
+$runpress_skiing = __( 'skiing', 'runpress' );
+$runpress_snowboarding = __( 'snowboarding', 'runpress' );
+$runpress_backcountryskiing = __( 'backcountryskiing', 'runpress' );
+$runpress_sledding = __( 'sledding', 'runpress' );
+$runpress_motorbiking = __( 'motorbiking', 'runpress' );
+$runpress_walking = __( 'walking', 'runpress' );
+$runpress_riding = __( 'riding', 'runpress' );
 /* plugin description */
-$runpress_plugin_description = __( 'Imports your sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.', 'runpress' );
+$runpress_plugin_description = __( 'Imports your sports activities (have a look at the readme for details) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.', 'runpress' );
 
 /*********************
  ***               ***
@@ -624,7 +640,7 @@ function runpress_help_tab() {
 	$screen->add_help_tab( array( 
 		'id' => '1',															
 		'title' => __( 'Settings', 'runpress' ),													
-		'content' => __( '<br />Add your Runtastic Username and Password here. The Plugin will store your password into the wordpress database. Please make sure that your database is secure!<br /><br />Only running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill and ergometer activities are displayable via RunPress. Maybe other activities will get available in future updates.<br /><br />Select the unit types to show. You can choose beween Metric (European) and Imperial (UK and US) unit types.<br /><br />If you select the last option, all options and the local database will be deleted in case of deactivation of the plugin.<br /><br />This does not change anything in your Runtastic database.', 'runpress' )
+		'content' => __( '<br />Add your Runtastic Username and Password here. The Plugin will store your password into the wordpress database. Please make sure that your database is secure!<br /><br />Only a few sports activities are displayable via RunPress. Maybe other activities will get available in future updates.<br /><br />Select the unit types to show. You can choose beween Metric (European) and Imperial (UK and US) unit types.<br /><br />If you select the last option, all options and the local database will be deleted in case of deactivation of the plugin.<br /><br />This does not change anything in your Runtastic database.', 'runpress' )
 	) );
 	$screen->add_help_tab( array( 
 		'id' => '2',
@@ -1042,6 +1058,21 @@ function runpress_sync_database_manually() {
 				case "nordicwalking":
 				case "ergometer":
 				case "treadmill":
+				case "elliptical":
+				case "spinning":
+				case "handbike":
+				case "skating":
+				case "skateboarding":
+				case "rowing":
+				case "swimming":
+				case "crosscountryskiing":
+				case "skiing":
+				case "snowboarding":
+				case "backcountryskiing":
+				case "sledding":
+				case "motorbiking":
+				case "walking":
+				case "riding":
 				$wpdb->replace(
 				$runpress_db_name,
 				array(
@@ -1254,7 +1285,7 @@ function runpress_shortcode( $atts ) {
 			}
 			else
 			{
-				$body .= "<img src='http:" . str_replace( 'width=50&height=70', 'width=' . $a[ 'mapwidth' ] . '&height=' . $a[ 'mapheight' ], $query->map_url ) . "'>";
+				$body .= "<img src='https:" . str_replace( 'width=50&height=70', 'width=' . $a[ 'mapwidth' ] . '&height=' . $a[ 'mapheight' ], $query->map_url ) . "'>";
 			}
 			$body .= "</td>
 								</tr>
@@ -2005,28 +2036,23 @@ function runpress_shortcode_generator() {
 	<tr id="tr_availabletypes">
 		<td halign="left" valign="top"><?php _e( 'Type', 'runpress' ) . ': '; ?></td>
 		<td>
-			<input type="checkbox" name="showtype" value="running" id="type_running"> <?php _e( 'running', 'runpress' ); ?><br />
-			<input type="checkbox" name="showtype" value="nordicwalking" id="type_nordicwalking"> <?php _e( 'nordicwalking', 'runpress' ); ?><br />
-			<input type="checkbox" name="showtype" value="cycling" id="type_cycling"> <?php _e( 'cycling', 'runpress' ); ?><br />
-			<input type="checkbox" name="showtype" value="mountainbiking" id="type_mountainbiking"> <?php _e( 'mountainbiking', 'runpress' ); ?><br />
-			<input type="checkbox" name="showtype" value="racecycling" id="type_racecycling"> <?php _e( 'racecycling', 'runpress' ); ?><br />
-			<input type="checkbox" name="showtype" value="hiking" id="type_hiking"> <?php _e( 'hiking', 'runpress' ); ?><br />
-			<input type="checkbox" name="showtype" value="treadmill" id="type_treadmill"> <?php _e( 'treadmill', 'runpress' ); ?><br />
-			<input type="checkbox" name="showtype" value="ergometer" id="type_ergometer"> <?php _e( 'ergometer', 'runpress' ); ?><br />
+			<?php
+			$runpress_sport_activities = array( "running", "nordicwalking", "cycling", "mountainbiking", "racecycling", "hiking", "treadmill", "ergometer", "elliptical", "spinning", "handbike", "skating", "skateboarding", "rowing", "swimming", "crosscountryskiing", "skiing", "snowboarding", "backcountryskiing", "sledding", "motorbiking", "walking", "riding" );
+			foreach( $runpress_sport_activities as $actual_activity ) {
+				echo '<input type="checkbox" name="showtype" value="$actual_activity" id="type_$actual_activity"> ' . __( $actual_activity, 'runpress' ) . '<br />';
+			}
+			?>
 		</td>
 		<td halign="left" valign="top"><?php _e( '<i>Leave the type field blank to show all activity types.</i>', 'runpress' ); ?></td>
 	</tr>
 	<tr id="tr_availableonlyonetype">
 		<td halign="left" valign="top"><?php _e( 'Type', 'runpress' ). ': '; ?></td>
 		<td>
-			<input type="radio" id="type_running" name="showtype" value="running"><label for="type_running"> <?php _e( 'running', 'runpress' ); ?></label><br />
-			<input type="radio" id="type_nordicwalking" name="showtype" value="nordicwalking"> <label for="type_nordicwalking"><?php _e( 'nordicwalking', 'runpress' ); ?></label><br />
-			<input type="radio" id="type_cycling" name="showtype" value="cycling"> <label for="type_cycling"><?php _e( 'cycling', 'runpress' ); ?></label><br />
-			<input type="radio" id="type_mountainbiking" name="showtype" value="mountainbiking"> <label for="type_mountainbiking"><?php _e( 'mountainbiking', 'runpress' ); ?></label><br />
-			<input type="radio" id="type_racecycling" name="showtype" value="racecycling"> <label for="type_racecycling"><?php _e( 'racecycling', 'runpress' ); ?></label><br />
-			<input type="radio" id="type_hiking" name="showtype" value="hiking"> <label for="type_hiking"><?php _e( 'hiking', 'runpress' ); ?></label><br />
-			<input type="radio" id="type_treadmill" name="showtype" value="treadmill"> <label for="type_treadmill"><?php _e( 'treadmill', 'runpress' ); ?></label><br />
-			<input type="radio" id="type_ergometer" name="showtype" value="ergometer"> <label for="type_ergometer"><?php _e( 'ergometer', 'runpress' ); ?></label><br />
+			<?php
+			foreach( $runpress_sport_activities as $actual_activity ) {
+				echo '<input type="radio" id="type_$actual_activity name="showtype" value="$actual_activity"><label for="type_$actual_activity"> ' . __( $actual_activity, 'runpress' ) . '</label><br />';
+			}
+			?>
 		</td>
 	</tr>
 	<p id="tr_array">

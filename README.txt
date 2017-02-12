@@ -1,19 +1,19 @@
 === RunPress ===
 Contributors: markusfrenzel
-Tags: runpress,runtastic,running,nordicwalking,cycling,mountainbiking,racecycling,hiking,treadmill,ergometer,tracking,sport,sports,gps,import runtastic,database,import,run
+Tags: runpress,runtastic,running,nordicwalking,cycling,mountainbiking,racecycling,hiking,treadmill,ergometer,tracking,sport,sports,gps,import runtastic,database,import,run,export,export runtastic,
 Donate link: http://markusfrenzel.de/wordpress/?page_id=2336
 Requires at least: 3.3.1
 Tested up to: 4.7
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
-Imports your sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
+Imports your sports activities (have a look at the readme for details) from the Runtastic website. Displays the data via shortcodes on your webpage. Widget included.
 
 == Description ==
 Do you ever want to display your sports activities from Runtastic.com on your own Website? This is no problem any longer.
 
-RunPress gives you the opportunity to query the Runtastic website by using your Runtastic username and password. It imports your Runtastic sports activities (running, nordicwalking, cycling, mountainbiking, racecycling, hiking, treadmill, ergometer) into a table of your wordpress installation. 
+RunPress gives you the opportunity to query the Runtastic website by using your Runtastic username and password. It imports your Runtastic sports activities into a table of your wordpress installation. 
 
 You will be capable of viewing your runtastic sports activities in the admin backend. By the use of shortcodes you're able to show your activities on non-admin pages of your site like posts and pages. Use the shortcode generator to easily create the needed shortcodes without any programming knowledge.
 
@@ -67,7 +67,40 @@ It depends on how you configured RunPress! I've implemented an option which allo
 = I've forgotten to set the option of deleting all data and uninstalled your plugin. Which table do I have to delete on my database to get rid of the runtastic data? =
 The table is labeled with your MySQL table prefix of your wordpress installation (default: wp_) plus "runpress_db" 
 
+== Importable Activities ==
+The following Activities are importable from the Runtastic Website to your local Wordpress Database
+
+* running
+* nordicwalking
+* cycling
+* mountainbiking
+* racecycling
+* hiking
+* treadmill
+* ergometer
+* elliptical
+* spinning
+* handbike
+* skating
+* skateboarding
+* rowing
+* swimming
+* crosscountryskiing
+* skiing
+* snowboarding
+* backcountryskiing
+* sledding
+* motorbiking
+* walking
+* riding
+
 == Changelog ==
+
+= 1.4.2 =
+* switched back to the correct versioning for the plugin
+* maps are now implemented via https (thanks to daniel for the idea)
+* added a few more activity types to use with the plugin
+* updated the translation
 
 = 1.4.1 =
 * fixed a huge bug which prevents users of the plugin to save their runtastic credentials
