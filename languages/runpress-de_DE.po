@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-02-12 19:48+0000\n"
+"PO-Revision-Date: 2017-02-12 20:29+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -9,103 +9,20 @@ msgstr ""
 "Language: de-DE\n"
 "Project-Id-Version: Plugins - RunPress - Development (trunk)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-12 19:07+0000\n"
-"Last-Translator: root <testumgebung@markusfrenzel.de>\n"
+"POT-Creation-Date: 2017-02-12 20:28+0000\n"
+"Last-Translator: Markus Frenzel <runpress@markusfrenzel.de>\n"
 "Language-Team: German"
 
-#: runpress.php:128
-msgid "elliptical"
-msgstr "Ellipsentrainer"
-
-#: runpress.php:129
-msgid "spinning"
-msgstr "Spinning"
-
-#: runpress.php:130
-msgid "handbike"
-msgstr "Handbiking"
-
-#: runpress.php:131
-msgid "skating"
-msgstr "Inlineskaten"
-
-#: runpress.php:132
-msgid "skateboarding"
-msgstr "Skateboarden"
-
-#: runpress.php:133
-msgid "rowing"
-msgstr "Rudern"
-
-#: runpress.php:134
-msgid "swimming"
-msgstr "Schwimmen"
-
-#: runpress.php:135
-msgid "crosscountryskiing"
-msgstr "Langlaufen"
-
-#: runpress.php:136
-msgid "skiing"
-msgstr "Skifahren"
-
-#: runpress.php:137
-msgid "snowboarding"
-msgstr "Snowboarden"
-
-#: runpress.php:138
-msgid "backcountryskiing"
-msgstr "Skitouren gehen"
-
-#: runpress.php:139
-msgid "sledding"
-msgstr "Schlittenfahren"
-
-#: runpress.php:140
-msgid "motorbiking"
-msgstr "Motorradfahren"
-
-#: runpress.php:141
-msgid "walking"
-msgstr "Gehen"
-
-#: runpress.php:142
-msgid "riding"
-msgstr "Reiten"
-
+#. Description of the plugin
 #: runpress.php:144
 msgid ""
-"Imports your sports activities (take a look into the readme for details) "
-"from the Runtastic website. Displays the data via shortcodes on your webpage."
-" Widget included."
+"Imports your sports activities (have a look at the readme for details) from "
+"the Runtastic website. Displays the data via shortcodes on your webpage. "
+"Widget included."
 msgstr ""
 "Importiert Deine Sportaktivit&auml;ten (schau in die Readme f&uuml;r Details)"
-" von der Runtastic Webseite. Stellt die Daten via Shortcode auf Deiner "
-"Webseite dar. Widget inklusive."
-
-#: runpress.php:643
-msgid ""
-"<br />Add your Runtastic Username and Password here. The Plugin will store "
-"your password into the wordpress database. Please make sure that your "
-"database is secure!<br /><br />Only a few sports activities are displayable "
-"via RunPress. Maybe other activities will get available in future updates."
-"<br /><br />Select the unit types to show. You can choose beween Metric "
-"(European) and Imperial (UK and US) unit types.<br /><br />If you select the "
-"last option, all options and the local database will be deleted in case of "
-"deactivation of the plugin.<br /><br />This does not change anything in your "
-"Runtastic database."
-msgstr ""
-"<br />Gebe hier Deinen Runtastic Benutzernamen und Passwort ein. Das Plugin "
-"wird Dein Passwort in der Wordpress Datenbank speichern. Bitte stelle sicher,"
-" dass Deine Datenbank gesichert ist!<br /><br />Nur ein paar "
-"Sportaktivit&auml;ten sind anzeigbar mit RunPress. M&ouml;glicherweise "
-"werden andere Sportaktivit&auml;ten hinzugef&uuml;gt in kommenden Updates."
-"<br /><br />W&auml;hle die gew&uuml;nschten Einheiten aus. Du kannst w&auml;"
-"hlen zwischen metrischen (Europa) und imperialen (Gro&szlig;britannien / USA)"
-" Einheiten.<br /><br />Wenn Du die letzte Option selektierst, werden alle "
-"Optionen und die lokale Datenbank Deiner Sportaktivit&auml;ten gel&ouml;scht,"
-" bei Deaktivierung des Plugins.<br /><br />Dies &auml;ndert aber absolut "
-"nichts an der Runtastic Datenbank."
+" von der Runtastic Webseite. Zeigt die Daten per Shortcode in Deiner "
+"Webseite an. Widget inkludiert."
 
 #: runpress.php:101
 msgid "awesome"
@@ -198,6 +115,66 @@ msgstr "Ergometer"
 #: runpress.php:126
 msgid "treadmill"
 msgstr "Laufband"
+
+#: runpress.php:128
+msgid "elliptical"
+msgstr "Ellipsentrainer"
+
+#: runpress.php:129
+msgid "spinning"
+msgstr "Spinning"
+
+#: runpress.php:130
+msgid "handbike"
+msgstr "Handbiking"
+
+#: runpress.php:131
+msgid "skating"
+msgstr "Inlineskaten"
+
+#: runpress.php:132
+msgid "skateboarding"
+msgstr "Skateboarden"
+
+#: runpress.php:133
+msgid "rowing"
+msgstr "Rudern"
+
+#: runpress.php:134
+msgid "swimming"
+msgstr "Schwimmen"
+
+#: runpress.php:135
+msgid "crosscountryskiing"
+msgstr "Langlaufen"
+
+#: runpress.php:136
+msgid "skiing"
+msgstr "Skifahren"
+
+#: runpress.php:137
+msgid "snowboarding"
+msgstr "Snowboarden"
+
+#: runpress.php:138
+msgid "backcountryskiing"
+msgstr "Skitouren gehen"
+
+#: runpress.php:139
+msgid "sledding"
+msgstr "Schlittenfahren"
+
+#: runpress.php:140
+msgid "motorbiking"
+msgstr "Motorradfahren"
+
+#: runpress.php:141
+msgid "walking"
+msgstr "Gehen"
+
+#: runpress.php:142
+msgid "riding"
+msgstr "Reiten"
 
 #: runpress.php:409
 msgid "RunPress Statistics"
@@ -306,6 +283,30 @@ msgstr "RunPress ist noch nicht konfiguriert. Bitte erledige dies jetzt."
 #: runpress.php:642 runpress.php:2196
 msgid "Settings"
 msgstr "Einstellungen"
+
+#: runpress.php:643
+msgid ""
+"<br />Add your Runtastic Username and Password here. The Plugin will store "
+"your password into the wordpress database. Please make sure that your "
+"database is secure!<br /><br />Only a few sports activities are displayable "
+"via RunPress. Maybe other activities will get available in future updates."
+"<br /><br />Select the unit types to show. You can choose beween Metric "
+"(European) and Imperial (UK and US) unit types.<br /><br />If you select the "
+"last option, all options and the local database will be deleted in case of "
+"deactivation of the plugin.<br /><br />This does not change anything in your "
+"Runtastic database."
+msgstr ""
+"<br />Gebe hier Deinen Runtastic Benutzernamen und Passwort ein. Das Plugin "
+"wird Dein Passwort in der Wordpress Datenbank speichern. Bitte stelle sicher,"
+" dass Deine Datenbank gesichert ist!<br /><br />Nur ein paar "
+"Sportaktivit&auml;ten sind anzeigbar mit RunPress. M&ouml;glicherweise "
+"werden andere Sportaktivit&auml;ten hinzugef&uuml;gt in kommenden Updates."
+"<br /><br />W&auml;hle die gew&uuml;nschten Einheiten aus. Du kannst w&auml;"
+"hlen zwischen metrischen (Europa) und imperialen (Gro&szlig;britannien / USA)"
+" Einheiten.<br /><br />Wenn Du die letzte Option selektierst, werden alle "
+"Optionen und die lokale Datenbank Deiner Sportaktivit&auml;ten gel&ouml;scht,"
+" bei Deaktivierung des Plugins.<br /><br />Dies &auml;ndert aber absolut "
+"nichts an der Runtastic Datenbank."
 
 #: runpress.php:647
 msgid "Info"
@@ -999,19 +1000,6 @@ msgstr "Zeige Aktivitätstypen:"
 #. Plugin Name of the plugin/theme
 msgid "RunPress"
 msgstr "RunPress"
-
-#. #-#-#-#-#  tmp-runpress.pot (RunPress 1.4.0)  #-#-#-#-#
-#. Description of the plugin/theme
-msgid ""
-"Imports your sports activities (running, nordicwalking, cycling, "
-"mountainbiking, racecycling, hiking, treadmill, ergometer) from the "
-"Runtastic website. Displays the data via shortcodes on your webpage. Widget "
-"included."
-msgstr ""
-"Importiert Deine Sport-Aktivitäten (Laufen, Nordic Walking, Radfahren, "
-"Mountainbiken, Rennradfahren, Wandern, Laufband, Ergometer) von der "
-"Runtastic Webseite. Zeigt die Daten per Shortcode auf Deiner Webseite. "
-"Widget inklusive."
 
 #. URI of the plugin
 msgid "http://runpress.markusfrenzel.de"
