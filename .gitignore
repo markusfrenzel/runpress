@@ -44,3 +44,4 @@ Temporary Items
 inc/runtastic.test.php
 *.pot~
 languages/runpress-de_DE-backup-201702121948320.po~
+.svn
